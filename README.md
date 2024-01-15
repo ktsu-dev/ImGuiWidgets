@@ -1,3 +1,3 @@
 # ImGuiWidgets
 
-Knob
+Knob Widget
