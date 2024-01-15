@@ -29,7 +29,7 @@ public static class Knob
 	/// <summary>
 	/// Draw a knob widget
 	/// </summary>
-	/// <param name="label">The label to display below the knob</param>
+	/// <param name="label">The label to display above the knob</param>
 	/// <param name="value">The value to display and modify</param>
 	/// <param name="minv">The minimum value</param>
 	/// <param name="maxv">The maximum value</param>
@@ -47,7 +47,7 @@ public static class Knob
 	/// <summary>
 	/// Draw a knob widget
 	/// </summary>
-	/// <param name="label">The label to display below the knob</param>
+	/// <param name="label">The label to display above the knob</param>
 	/// <param name="value">The value to display and modify</param>
 	/// <param name="minv">The minimum value</param>
 	/// <param name="maxv">The maximum value</param>
