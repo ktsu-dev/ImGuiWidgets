@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImGuiWidgets", "ImGuiWidgets\ImGuiWidgets.csproj", "{6212F5BE-1254-4FFB-A113-C27222303F93}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6212F5BE-1254-4FFB-A113-C27222303F93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6212F5BE-1254-4FFB-A113-C27222303F93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6212F5BE-1254-4FFB-A113-C27222303F93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6212F5BE-1254-4FFB-A113-C27222303F93}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {49545032-0B44-448A-B2F7-E92C6EB6F14E}
+	EndGlobalSection
+EndGlobal
