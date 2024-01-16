@@ -328,7 +328,7 @@ public class DividerContainer
 	/// </summary>
 	/// <param name="sizes">The collection of sizes to set.</param>
 	/// <exception cref="ArgumentException"></exception>
-	public void SetSizesFromList(ReadOnlyCollection<float> sizes)
+	public void SetSizesFromList(ICollection<float> sizes)
 	{
 		ArgumentNullException.ThrowIfNull(sizes, nameof(sizes));
 
@@ -337,9 +337,9 @@ public class DividerContainer
 			throw new ArgumentException("List of sizes must be the same length as the zones list");
 		}
 
-		for (int i = 0; i < sizes.Count; i++)
+		foreach (var (s, i) in sizes.WithIndex())
 		{
-			Zones[i].Size = sizes[i];
+			Zones[i].Size = s;
 		}
 	}
 
