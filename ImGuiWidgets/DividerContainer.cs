@@ -344,8 +344,8 @@ public class DividerContainer
 	}
 
 	/// <summary>
-	/// Get a list of the sizes of all zones in this container.
+	/// Get a collection of the sizes of all zones in this container.
 	/// </summary>
-	/// <returns>A list of the sizes of all zones in this container.</returns>
-	public Collection<float> GetSizes() => (Collection<float>)Zones.Select(z => z.Size);
+	/// <returns>A collection of the sizes of all zones in this container.</returns>
+	public Collection<float> GetSizes() => Zones.Select(z => z.Size).ToCollection();
 }
