@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImGuiWidgets", "ImGuiWidgets\ImGuiWidgets.csproj", "{6212F5BE-1254-4FFB-A113-C27222303F93}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImGuiWidgets", "ImGuiWidgets\ImGuiWidgets.csproj", "{6212F5BE-1254-4FFB-A113-C27222303F93}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImGuiWidgetsDemo", "ImGuiWidgetsDemo\ImGuiWidgetsDemo.csproj", "{62DAED23-CB7C-44BB-9831-D017AF6E8927}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{6212F5BE-1254-4FFB-A113-C27222303F93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6212F5BE-1254-4FFB-A113-C27222303F93}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6212F5BE-1254-4FFB-A113-C27222303F93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62DAED23-CB7C-44BB-9831-D017AF6E8927}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62DAED23-CB7C-44BB-9831-D017AF6E8927}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62DAED23-CB7C-44BB-9831-D017AF6E8927}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62DAED23-CB7C-44BB-9831-D017AF6E8927}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

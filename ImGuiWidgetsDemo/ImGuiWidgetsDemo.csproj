@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="ktsu.io.ImGuiApp" Version="1.0.0-alpha.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ImGuiWidgets\ImGuiWidgets.csproj" />
+  </ItemGroup>
+
+</Project>
