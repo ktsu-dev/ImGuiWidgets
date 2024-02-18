@@ -14,8 +14,13 @@ public abstract class PopupInput<TInput, TDerived> where TDerived : PopupInput<T
 	private string Title { get; set; } = string.Empty;
 	private string Label { get; set; } = string.Empty;
 	private Action<TInput> OnConfirm { get; set; } = null!;
+	private bool WasOpen { get; set; }
 
-	private string GetPopupName() => $"{Title}##{nameof(PopupInput<TInput, TDerived>)}{Title}";
+	/// <summary>
+	/// Gets the id of the popup window.
+	/// </summary>
+	/// <returns>The id of the popup window.</returns>
+	protected string PopupName => $"{Title}###PopupInput{Title}";
 
 	/// <summary>
 	/// Open the popup and set the title, label, and default value.
@@ -30,7 +35,7 @@ public abstract class PopupInput<TInput, TDerived> where TDerived : PopupInput<T
 		Label = label;
 		OnConfirm = onConfirm;
 		cachedValue = defaultValue;
-		ImGui.OpenPopup(GetPopupName());
+		ImGui.OpenPopup(PopupName);
 	}
 
 	/// <summary>
@@ -39,25 +44,39 @@ public abstract class PopupInput<TInput, TDerived> where TDerived : PopupInput<T
 	/// <returns>True if the popup is open.</returns>
 	public bool ShowIfOpen()
 	{
-		bool result = true;
-		if (cachedValue is not null && ImGui.BeginPopupModal(GetPopupName(), ref result, ImGuiWindowFlags.AlwaysAutoResize))
+		bool result = ImGui.IsPopupOpen(PopupName);
+		if (cachedValue is not null && ImGui.BeginPopupModal(PopupName, ref result, ImGuiWindowFlags.AlwaysAutoResize))
 		{
-			ImGui.Text(Label);
+			ImGui.TextUnformatted(Label);
 			ImGui.NewLine();
-			ImGui.SetKeyboardFocusHere();
+
+			if (!WasOpen && !ImGui.IsItemFocused())
+			{
+				ImGui.SetKeyboardFocusHere();
+			}
+
 			if (ShowEdit(ref cachedValue))
 			{
 				OnConfirm(cachedValue);
 				ImGui.CloseCurrentPopup();
 			}
+
 			ImGui.SameLine();
-			if (ImGui.Button("OK"))
+			if (ImGui.Button($"OK###{PopupName}_OK"))
 			{
 				OnConfirm(cachedValue);
 				ImGui.CloseCurrentPopup();
 			}
+
+			if (ImGui.IsKeyPressed(ImGuiKey.Escape))
+			{
+				ImGui.CloseCurrentPopup();
+			}
+
 			ImGui.EndPopup();
 		}
+
+		WasOpen = result;
 		return result;
 	}
 
@@ -79,7 +98,7 @@ public class PopupInputString : PopupInput<string, PopupInputString>
 	/// </summary>
 	/// <param name="value">The input value.</param>
 	/// <returns>True if Enter is pressed.</returns>
-	protected override bool ShowEdit(ref string value) => ImGui.InputText("##Input", ref value, 100, ImGuiInputTextFlags.EnterReturnsTrue);
+	protected override bool ShowEdit(ref string value) => ImGui.InputText($"###{PopupName}_INPUT", ref value, 100, ImGuiInputTextFlags.EnterReturnsTrue);
 }
 
 /// <summary>
