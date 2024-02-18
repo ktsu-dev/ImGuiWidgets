@@ -9,25 +9,51 @@ using ImGuiNET;
 /// <typeparam name="TDerived">The type of the derived class for CRTP.</typeparam>
 public abstract class PopupInput<TInput, TDerived> where TDerived : PopupInput<TInput, TDerived>, new()
 {
-	public static bool Show(string title, string label, ref TInput input)
-	{
-		bool result = false;
-		if (ImGui.IsPopupOpen(title))
-		{
-			ImGui.OpenPopup(title);
-		}
+	private TInput? cachedValue;
 
-		if (ImGui.BeginPopupModal(title, ref result, ImGuiWindowFlags.AlwaysAutoResize))
+	private string Title { get; set; } = string.Empty;
+	private string Label { get; set; } = string.Empty;
+	private Action<TInput> OnConfirm { get; set; } = null!;
+
+	private string GetPopupName() => $"{Title}##{nameof(PopupInput<TInput, TDerived>)}{Title}";
+
+	/// <summary>
+	/// Open the popup and set the title, label, and default value.
+	/// </summary>
+	/// <param name="title">The title of the popup window.</param>
+	/// <param name="label">The label of the input field.</param>
+	/// <param name="defaultValue">The default value of the input field.</param>
+	/// <param name="onConfirm">A callback to handle the new input value.</param>
+	public void Open(string title, string label, TInput defaultValue, Action<TInput> onConfirm)
+	{
+		Title = title;
+		Label = label;
+		OnConfirm = onConfirm;
+		cachedValue = defaultValue;
+		ImGui.OpenPopup(GetPopupName());
+	}
+
+	/// <summary>
+	/// Show the popup if it is open.
+	/// </summary>
+	/// <returns>True if the popup is open.</returns>
+	public bool ShowIfOpen()
+	{
+		bool result = true;
+		if (cachedValue is not null && ImGui.BeginPopupModal(GetPopupName(), ref result, ImGuiWindowFlags.AlwaysAutoResize))
 		{
-			ImGui.Text(label);
+			ImGui.Text(Label);
 			ImGui.NewLine();
-			if (new TDerived().ShowEdit(ref input))
+			ImGui.SetKeyboardFocusHere();
+			if (ShowEdit(ref cachedValue))
 			{
+				OnConfirm(cachedValue);
 				ImGui.CloseCurrentPopup();
 			}
 			ImGui.SameLine();
 			if (ImGui.Button("OK"))
 			{
+				OnConfirm(cachedValue);
 				ImGui.CloseCurrentPopup();
 			}
 			ImGui.EndPopup();
@@ -35,10 +61,57 @@ public abstract class PopupInput<TInput, TDerived> where TDerived : PopupInput<T
 		return result;
 	}
 
-	protected abstract bool ShowEdit(ref TInput input);
+	/// <summary>
+	/// Show the input field for the derived class.
+	/// </summary>
+	/// <param name="value">The input value.</param>
+	/// <returns>True if the input field is changed.</returns>
+	protected abstract bool ShowEdit(ref TInput value);
 }
 
+/// <summary>
+/// A popup input window for strings.
+/// </summary>
 public class PopupInputString : PopupInput<string, PopupInputString>
 {
-	protected override bool ShowEdit(ref string input) => ImGui.InputText("##Input", ref input, 100);
+	/// <summary>
+	/// Show the input field for strings.
+	/// </summary>
+	/// <param name="value">The input value.</param>
+	/// <returns>True if Enter is pressed.</returns>
+	protected override bool ShowEdit(ref string value) => ImGui.InputText("##Input", ref value, 100, ImGuiInputTextFlags.EnterReturnsTrue);
+}
+
+/// <summary>
+/// A popup input window for integers.
+/// </summary>
+public class PopupInputInt : PopupInput<int, PopupInputInt>
+{
+	/// <summary>
+	/// Show the input field for integers.
+	/// </summary>
+	/// <param name="value">The input value.</param>
+	/// <returns>False</returns>
+	protected override bool ShowEdit(ref int value)
+	{
+		ImGui.InputInt("##Input", ref value);
+		return false;
+	}
+}
+
+/// <summary>
+/// A popup input window for floats.
+/// </summary>
+public class PopupInputFloat : PopupInput<float, PopupInputFloat>
+{
+	/// <summary>
+	/// Show the input field for floats.
+	/// </summary>
+	/// <param name="value">The input value.</param>
+	/// <returns>False</returns>
+	protected override bool ShowEdit(ref float value)
+	{
+		ImGui.InputFloat("##Input", ref value);
+		return false;
+	}
 }
