@@ -7,20 +7,11 @@ using ImGuiNET;
 /// </summary>
 /// <typeparam name="TInput">The type of the input value.</typeparam>
 /// <typeparam name="TDerived">The type of the derived class for CRTP.</typeparam>
-public abstract class PopupInput<TInput, TDerived> where TDerived : PopupInput<TInput, TDerived>, new()
+public abstract class PopupInput<TInput, TDerived> : PopupModal where TDerived : PopupInput<TInput, TDerived>, new()
 {
 	private TInput? cachedValue;
-
-	private string Title { get; set; } = string.Empty;
-	private string Label { get; set; } = string.Empty;
 	private Action<TInput> OnConfirm { get; set; } = null!;
-	private bool WasOpen { get; set; }
-
-	/// <summary>
-	/// Gets the id of the popup window.
-	/// </summary>
-	/// <returns>The id of the popup window.</returns>
-	protected string PopupName => $"{Title}###PopupInput{Title}";
+	private string Label { get; set; } = string.Empty;
 
 	/// <summary>
 	/// Open the popup and set the title, label, and default value.
@@ -31,21 +22,25 @@ public abstract class PopupInput<TInput, TDerived> where TDerived : PopupInput<T
 	/// <param name="onConfirm">A callback to handle the new input value.</param>
 	public void Open(string title, string label, TInput defaultValue, Action<TInput> onConfirm)
 	{
-		Title = title;
 		Label = label;
 		OnConfirm = onConfirm;
 		cachedValue = defaultValue;
-		ImGui.OpenPopup(PopupName);
+		base.Open(title);
 	}
+
+	/// <summary>
+	/// Dont use this method, use the other Open method
+	/// </summary>
+	public override void Open(string title) => throw new InvalidOperationException("Use the other Open method.");
 
 	/// <summary>
 	/// Show the popup if it is open.
 	/// </summary>
 	/// <returns>True if the popup is open.</returns>
-	public bool ShowIfOpen()
+	public override void ShowContent()
 	{
 		bool result = ImGui.IsPopupOpen(PopupName);
-		if (cachedValue is not null && ImGui.BeginPopupModal(PopupName, ref result, ImGuiWindowFlags.AlwaysAutoResize))
+		if (cachedValue is not null)
 		{
 			ImGui.TextUnformatted(Label);
 			ImGui.NewLine();
@@ -67,17 +62,7 @@ public abstract class PopupInput<TInput, TDerived> where TDerived : PopupInput<T
 				OnConfirm(cachedValue);
 				ImGui.CloseCurrentPopup();
 			}
-
-			if (ImGui.IsKeyPressed(ImGuiKey.Escape))
-			{
-				ImGui.CloseCurrentPopup();
-			}
-
-			ImGui.EndPopup();
 		}
-
-		WasOpen = result;
-		return result;
 	}
 
 	/// <summary>
