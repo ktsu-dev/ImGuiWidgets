@@ -1,6 +1,7 @@
 namespace ktsu.io.ImGuiWidgets;
 
 using ImGuiNET;
+using ktsu.io.CaseConverter;
 
 /// <summary>
 /// Base class for a modal popup window.
@@ -18,7 +19,7 @@ public abstract class PopupModal
 	/// Gets the id of the popup window.
 	/// </summary>
 	/// <returns>The id of the popup window.</returns>
-	protected string PopupName => $"{Title}###PopupInput{Title}";
+	protected string PopupName => $"{Title}###PopupInput_{Title.ToSnakeCase()}";
 
 	/// <summary>
 	/// Open the popup and set the title.
@@ -33,7 +34,7 @@ public abstract class PopupModal
 	/// <summary>
 	/// Show the content of the popup.
 	/// </summary>
-	public abstract void ShowContent();
+	protected abstract void ShowContent();
 
 	/// <summary>
 	/// Show the popup if it is open.

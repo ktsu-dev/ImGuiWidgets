@@ -34,12 +34,10 @@ public abstract class PopupInput<TInput, TDerived> : PopupModal where TDerived :
 	public override void Open(string title) => throw new InvalidOperationException("Use the other Open method.");
 
 	/// <summary>
-	/// Show the popup if it is open.
+	/// Show the content of the popup.
 	/// </summary>
-	/// <returns>True if the popup is open.</returns>
-	public override void ShowContent()
+	protected override void ShowContent()
 	{
-		bool result = ImGui.IsPopupOpen(PopupName);
 		if (cachedValue is not null)
 		{
 			ImGui.TextUnformatted(Label);
