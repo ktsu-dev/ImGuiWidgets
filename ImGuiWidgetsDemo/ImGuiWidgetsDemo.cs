@@ -24,6 +24,17 @@ internal class ImGuiWidgetsDemo
 		Knob.Draw("DT", ref ms, 0, 10, 150f);
 		ImGui.SameLine();
 		Knob.Draw("Value", ref value, 0f, 1f, 150f);
+
+
+
+		ImGui.SameLine();
+		ColorIndicator.Show(ColorIndicator.Red, true);
+		ImGui.SameLine();
+		ColorIndicator.Show(ColorIndicator.Red, false);
+		ImGui.SameLine();
+		ColorIndicator.Show(ColorIndicator.Green, true);
+		ImGui.SameLine();
+		ColorIndicator.Show(ColorIndicator.Green, false);
 		if (ImGui.Button(inputString))
 		{
 			popupInputString.Open("Enter a string", "Enter", "Yeet", (string result) =>
