@@ -1,3 +1,5 @@
+#pragma warning disable CS0809 // Obsolete member overrides non-obsolete member
+
 namespace ktsu.io.ImGuiWidgets;
 
 using ImGuiNET;
@@ -31,6 +33,7 @@ public abstract class PopupInput<TInput, TDerived> : PopupModal where TDerived :
 	/// <summary>
 	/// Dont use this method, use the other Open method
 	/// </summary>
+	[Obsolete("Use the other Open method.")]
 	public override void Open(string title) => throw new InvalidOperationException("Use the other Open method.");
 
 	/// <summary>

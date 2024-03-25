@@ -1,3 +1,5 @@
+#pragma warning disable CS0809 // Obsolete member overrides non-obsolete member
+
 namespace ktsu.io.ImGuiWidgets;
 
 using System;
@@ -18,7 +20,7 @@ public class PopupPrompt : PopupModal
 	/// <param name="title">The title of the popup window.</param>
 	/// <param name="label">The label of the input field.</param>
 	/// <param name="buttons">The names and actions of the buttons.</param>
-	public void Open(string title, string label, Dictionary<string, Action?> buttons)
+	public virtual void Open(string title, string label, Dictionary<string, Action?> buttons)
 	{
 		Label = label;
 		Buttons = buttons;
@@ -28,6 +30,7 @@ public class PopupPrompt : PopupModal
 	/// <summary>
 	/// Dont use this method, use the other Open method
 	/// </summary>
+	[Obsolete("Use the other Open method.")]
 	public override void Open(string title) => throw new InvalidOperationException("Use the other Open method.");
 
 	/// <summary>
