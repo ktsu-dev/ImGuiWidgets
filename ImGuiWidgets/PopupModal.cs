@@ -43,7 +43,7 @@ public abstract class PopupModal
 	public bool ShowIfOpen()
 	{
 		bool result = ImGui.IsPopupOpen(PopupName);
-		if (ImGui.BeginPopupModal(PopupName, ref result, ImGuiWindowFlags.AlwaysAutoResize))
+		if (ImGui.BeginPopupModal(PopupName, ref result, ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoSavedSettings))
 		{
 			ShowContent();
 

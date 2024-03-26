@@ -3,6 +3,7 @@ namespace ktsu.io.ImGuiWidgetsDemo;
 using ImGuiNET;
 using ktsu.io.ImGuiApp;
 using ktsu.io.ImGuiWidgets;
+using ktsu.io.StrongPaths;
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>")]
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "<Pending>")]
@@ -17,7 +18,12 @@ internal class ImGuiWidgetsDemo
 	private static float value = 0.5f;
 
 	private readonly PopupInputString popupInputString = new();
+	private readonly PopupFilesystemBrowser popupFilesystemBrowser = new();
+	private readonly PopupMessageOK popupMessageOK = new();
 	private string inputString = "String Input Popup";
+	private bool ShouldOpenOKPopup { get; set; }
+	private string OKPopupMessage { get; set; } = string.Empty;
+	private string OKPopupTitle { get; set; } = string.Empty;
 	private void Tick(float dt)
 	{
 		float ms = dt * 1000;
@@ -43,7 +49,25 @@ internal class ImGuiWidgetsDemo
 			});
 		}
 
+		if (ImGui.Button("Open File"))
+		{
+			popupFilesystemBrowser.FileOpen("Open File", (AbsoluteDirectoryPath)Environment.CurrentDirectory, (f) =>
+			{
+				ShouldOpenOKPopup = true;
+				OKPopupTitle = "File Chosen";
+				OKPopupMessage = $"You chose: {f}";
+			});
+		}
+
+		if (ShouldOpenOKPopup)
+		{
+			popupMessageOK.Open(OKPopupTitle, OKPopupMessage);
+			ShouldOpenOKPopup = false;
+		}
+
+		popupMessageOK.ShowIfOpen();
 		popupInputString.ShowIfOpen();
+		popupFilesystemBrowser.ShowIfOpen();
 	}
 
 	private void ShowMenu()
