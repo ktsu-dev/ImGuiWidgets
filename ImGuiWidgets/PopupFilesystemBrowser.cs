@@ -7,9 +7,11 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Text.Json.Serialization;
 using ImGuiNET;
 using ktsu.io.Extensions;
 using ktsu.io.StrongPaths;
+using Microsoft.Extensions.FileSystemGlobbing;
 
 public enum PopupFilesystemBrowserMode
 {
@@ -32,41 +34,31 @@ public class PopupFilesystemBrowser : PopupModal
 	private PopupFilesystemBrowserTarget BrowserTarget { get; set; }
 	private Action<AbsoluteFilePath> OnChooseFile { get; set; } = (f) => { };
 	private Action<AbsoluteDirectoryPath> OnChooseDirectory { get; set; } = (d) => { };
-	private AbsoluteDirectoryPath CurrentDirectory { get; set; } = new();
+	[JsonInclude]
+	private AbsoluteDirectoryPath CurrentDirectory { get; set; } = (AbsoluteDirectoryPath)Environment.CurrentDirectory;
 	private Collection<AnyAbsolutePath> CurrentContents { get; set; } = new();
 	private AnyAbsolutePath ChosenItem { get; set; } = new();
 	private Collection<string> Drives { get; set; } = new();
+	private string Glob { get; set; } = "*";
+	private Matcher Matcher { get; set; } = new();
 
-	public void FileOpen(string title, AbsoluteDirectoryPath initialDirectory, Action<AbsoluteFilePath> onChooseFile)
+	public void FileOpen(string title, Action<AbsoluteFilePath> onChooseFile, string glob = "*") => File(title, PopupFilesystemBrowserMode.Open, onChooseFile, glob);
+
+	public void FileSave(string title, Action<AbsoluteFilePath> onChooseFile, string glob = "*") => File(title, PopupFilesystemBrowserMode.Save, onChooseFile, glob);
+
+	private void File(string title, PopupFilesystemBrowserMode mode, Action<AbsoluteFilePath> onChooseFile, string glob) => OpenPopup(title, mode, PopupFilesystemBrowserTarget.File, onChooseFile, (d) => { }, glob);
+
+	public void ChooseDirectory(string title, Action<AbsoluteDirectoryPath> onChooseDirectory) => OpenPopup(title, PopupFilesystemBrowserMode.Open, PopupFilesystemBrowserTarget.Directory, (d) => { }, onChooseDirectory, "*");
+
+	private void OpenPopup(string title, PopupFilesystemBrowserMode mode, PopupFilesystemBrowserTarget target, Action<AbsoluteFilePath> onChooseFile, Action<AbsoluteDirectoryPath> onChooseDirectory, string glob)
 	{
-		BrowserMode = PopupFilesystemBrowserMode.Open;
-		BrowserTarget = PopupFilesystemBrowserTarget.File;
-		CurrentDirectory = initialDirectory;
+		BrowserMode = mode;
+		BrowserTarget = target;
 		OnChooseFile = onChooseFile;
-		Drives.Clear();
-		Environment.GetLogicalDrives().ForEach(Drives.Add);
-		RefreshContents();
-		base.Open(title);
-	}
-
-	public void FileSave(string title, AbsoluteDirectoryPath initialDirectory, Action<AbsoluteFilePath> onChooseFile)
-	{
-		BrowserMode = PopupFilesystemBrowserMode.Save;
-		BrowserTarget = PopupFilesystemBrowserTarget.File;
-		CurrentDirectory = initialDirectory;
-		OnChooseFile = onChooseFile;
-		Drives.Clear();
-		Environment.GetLogicalDrives().ForEach(Drives.Add);
-		RefreshContents();
-		base.Open(title);
-	}
-
-	public void ChooseDirectory(string title, AbsoluteDirectoryPath initialDirectory, Action<AbsoluteDirectoryPath> onChooseDirectory)
-	{
-		BrowserMode = PopupFilesystemBrowserMode.Save;
-		BrowserTarget = PopupFilesystemBrowserTarget.File;
-		CurrentDirectory = initialDirectory;
 		OnChooseDirectory = onChooseDirectory;
+		Glob = glob;
+		Matcher = new();
+		Matcher.AddInclude(Glob);
 		Drives.Clear();
 		Environment.GetLogicalDrives().ForEach(Drives.Add);
 		RefreshContents();
@@ -101,7 +93,7 @@ public class PopupFilesystemBrowser : PopupModal
 				ImGui.EndCombo();
 			}
 		}
-
+		ImGui.TextUnformatted($"{CurrentDirectory}{Path.DirectorySeparatorChar}{Glob}");
 		ImGui.BeginChild("FilesystemBrowser", new(500, 400), border: false);
 		ImGui.BeginTable(nameof(PopupFilesystemBrowser), 1, ImGuiTableFlags.Borders);
 		ImGui.TableSetupColumn("Path", ImGuiTableColumnFlags.WidthStretch, 40);
@@ -202,7 +194,10 @@ public class PopupFilesystemBrowser : PopupModal
 		{
 			if (BrowserTarget == PopupFilesystemBrowserTarget.File || (BrowserTarget == PopupFilesystemBrowserTarget.Directory && p is AbsoluteDirectoryPath))
 			{
-				CurrentContents.Add(p);
+				if (p is AbsoluteDirectoryPath || Matcher.Match(Path.GetFileName(p)).HasMatches)
+				{
+					CurrentContents.Add(p);
+				}
 			}
 		});
 	}

@@ -3,7 +3,6 @@ namespace ktsu.io.ImGuiWidgetsDemo;
 using ImGuiNET;
 using ktsu.io.ImGuiApp;
 using ktsu.io.ImGuiWidgets;
-using ktsu.io.StrongPaths;
 
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>")]
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "<Pending>")]
@@ -51,12 +50,12 @@ internal class ImGuiWidgetsDemo
 
 		if (ImGui.Button("Open File"))
 		{
-			popupFilesystemBrowser.FileOpen("Open File", (AbsoluteDirectoryPath)Environment.CurrentDirectory, (f) =>
+			popupFilesystemBrowser.FileOpen("Open File", (f) =>
 			{
 				ShouldOpenOKPopup = true;
 				OKPopupTitle = "File Chosen";
 				OKPopupMessage = $"You chose: {f}";
-			});
+			}, "*.cs");
 		}
 
 		if (ShouldOpenOKPopup)
