@@ -187,19 +187,20 @@ public class PopupFilesystemBrowser : PopupModal
 
 	private void ChooseItem()
 	{
-		if (ChosenItem is AbsoluteFilePath file)
+		if (BrowserTarget == PopupFilesystemBrowserTarget.File)
 		{
+			var chosenFile = CurrentDirectory / FileName;
 			if (!Matcher.Match(FileName).HasMatches)
 			{
 				PopupMessageOK.Open("Invalid File Name", "The file name does not match the glob pattern.");
 				return;
 			}
 
-			OnChooseFile(CurrentDirectory / FileName);
+			OnChooseFile((AbsoluteFilePath)Path.GetFullPath(chosenFile));
 		}
-		else if (ChosenItem is AbsoluteDirectoryPath directory)
+		else if (BrowserTarget == PopupFilesystemBrowserTarget.Directory && ChosenItem is AbsoluteDirectoryPath directory)
 		{
-			OnChooseDirectory(directory);
+			OnChooseDirectory((AbsoluteDirectoryPath)Path.GetFullPath(directory));
 		}
 		ImGui.CloseCurrentPopup();
 	}
