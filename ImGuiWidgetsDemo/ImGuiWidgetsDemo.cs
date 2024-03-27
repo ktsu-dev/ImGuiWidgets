@@ -58,6 +58,16 @@ internal class ImGuiWidgetsDemo
 			}, "*.cs");
 		}
 
+		if (ImGui.Button("Save File"))
+		{
+			popupFilesystemBrowser.FileSave("Save File", (f) =>
+			{
+				ShouldOpenOKPopup = true;
+				OKPopupTitle = "File Chosen";
+				OKPopupMessage = $"You chose: {f}";
+			}, "*.cs");
+		}
+
 		if (ShouldOpenOKPopup)
 		{
 			popupMessageOK.Open(OKPopupTitle, OKPopupMessage);

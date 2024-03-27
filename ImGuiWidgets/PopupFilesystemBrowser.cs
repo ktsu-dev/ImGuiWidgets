@@ -41,6 +41,8 @@ public class PopupFilesystemBrowser : PopupModal
 	private Collection<string> Drives { get; set; } = new();
 	private string Glob { get; set; } = "*";
 	private Matcher Matcher { get; set; } = new();
+	private FileName FileName { get; set; } = new();
+	private PopupMessageOK PopupMessageOK { get; } = new();
 
 	public void FileOpen(string title, Action<AbsoluteFilePath> onChooseFile, string glob = "*") => File(title, PopupFilesystemBrowserMode.Open, onChooseFile, glob);
 
@@ -52,6 +54,7 @@ public class PopupFilesystemBrowser : PopupModal
 
 	private void OpenPopup(string title, PopupFilesystemBrowserMode mode, PopupFilesystemBrowserTarget target, Action<AbsoluteFilePath> onChooseFile, Action<AbsoluteDirectoryPath> onChooseDirectory, string glob)
 	{
+		FileName = new();
 		BrowserMode = mode;
 		BrowserTarget = target;
 		OnChooseFile = onChooseFile;
@@ -145,6 +148,7 @@ public class PopupFilesystemBrowser : PopupModal
 				else if (file is not null)
 				{
 					ChosenItem = file;
+					FileName = file.FileName;
 					if (ImGui.IsMouseDoubleClicked(0))
 					{
 						ChooseItem();
@@ -155,6 +159,13 @@ public class PopupFilesystemBrowser : PopupModal
 
 		ImGui.EndTable();
 		ImGui.EndChild();
+
+		if (BrowserMode == PopupFilesystemBrowserMode.Save)
+		{
+			string fileName = FileName;
+			ImGui.InputText("##SaveAs", ref fileName, 256);
+			FileName = (FileName)fileName;
+		}
 
 		string confirmText = BrowserMode switch
 		{
@@ -171,13 +182,20 @@ public class PopupFilesystemBrowser : PopupModal
 		{
 			ImGui.CloseCurrentPopup();
 		}
+		PopupMessageOK.ShowIfOpen();
 	}
 
 	private void ChooseItem()
 	{
 		if (ChosenItem is AbsoluteFilePath file)
 		{
-			OnChooseFile(file);
+			if (!Matcher.Match(FileName).HasMatches)
+			{
+				PopupMessageOK.Open("Invalid File Name", "The file name does not match the glob pattern.");
+				return;
+			}
+
+			OnChooseFile(CurrentDirectory / FileName);
 		}
 		else if (ChosenItem is AbsoluteDirectoryPath directory)
 		{
