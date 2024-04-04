@@ -34,7 +34,7 @@ public class DividerContainer
 	public string Id { get; init; }
 	private DividerLayout Layout { get; }
 	private int DragIndex { get; set; } = -1;
-	private List<DividerZone> Zones { get; } = new();
+	private List<DividerZone> Zones { get; init; } = new();
 	private Action<DividerContainer>? OnResized { get; set; }
 
 	/// <summary>
@@ -44,10 +44,23 @@ public class DividerContainer
 	/// <param name="onResized">A callback for when the container is resized.</param>
 	/// <param name="layout">The layout direction of the container.</param>
 	public DividerContainer(string id, Action<DividerContainer>? onResized, DividerLayout layout)
+		: this(id, onResized, layout, Array.Empty<DividerZone>())
+	{
+	}
+
+	/// <summary>
+	/// Create a new divider container with a callback for when the container is resized and a specified layout direction.
+	/// </summary>
+	/// <param name="id">The ID of the container.</param>
+	/// <param name="onResized">A callback for when the container is resized.</param>
+	/// <param name="layout">The layout direction of the container.</param>
+	/// <param name="zones">The zones to add to the container.</param>
+	public DividerContainer(string id, Action<DividerContainer>? onResized, DividerLayout layout, IEnumerable<DividerZone> zones)
 	{
 		Id = id;
 		Layout = layout;
 		OnResized = onResized;
+		Zones = zones.ToList();
 	}
 
 	/// <summary>
@@ -277,6 +290,12 @@ public class DividerContainer
 		float size = 1.0f / (Zones.Count + 1);
 		Zones.Add(new(id, size, tickDelegate));
 	}
+
+	/// <summary>
+	/// Add a zone to the container.
+	/// </summary>
+	/// <param name="zone">The zone to add</param>
+	public void Add(DividerZone zone) => Zones.Add(zone);
 
 	/// <summary>
 	/// Remove a zone from the container.
