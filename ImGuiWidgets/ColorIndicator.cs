@@ -2,26 +2,15 @@
 namespace ktsu.io.ImGuiWidgets;
 
 using ImGuiNET;
-using System.Numerics;
-
 
 public static class ColorIndicator
 {
-	public static Vector4 Red => new(1, 0, 0, 1);
-	public static Vector4 Green => new(0, 1, 0, 1);
-	public static Vector4 Blue => new(0, 0, 1, 1);
-	public static Vector4 Yellow => new(1, 1, 0, 1);
-	public static Vector4 Cyan => new(0, 1, 1, 1);
-	public static Vector4 Magenta => new(1, 0, 1, 1);
-	public static Vector4 White => new(1, 1, 1, 1);
-	public static Vector4 Black => new(0, 0, 0, 1);
-
-	private static void PushCheckColor(Vector4 color)
+	private static void PushCheckColor(ImColor color)
 	{
-		ImGui.PushStyleColor(ImGuiCol.FrameBg, color);
-		ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, color);
-		ImGui.PushStyleColor(ImGuiCol.FrameBgActive, color);
-		ImGui.PushStyleColor(ImGuiCol.CheckMark, color);
+		ImGui.PushStyleColor(ImGuiCol.FrameBg, color.Value);
+		ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, color.Value);
+		ImGui.PushStyleColor(ImGuiCol.FrameBgActive, color.Value);
+		ImGui.PushStyleColor(ImGuiCol.CheckMark, color.Value);
 	}
 
 	private static void PopCheckColor()
@@ -32,7 +21,7 @@ public static class ColorIndicator
 		ImGui.PopStyleColor();
 	}
 
-	public static void Show(Vector4 color, bool enabled)
+	public static void Show(ImColor color, bool enabled)
 	{
 		if (enabled)
 		{

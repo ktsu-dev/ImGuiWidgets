@@ -10,6 +10,7 @@
     <PackageReference Include="ImGui.NET" Version="1.89.9.3" />
     <PackageReference Include="ktsu.io.Extensions" Version="1.0.0" />
     <PackageReference Include="ktsu.io.CaseConverter" Version="1.0.0" />
+    <PackageReference Include="ktsu.io.ScopedAction" Version="1.0.0-alpha.3" />
     <PackageReference Include="ktsu.io.StrongPaths" Version="1.0.8" />
     <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="8.0.0" />
   </ItemGroup>
