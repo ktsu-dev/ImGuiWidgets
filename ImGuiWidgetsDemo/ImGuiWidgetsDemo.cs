@@ -35,13 +35,13 @@ internal class ImGuiWidgetsDemo
 		ImGui.SameLine();
 		Knob.Draw("Value", ref value, 0f, 1f, 150f);
 		ImGui.SameLine();
-		ColorIndicator.Show(ColorIndicator.Red, true);
+		ColorIndicator.Show(Color.Red, true);
 		ImGui.SameLine();
-		ColorIndicator.Show(ColorIndicator.Red, false);
+		ColorIndicator.Show(Color.Red, false);
 		ImGui.SameLine();
-		ColorIndicator.Show(ColorIndicator.Green, true);
+		ColorIndicator.Show(Color.Green, true);
 		ImGui.SameLine();
-		ColorIndicator.Show(ColorIndicator.Green, false);
+		ColorIndicator.Show(Color.Green, false);
 		if (ImGui.Button(inputString))
 		{
 			popupInputString.Open("Enter a string", "Enter", "Yeet", (string result) =>
@@ -79,6 +79,18 @@ internal class ImGuiWidgetsDemo
 		popupMessageOK.ShowIfOpen();
 		popupInputString.ShowIfOpen();
 		popupFilesystemBrowser.ShowIfOpen();
+
+		ImGui.Button("Hello, Tree!");
+		using (var tree = new Tree())
+		{
+			for (int i = 0; i < 5; i++)
+			{
+				using (tree.Child)
+				{
+					ImGui.Button($"Hello, Child {i}!");
+				}
+			}
+		}
 	}
 
 	private void OnMenu()
