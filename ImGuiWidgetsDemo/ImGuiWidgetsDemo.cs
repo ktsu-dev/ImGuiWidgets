@@ -11,7 +11,7 @@ internal class ImGuiWidgetsDemo
 	private static void Main(string[] args)
 	{
 		ImGuiWidgetsDemo imGuiWidgetsDemo = new();
-		ImGuiApp.Start(nameof(ImGuiWidgetsDemo), new ImGuiAppWindowState(), imGuiWidgetsDemo.Tick, imGuiWidgetsDemo.ShowMenu, imGuiWidgetsDemo.WindowResized);
+		ImGuiApp.Start(nameof(ImGuiWidgetsDemo), new ImGuiAppWindowState(), imGuiWidgetsDemo.OnStart, imGuiWidgetsDemo.OnTick, imGuiWidgetsDemo.OnMenu, imGuiWidgetsDemo.OnWindowResized);
 	}
 
 	private static float value = 0.5f;
@@ -23,15 +23,17 @@ internal class ImGuiWidgetsDemo
 	private bool ShouldOpenOKPopup { get; set; }
 	private string OKPopupMessage { get; set; } = string.Empty;
 	private string OKPopupTitle { get; set; } = string.Empty;
-	private void Tick(float dt)
+
+	private void OnStart()
+	{
+	}
+
+	private void OnTick(float dt)
 	{
 		float ms = dt * 1000;
 		Knob.Draw("DT", ref ms, 0, 10, 150f);
 		ImGui.SameLine();
 		Knob.Draw("Value", ref value, 0f, 1f, 150f);
-
-
-
 		ImGui.SameLine();
 		ColorIndicator.Show(ColorIndicator.Red, true);
 		ImGui.SameLine();
@@ -79,11 +81,11 @@ internal class ImGuiWidgetsDemo
 		popupFilesystemBrowser.ShowIfOpen();
 	}
 
-	private void ShowMenu()
+	private void OnMenu()
 	{
 	}
 
-	private void WindowResized()
+	private void OnWindowResized()
 	{
 	}
 }
