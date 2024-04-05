@@ -9,6 +9,7 @@ using ktsu.io.ScopedAction;
 public class Tree : ScopedAction
 {
 	private Vector2 CursorStart { get; init; }
+	private Vector2 CursorEnd { get; set; }
 	private float IndentWidth { get; init; }
 	private float HalfIndentWidth => IndentWidth / 2f;
 	private float FrameHeight { get; init; }
@@ -32,8 +33,7 @@ public class Tree : ScopedAction
 		OnClose = () =>
 		{
 			ImGui.SameLine();
-			var cursorEnd = ImGui.GetCursorScreenPos();
-			float bottom = cursorEnd.Y + HalfFrameHeight + HalfLineThickness;
+			float bottom = CursorEnd.Y + HalfFrameHeight + HalfLineThickness;
 			var a = new Vector2(Left, Top);
 			var b = new Vector2(Left, bottom);
 			ImGui.GetWindowDrawList().AddLine(a, b, ImGui.GetColorU32(Color.Gray.Value), LineThickness);
@@ -50,6 +50,7 @@ public class Tree : ScopedAction
 			onOpen: () =>
 			{
 				var cursor = ImGui.GetCursorScreenPos();
+				parent.CursorEnd = cursor;
 				float right = cursor.X;
 				float y = cursor.Y + parent.HalfFrameHeight;
 

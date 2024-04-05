@@ -88,6 +88,13 @@ internal class ImGuiWidgetsDemo
 				using (tree.Child)
 				{
 					ImGui.Button($"Hello, Child {i}!");
+					using (var subtree = new Tree())
+					{
+						using (subtree.Child)
+						{
+							ImGui.Button($"Hello, Grandchild!");
+						}
+					}
 				}
 			}
 		}
