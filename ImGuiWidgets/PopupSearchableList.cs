@@ -16,6 +16,7 @@ public class PopupSearchableList<TItem> : PopupModal where TItem : class
 	private TItem? selectedItem;
 	private string searchTerm = string.Empty;
 	private Action<TItem> OnConfirm { get; set; } = null!;
+	private Func<TItem, string>? GetText { get; set; }
 	private string Label { get; set; } = string.Empty;
 	private IEnumerable<TItem> Items { get; set; } = Enumerable.Empty<TItem>();
 
@@ -26,12 +27,14 @@ public class PopupSearchableList<TItem> : PopupModal where TItem : class
 	/// <param name="label">The label of the input field.</param>
 	/// /// <param name="items">The items to select from.</param>
 	/// <param name="defaultItem">The default value of the input field.</param>
+	/// <param name="getText">A delegate to get the text representation of an item.</param>
 	/// <param name="onConfirm">A callback to handle the new input value.</param>
-	public void Open(string title, string label, IEnumerable<TItem> items, TItem? defaultItem, Action<TItem> onConfirm)
+	public void Open(string title, string label, IEnumerable<TItem> items, TItem? defaultItem, Func<TItem, string>? getText, Action<TItem> onConfirm)
 	{
 		searchTerm = string.Empty;
 		Label = label;
 		OnConfirm = onConfirm;
+		GetText = getText;
 		cachedValue = defaultItem;
 		Items = items;
 		base.Open(title);
@@ -44,7 +47,17 @@ public class PopupSearchableList<TItem> : PopupModal where TItem : class
 	/// <param name="label">The label of the input field.</param>
 	/// <param name="items">The items to select from.</param>
 	/// <param name="onConfirm">A callback to handle the new input value.</param>
-	public void Open(string title, string label, IEnumerable<TItem> items, Action<TItem> onConfirm) => Open(title, label, items, null, onConfirm);
+	public void Open(string title, string label, IEnumerable<TItem> items, Action<TItem> onConfirm) => Open(title, label, items, null, null, onConfirm);
+
+	/// <summary>
+	/// Open the popup and set the title, label, and default value.
+	/// </summary>
+	/// <param name="title">The title of the popup window.</param>
+	/// <param name="label">The label of the input field.</param>
+	/// <param name="items">The items to select from.</param>
+	/// <param name="getText">A delegate to get the text representation of an item.</param>
+	/// <param name="onConfirm">A callback to handle the new input value.</param>
+	public void Open(string title, string label, IEnumerable<TItem> items, Func<TItem, string> getText, Action<TItem> onConfirm) => Open(title, label, items, null, getText, onConfirm);
 
 	/// <summary>
 	/// Dont use this method, use the other Open method
@@ -91,7 +104,9 @@ public class PopupSearchableList<TItem> : PopupModal where TItem : class
 				selectedItem = item;
 			}
 
-			if (ImGui.Selectable(item.ToString(), item == (cachedValue ?? selectedItem)))
+			string displayText = GetText?.Invoke(item) ?? item.ToString() ?? string.Empty;
+
+			if (ImGui.Selectable(displayText, item == (cachedValue ?? selectedItem)))
 			{
 				cachedValue = item;
 			}
