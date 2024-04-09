@@ -19,6 +19,7 @@ public class DividerZone
 	/// </summary>
 	public bool Resizable { get; } = true;
 	private Action<float>? TickDelegate { get; }
+	internal float InitialSize { get; init; }
 
 	/// <summary>
 	/// Create a new divider zone.
@@ -29,6 +30,7 @@ public class DividerZone
 	{
 		Id = id;
 		Size = size;
+		InitialSize = size;
 		Resizable = true;
 	}
 
@@ -42,6 +44,7 @@ public class DividerZone
 	{
 		Id = id;
 		Size = size;
+		InitialSize = size;
 		TickDelegate = tickDelegate;
 	}
 
@@ -56,6 +59,7 @@ public class DividerZone
 	{
 		Id = id;
 		Size = size;
+		InitialSize = size;
 		Resizable = resizable;
 		TickDelegate = tickDelegate;
 	}
@@ -70,6 +74,7 @@ public class DividerZone
 	{
 		Id = id;
 		Size = size;
+		InitialSize = size;
 		Resizable = resizable;
 	}
 
