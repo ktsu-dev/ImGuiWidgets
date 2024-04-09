@@ -178,6 +178,7 @@ public class DividerContainer
 		advance = windowPos + windowPadding;
 		float resize = 0;
 		var mousePos = ImGui.GetMousePos();
+		bool resetSize = false;
 		foreach (var (z, i) in Zones.WithIndex())
 		{
 			//draw the grab handle if we're not the last zone
@@ -195,12 +196,19 @@ public class DividerContainer
 				RectangleF handleRect = new(grabMin.X, grabMin.Y, grabSize.X, grabSize.Y);
 				bool handleHovered = handleRect.Contains(mousePos.X, mousePos.Y);
 				bool mouseClickedThisFrame = ImGui.IsMouseClicked(ImGuiMouseButton.Left);
-				if (handleHovered && mouseClickedThisFrame)
+				bool handleClicked = handleHovered && mouseClickedThisFrame;
+				bool handleDoubleClicked = handleHovered && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left);
+
+				if (handleClicked)
 				{
 					DragIndex = i;
 				}
 
-				if (DragIndex == i)
+				if (handleDoubleClicked)
+				{
+					resetSize = true;
+				}
+				else if (DragIndex == i)
 				{
 					if (ImGui.IsMouseDown(ImGuiMouseButton.Left))
 					{
@@ -248,6 +256,10 @@ public class DividerContainer
 		//do the actual resize at the end of the tick so that we don't mess with the dimensions of the layout mid rendering
 		if (DragIndex > -1)
 		{
+			if (resetSize)
+			{
+				resize = Zones[DragIndex].InitialSize;
+			}
 			var resizedZone = Zones[DragIndex];
 			var neighbourZone = Zones[DragIndex + 1];
 			float combinedSize = resizedZone.Size + neighbourZone.Size;
@@ -259,6 +271,11 @@ public class DividerContainer
 			if (sizeDidChange)
 			{
 				OnResized?.Invoke(this);
+			}
+
+			if (resetSize)
+			{
+				DragIndex = -1;
 			}
 		}
 	}
