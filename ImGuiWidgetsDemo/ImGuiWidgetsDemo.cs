@@ -20,9 +20,12 @@ internal class ImGuiWidgetsDemo
 	private readonly PopupInputString popupInputString = new();
 	private readonly PopupFilesystemBrowser popupFilesystemBrowser = new();
 	private readonly PopupMessageOK popupMessageOK = new();
+	private readonly PopupSearchableList<string> popupSearchableList = new();
 	private string OKPopupMessage { get; set; } = string.Empty;
 	private string OKPopupTitle { get; set; } = string.Empty;
 	private DividerContainer DividerContainer { get; } = new("DemoDividerContainer");
+
+	internal static readonly string[] Friends = new[] { "James", "Cameron", "Matt", "Troy", "Hali" };
 
 	private void OnStart()
 	{
@@ -105,12 +108,23 @@ internal class ImGuiWidgetsDemo
 			}, "*.cs");
 		}
 
+		if (ImGui.Button("Choose Best Friend"))
+		{
+			popupSearchableList.Open("Best Friend", "Who is your best friend?", Friends, (string result) =>
+			{
+				ShouldOpenOKPopup = true;
+				OKPopupTitle = "Best Friend Chosen";
+				OKPopupMessage = $"You chose: {result}";
+			});
+		}
+
 		if (ShouldOpenOKPopup)
 		{
 			popupMessageOK.Open(OKPopupTitle, OKPopupMessage);
 			ShouldOpenOKPopup = false;
 		}
 
+		popupSearchableList.ShowIfOpen();
 		popupMessageOK.ShowIfOpen();
 		popupInputString.ShowIfOpen();
 		popupFilesystemBrowser.ShowIfOpen();
