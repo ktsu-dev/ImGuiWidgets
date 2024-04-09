@@ -4,37 +4,47 @@ using ImGuiNET;
 using ktsu.io.ImGuiApp;
 using ktsu.io.ImGuiWidgets;
 
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "<Pending>")]
-[System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "<Pending>")]
 internal class ImGuiWidgetsDemo
 {
-	private static void Main(string[] args)
+	private static void Main()
 	{
 		ImGuiWidgetsDemo imGuiWidgetsDemo = new();
 		ImGuiApp.Start(nameof(ImGuiWidgetsDemo), new ImGuiAppWindowState(), imGuiWidgetsDemo.OnStart, imGuiWidgetsDemo.OnTick, imGuiWidgetsDemo.OnMenu, imGuiWidgetsDemo.OnWindowResized);
 	}
 
 	private static float value = 0.5f;
+	private static string inputString = "String Input Popup";
+
+	private bool ShouldOpenOKPopup { get; set; }
 
 	private readonly PopupInputString popupInputString = new();
 	private readonly PopupFilesystemBrowser popupFilesystemBrowser = new();
 	private readonly PopupMessageOK popupMessageOK = new();
-	private string inputString = "String Input Popup";
-	private bool ShouldOpenOKPopup { get; set; }
 	private string OKPopupMessage { get; set; } = string.Empty;
 	private string OKPopupTitle { get; set; } = string.Empty;
+	private DividerContainer DividerContainer { get; } = new("DemoDividerContainer");
 
 	private void OnStart()
 	{
+		DividerContainer.Add(new("Left", 0.25f, ShowLeftPanel));
+		DividerContainer.Add(new("Right", 0.75f, ShowRightPanel));
 	}
 
-	private void OnTick(float dt)
+	private void OnTick(float dt) => DividerContainer.Tick(dt);
+
+	private void OnMenu()
 	{
-		float ms = dt * 1000;
-		Knob.Draw("DT", ref ms, 0, 10, 150f);
-		ImGui.SameLine();
+	}
+
+	private void OnWindowResized()
+	{
+	}
+
+	private void ShowLeftPanel(float size)
+	{
+		ImGui.Text("Left Divider Zone");
+
 		Knob.Draw("Value", ref value, 0f, 1f, 150f);
-		ImGui.SameLine();
 		ColorIndicator.Show(Color.Red, true);
 		ImGui.SameLine();
 		ColorIndicator.Show(Color.Red, false);
@@ -42,6 +52,31 @@ internal class ImGuiWidgetsDemo
 		ColorIndicator.Show(Color.Green, true);
 		ImGui.SameLine();
 		ColorIndicator.Show(Color.Green, false);
+
+		ImGui.Button("Hello, Tree!");
+		using (var tree = new Tree())
+		{
+			for (int i = 0; i < 5; i++)
+			{
+				using (tree.Child)
+				{
+					ImGui.Button($"Hello, Child {i}!");
+					using (var subtree = new Tree())
+					{
+						using (subtree.Child)
+						{
+							ImGui.Button($"Hello, Grandchild!");
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private void ShowRightPanel(float size)
+	{
+		ImGui.Text("Right Divider Zone");
+
 		if (ImGui.Button(inputString))
 		{
 			popupInputString.Open("Enter a string", "Enter", "Yeet", (string result) =>
@@ -79,32 +114,5 @@ internal class ImGuiWidgetsDemo
 		popupMessageOK.ShowIfOpen();
 		popupInputString.ShowIfOpen();
 		popupFilesystemBrowser.ShowIfOpen();
-
-		ImGui.Button("Hello, Tree!");
-		using (var tree = new Tree())
-		{
-			for (int i = 0; i < 5; i++)
-			{
-				using (tree.Child)
-				{
-					ImGui.Button($"Hello, Child {i}!");
-					using (var subtree = new Tree())
-					{
-						using (subtree.Child)
-						{
-							ImGui.Button($"Hello, Grandchild!");
-						}
-					}
-				}
-			}
-		}
-	}
-
-	private void OnMenu()
-	{
-	}
-
-	private void OnWindowResized()
-	{
 	}
 }
