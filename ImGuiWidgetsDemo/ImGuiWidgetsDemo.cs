@@ -47,7 +47,13 @@ internal class ImGuiWidgetsDemo
 	{
 		ImGui.Text("Left Divider Zone");
 
-		Knob.Draw("Value", ref value, 0f, 1f, 150f);
+		Knob.Draw(nameof(ImGuiKnobVariant.Wiper), ref value, 0, 1, 0, null, ImGuiKnobVariant.Wiper);
+		Knob.Draw(nameof(ImGuiKnobVariant.WiperOnly), ref value, 0, 1, 0, null, ImGuiKnobVariant.WiperOnly);
+		Knob.Draw(nameof(ImGuiKnobVariant.WiperDot), ref value, 0, 1, 0, null, ImGuiKnobVariant.WiperDot);
+		Knob.Draw(nameof(ImGuiKnobVariant.Tick), ref value, 0, 1, 0, null, ImGuiKnobVariant.Tick);
+		Knob.Draw(nameof(ImGuiKnobVariant.Stepped), ref value, 0, 1, 0, null, ImGuiKnobVariant.Stepped);
+		Knob.Draw(nameof(ImGuiKnobVariant.Space), ref value, 0, 1, 0, null, ImGuiKnobVariant.Space);
+
 		ColorIndicator.Show(Color.Red, true);
 		ImGui.SameLine();
 		ColorIndicator.Show(Color.Red, false);

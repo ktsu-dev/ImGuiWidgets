@@ -1,10 +1,10 @@
 namespace ktsu.io.ImGuiWidgets;
 
-using System.Numerics;
-using ImGuiNET;
-using Extensions;
-using System.Drawing;
 using System.Collections.ObjectModel;
+using System.Drawing;
+using System.Numerics;
+using Extensions;
+using ImGuiNET;
 
 /// <summary>
 /// An enum to specify the layout direction of the divider container.
