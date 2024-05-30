@@ -388,6 +388,10 @@ public static class Knob
 				line = lineSpan.ToString();
 				lines.Add(line);
 				textSpan = textSpan[line.Length..];
+				while (textSpan.StartsWith(" "))
+				{
+					textSpan = textSpan[1..];
+				}
 			}
 
 			return lines;

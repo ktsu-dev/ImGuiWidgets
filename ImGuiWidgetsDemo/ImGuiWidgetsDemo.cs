@@ -53,6 +53,7 @@ internal class ImGuiWidgetsDemo
 		Knob.Draw(nameof(ImGuiKnobVariant.Tick), ref value, 0, 1, 0, null, ImGuiKnobVariant.Tick);
 		Knob.Draw(nameof(ImGuiKnobVariant.Stepped), ref value, 0, 1, 0, null, ImGuiKnobVariant.Stepped);
 		Knob.Draw(nameof(ImGuiKnobVariant.Space), ref value, 0, 1, 0, null, ImGuiKnobVariant.Space);
+		Knob.Draw("Throttle Position", ref value, 0, 1, 0, null, ImGuiKnobVariant.Space);
 
 		ColorIndicator.Show(Color.Red, true);
 		ImGui.SameLine();
