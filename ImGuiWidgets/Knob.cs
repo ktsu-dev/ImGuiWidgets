@@ -370,7 +370,18 @@ public static class Knob
 
 			while (textSpan.Length > 0)
 			{
+				while (textSpan.StartsWith(" "))
+				{
+					textSpan = textSpan[1..];
+				}
+
+				while (textSpan.EndsWith(" "))
+				{
+					textSpan = textSpan[..(textSpan.Length - 1)];
+				}
+
 				var lineSpan = textSpan;
+
 				float lineSize = ImGui.CalcTextSize(lineSpan).X;
 
 				while (lineSize > width)
@@ -382,16 +393,21 @@ public static class Knob
 					}
 
 					lineSpan = lineSpan[..lastSpace];
+					while (lineSpan.StartsWith(" "))
+					{
+						lineSpan = lineSpan[1..];
+					}
+
+					while (lineSpan.EndsWith(" "))
+					{
+						lineSpan = lineSpan[..(lineSpan.Length - 1)];
+					}
 					lineSize = ImGui.CalcTextSize(lineSpan).X;
 				}
 
 				line = lineSpan.ToString();
 				lines.Add(line);
 				textSpan = textSpan[line.Length..];
-				while (textSpan.StartsWith(" "))
-				{
-					textSpan = textSpan[1..];
-				}
 			}
 
 			return lines;
@@ -425,7 +441,7 @@ public static class Knob
 
 			if (!flags.HasFlag(ImGuiKnobFlags.TitleBelow))
 			{
-				DrawTitle(flags, width, titleLines);
+				DrawTitle(flags, maxTitleLineWidth, titleLines);
 			}
 
 			// Draw knob
@@ -457,7 +473,7 @@ public static class Knob
 
 			if (flags.HasFlag(ImGuiKnobFlags.TitleBelow))
 			{
-				DrawTitle(flags, width, titleLines);
+				DrawTitle(flags, maxTitleLineWidth, titleLines);
 			}
 
 			ImGui.EndGroup();
