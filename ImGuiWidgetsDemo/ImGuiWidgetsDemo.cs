@@ -47,7 +47,7 @@ internal class ImGuiWidgetsDemo
 	{
 		ImGui.Text("Left Divider Zone");
 
-		Knob.Draw(nameof(ImGuiKnobVariant.Wiper), ref value, 0, 1, 0, null, ImGuiKnobVariant.Wiper);
+		Knob.Draw(nameof(ImGuiKnobVariant.Wiper) + "Test Pascal Case", ref value, 0, 1, 0, null, ImGuiKnobVariant.Wiper);
 		Knob.Draw(nameof(ImGuiKnobVariant.WiperOnly), ref value, 0, 1, 0, null, ImGuiKnobVariant.WiperOnly);
 		Knob.Draw(nameof(ImGuiKnobVariant.WiperDot), ref value, 0, 1, 0, null, ImGuiKnobVariant.WiperDot);
 		Knob.Draw(nameof(ImGuiKnobVariant.Tick), ref value, 0, 1, 0, null, ImGuiKnobVariant.Tick);

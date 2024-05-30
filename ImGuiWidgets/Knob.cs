@@ -16,6 +16,7 @@ public enum ImGuiKnobFlags
 	NoInput = 1 << 1,
 	ValueTooltip = 1 << 2,
 	DragHorizontal = 1 << 3,
+	TitleBelow = 1 << 4,
 };
 
 [Flags]
@@ -354,11 +355,62 @@ public static class Knob
 					bezierCount);
 		}
 
+		private static List<string> WrapStringToWidth(string text, float width)
+		{
+			var lines = new List<string>();
+			string line;
+			var textSpan = text.AsSpan();
+			float textWidth = ImGui.CalcTextSize(text).X;
+
+			if (textWidth <= width)
+			{
+				lines.Add(text);
+				return lines;
+			}
+
+			while (textSpan.Length > 0)
+			{
+				var lineSpan = textSpan;
+				float lineSize = ImGui.CalcTextSize(lineSpan).X;
+
+				while (lineSize > width)
+				{
+					int lastSpace = lineSpan.LastIndexOf(' ');
+					if (lastSpace == -1)
+					{
+						break;
+					}
+
+					lineSpan = lineSpan[..lastSpace];
+					lineSize = ImGui.CalcTextSize(lineSpan).X;
+				}
+
+				line = lineSpan.ToString();
+				lines.Add(line);
+				textSpan = textSpan[line.Length..];
+			}
+
+			return lines;
+		}
+
 		public static KnobInternal<TDataType> KnobWithDrag(string label, ImGuiDataType dataType, ref TDataType value, TDataType vMin, TDataType vMax, float speed, string format, float size, ImGuiKnobFlags flags)
 		{
 			speed = speed == 0 ? float.CreateSaturating(vMax - vMin) / 250.0f : speed;
 			ImGui.PushID(label);
 			float width = size == 0 ? ImGui.GetTextLineHeight() * 4.0f : size * ImGui.GetIO().FontGlobalScale;
+
+			var titleLines = WrapStringToWidth(label, width);
+
+			float maxTitleLineWidth = 0.0f;
+
+			if (!flags.HasFlag(ImGuiKnobFlags.NoTitle))
+			{
+				maxTitleLineWidth = titleLines.Max(line => ImGui.CalcTextSize(line).X);
+			}
+
+			maxTitleLineWidth = Math.Max(maxTitleLineWidth, width);
+			float knobPadding = (maxTitleLineWidth - width) * 0.5f;
+
 			ImGui.PushItemWidth(width);
 
 			ImGui.BeginGroup();
@@ -367,18 +419,13 @@ public static class Knob
 			// This is probably not the best solution, but seems to work for now
 			//ImGui.GetCurrentWindow().DC.CurrLineTextBaseOffset = 0;
 
-			// Draw title
-			if (!flags.HasFlag(ImGuiKnobFlags.NoTitle))
+			if (!flags.HasFlag(ImGuiKnobFlags.TitleBelow))
 			{
-				var title_size = ImGui.CalcTextSize(label, false, width);
-
-				// Center title
-				ImGui.SetCursorPosX(ImGui.GetCursorPosX() + ((width - title_size[0]) * 0.5f));
-
-				ImGui.TextUnformatted(label);
+				DrawTitle(flags, width, titleLines);
 			}
 
 			// Draw knob
+			ImGui.SetCursorPosX(ImGui.GetCursorPosX() + knobPadding);
 			var k = new KnobInternal<TDataType>(label, dataType, ref value, vMin, vMax, speed, width * 0.5f, format, flags);
 
 			// Draw tooltip
@@ -392,6 +439,7 @@ public static class Knob
 			// Draw input
 			if (!flags.HasFlag(ImGuiKnobFlags.NoInput))
 			{
+				ImGui.SetCursorPosX(ImGui.GetCursorPosX() + knobPadding);
 				unsafe
 				{
 					fixed (TDataType* pValue = &value)
@@ -403,11 +451,29 @@ public static class Knob
 				}
 			}
 
+			if (flags.HasFlag(ImGuiKnobFlags.TitleBelow))
+			{
+				DrawTitle(flags, width, titleLines);
+			}
+
 			ImGui.EndGroup();
 			ImGui.PopItemWidth();
 			ImGui.PopID();
 
 			return k;
+
+			static void DrawTitle(ImGuiKnobFlags flags, float width, List<string> titleLines)
+			{
+				if (!flags.HasFlag(ImGuiKnobFlags.NoTitle))
+				{
+					foreach (string line in titleLines)
+					{
+						var lineWidth = ImGui.CalcTextSize(line, false, width);
+						ImGui.SetCursorPosX(ImGui.GetCursorPosX() + ((width - lineWidth[0]) * 0.5f));
+						ImGui.TextUnformatted(line);
+					}
+				}
+			}
 		}
 
 		public static bool BaseKnob(string label, ImGuiDataType dataType, ref TDataType value, TDataType vMin, TDataType vMax, float speed, string format, ImGuiKnobVariant variant, float size, ImGuiKnobFlags flags, int steps = 10)
