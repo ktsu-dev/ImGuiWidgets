@@ -25,7 +25,7 @@ internal class ImGuiWidgetsDemo
 	private string OKPopupTitle { get; set; } = string.Empty;
 	private DividerContainer DividerContainer { get; } = new("DemoDividerContainer");
 
-	internal static readonly string[] Friends = new[] { "James", "Cameron", "Matt", "Troy", "Hali" };
+	internal static readonly string[] Friends = ["James", "Cameron", "Matt", "Troy", "Hali"];
 
 	private void OnStart()
 	{
@@ -37,10 +37,12 @@ internal class ImGuiWidgetsDemo
 
 	private void OnMenu()
 	{
+		// Method intentionally left empty.
 	}
 
 	private void OnWindowResized()
 	{
+		// Method intentionally left empty.
 	}
 
 	private void ShowLeftPanel(float size)
