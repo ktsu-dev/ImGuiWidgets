@@ -293,7 +293,7 @@ public static class Knob
 			return fmtSpan;
 		}
 
-		private static readonly List<float> MinSteps = new() { 1.0f, 0.1f, 0.01f, 0.001f, 0.0001f, 0.00001f, 0.000001f, 0.0000001f, 0.00000001f, 0.000000001f };
+		private static readonly List<float> MinSteps = [1.0f, 0.1f, 0.01f, 0.001f, 0.0001f, 0.00001f, 0.000001f, 0.0000001f, 0.00000001f, 0.000000001f];
 		private static float GetMinimumStepAtDecimalPrecision(int decimal_precision)
 		{
 			return decimal_precision < 0

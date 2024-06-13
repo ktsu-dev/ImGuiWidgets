@@ -26,16 +26,21 @@ public enum DividerLayout
 /// Useful for creating resizable layouts.
 /// Containers can be nested to create complex layouts.
 /// </summary>
-public class DividerContainer
+/// <remarks>
+/// Create a new divider container with a callback for when the container is resized and a specified layout direction.
+/// </remarks>
+/// <param name="id">The ID of the container.</param>
+/// <param name="onResized">A callback for when the container is resized.</param>
+/// <param name="layout">The layout direction of the container.</param>
+/// <param name="zones">The zones to add to the container.</param>
+public class DividerContainer(string id, Action<DividerContainer>? onResized, DividerLayout layout, IEnumerable<DividerZone> zones)
 {
 	/// <summary>
 	/// An ID for the container.
 	/// </summary>
-	public string Id { get; init; }
-	private DividerLayout Layout { get; }
+	public string Id { get; init; } = id;
 	private int DragIndex { get; set; } = -1;
-	private List<DividerZone> Zones { get; init; } = new();
-	private Action<DividerContainer>? OnResized { get; set; }
+	private List<DividerZone> Zones { get; init; } = zones.ToList();
 
 	/// <summary>
 	/// Create a new divider container with a callback for when the container is resized and a specified layout direction.
@@ -44,23 +49,8 @@ public class DividerContainer
 	/// <param name="onResized">A callback for when the container is resized.</param>
 	/// <param name="layout">The layout direction of the container.</param>
 	public DividerContainer(string id, Action<DividerContainer>? onResized, DividerLayout layout)
-		: this(id, onResized, layout, Array.Empty<DividerZone>())
+		: this(id, onResized, layout, [])
 	{
-	}
-
-	/// <summary>
-	/// Create a new divider container with a callback for when the container is resized and a specified layout direction.
-	/// </summary>
-	/// <param name="id">The ID of the container.</param>
-	/// <param name="onResized">A callback for when the container is resized.</param>
-	/// <param name="layout">The layout direction of the container.</param>
-	/// <param name="zones">The zones to add to the container.</param>
-	public DividerContainer(string id, Action<DividerContainer>? onResized, DividerLayout layout, IEnumerable<DividerZone> zones)
-	{
-		Id = id;
-		Layout = layout;
-		OnResized = onResized;
-		Zones = zones.ToList();
 	}
 
 	/// <summary>
@@ -104,14 +94,14 @@ public class DividerContainer
 		var drawList = ImGui.GetWindowDrawList();
 		var containerSize = ImGui.GetWindowSize() - (windowPadding * 2.0f);
 
-		var layoutMask = Layout switch
+		var layoutMask = layout switch
 		{
 			DividerLayout.Columns => new Vector2(1, 0),
 			DividerLayout.Rows => new Vector2(0, 1),
 			_ => throw new NotImplementedException(),
 		};
 
-		var layoutMaskInverse = Layout switch
+		var layoutMaskInverse = layout switch
 		{
 			DividerLayout.Columns => new Vector2(0, 1),
 			DividerLayout.Rows => new Vector2(1, 0),
@@ -221,7 +211,7 @@ public class DividerContainer
 							mousePosLocal += windowPadding * 0.5f * layoutMask;
 						}
 
-						float requestedSize = Layout switch
+						float requestedSize = layout switch
 						{
 							DividerLayout.Columns => mousePosLocal.X / containerSize.X,
 							DividerLayout.Rows => mousePosLocal.Y / containerSize.Y,
@@ -241,7 +231,7 @@ public class DividerContainer
 
 				if (handleHovered || DragIndex == i)
 				{
-					ImGui.SetMouseCursor(Layout switch
+					ImGui.SetMouseCursor(layout switch
 					{
 						DividerLayout.Columns => ImGuiMouseCursor.ResizeEW,
 						DividerLayout.Rows => ImGuiMouseCursor.ResizeNS,
@@ -270,7 +260,7 @@ public class DividerContainer
 			neighbourZone.Size = combinedSize - resize;
 			if (sizeDidChange)
 			{
-				OnResized?.Invoke(this);
+				onResized?.Invoke(this);
 			}
 
 			if (resetSize)

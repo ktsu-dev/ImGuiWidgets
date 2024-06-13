@@ -18,7 +18,7 @@ public class PopupSearchableList<TItem> : PopupModal where TItem : class
 	private Action<TItem> OnConfirm { get; set; } = null!;
 	private Func<TItem, string>? GetText { get; set; }
 	private string Label { get; set; } = string.Empty;
-	private IEnumerable<TItem> Items { get; set; } = Enumerable.Empty<TItem>();
+	private IEnumerable<TItem> Items { get; set; } = [];
 
 	/// <summary>
 	/// Open the popup and set the title, label, and default value.

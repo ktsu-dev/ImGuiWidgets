@@ -36,9 +36,9 @@ public class PopupFilesystemBrowser : PopupModal
 	private Action<AbsoluteDirectoryPath> OnChooseDirectory { get; set; } = (d) => { };
 	[JsonInclude]
 	private AbsoluteDirectoryPath CurrentDirectory { get; set; } = (AbsoluteDirectoryPath)Environment.CurrentDirectory;
-	private Collection<AnyAbsolutePath> CurrentContents { get; set; } = new();
+	private Collection<AnyAbsolutePath> CurrentContents { get; set; } = [];
 	private AnyAbsolutePath ChosenItem { get; set; } = new();
-	private Collection<string> Drives { get; set; } = new();
+	private Collection<string> Drives { get; set; } = [];
 	private string Glob { get; set; } = "*";
 	private Matcher Matcher { get; set; } = new();
 	private FileName FileName { get; set; } = new();

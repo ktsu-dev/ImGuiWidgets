@@ -12,7 +12,7 @@ using ImGuiNET;
 public class PopupPrompt : PopupModal
 {
 	private string Label { get; set; } = string.Empty;
-	private Dictionary<string, Action?> Buttons { get; set; } = new();
+	private Dictionary<string, Action?> Buttons { get; set; } = [];
 
 	/// <summary>
 	/// Open the popup and set the title, label, and button definitions.

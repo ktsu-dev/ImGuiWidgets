@@ -44,10 +44,8 @@ public class Tree : ScopedAction
 
 	public TreeChild Child => new(this);
 
-	public class TreeChild : ScopedAction
-	{
-		public TreeChild(Tree parent) : base(
-			onOpen: () =>
+	public class TreeChild(Tree parent) : ScopedAction(
+		onOpen: () =>
 			{
 				var cursor = ImGui.GetCursorScreenPos();
 				parent.CursorEnd = cursor;
@@ -59,8 +57,7 @@ public class Tree : ScopedAction
 
 				ImGui.GetWindowDrawList().AddLine(a, b, ImGui.GetColorU32(Color.Gray.Value), LineThickness);
 			},
-			onClose: null)
-		{
-		}
+		onClose: null)
+	{
 	}
 }

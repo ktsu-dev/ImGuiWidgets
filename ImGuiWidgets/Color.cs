@@ -52,11 +52,8 @@ public static class Color
 	public static ImColor Transparent => FromRGBA(0, 0, 0, 0);
 }
 
-public class ScopedColor : ScopedAction
+public class ScopedColor(ImGuiCol target, ImColor color) : ScopedAction(
+	onOpen: () => ImGui.PushStyleColor(target, color.Value),
+	onClose: ImGui.PopStyleColor)
 {
-	public ScopedColor(ImGuiCol target, ImColor color) : base(
-		onOpen: () => ImGui.PushStyleColor(target, color.Value),
-		onClose: ImGui.PopStyleColor)
-	{
-	}
 }
