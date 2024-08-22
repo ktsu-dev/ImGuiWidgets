@@ -10,7 +10,7 @@
     <PackageReference Include="ktsu.io.CaseConverter" Version="1.0.1" />
     <PackageReference Include="ktsu.io.FuzzySearch" Version="1.0.0-alpha.1" />
     <PackageReference Include="ktsu.io.ScopedAction" Version="1.0.0-alpha.4" />
-    <PackageReference Include="ktsu.io.StrongPaths" Version="1.0.8" />
+    <PackageReference Include="ktsu.io.StrongPaths" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="8.0.0" />
   </ItemGroup>
 
