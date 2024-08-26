@@ -16,4 +16,16 @@ public static class Image
 		Alignment.Center(size.X);
 		return Show(textureId, size);
 	}
+
+	public static bool CenteredWithin(uint textureId, Vector2 size, float width)
+	{
+		if (width < size.X)
+		{
+			size.Y *= width / size.X;
+			size.X = width;
+		}
+
+		Alignment.CenterWithin(size.X, width);
+		return Show(textureId, size);
+	}
 }

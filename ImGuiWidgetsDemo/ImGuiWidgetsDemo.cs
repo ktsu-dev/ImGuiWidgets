@@ -1,10 +1,12 @@
 namespace ktsu.io.ImGuiWidgetsDemo;
 
+using System.Numerics;
 using ImGuiNET;
 using ktsu.io.ImGuiApp;
 using ktsu.io.ImGuiStyler;
 using ktsu.io.ImGuiWidgets;
 using ktsu.io.StrongPaths;
+using Text = ImGuiWidgets.Text;
 
 internal class ImGuiWidgetsDemo
 {
@@ -139,10 +141,16 @@ internal class ImGuiWidgetsDemo
 			OKPopupMessage = $"You chose the image";
 		}
 
-		if (Tile.Show("Tile1", 72, () =>
+		float iconWidth = 64;
+		float tileWidth = iconWidth + 48;
+		float padding = 8;
+		var iconSize = new Vector2(iconWidth, iconWidth);
+
+
+		if (Tile.Show("Tile1", tileWidth, padding, () =>
 		{
-			Image.Centered(ktsuTexture.TextureId, new(64, 64));
-			Text.Centered("Click me");
+			Image.CenteredWithin(ktsuTexture.TextureId, iconSize, tileWidth);
+			Text.CenteredWithin("Click me", tileWidth, clip: true);
 		}))
 		{
 			ShouldOpenOKPopup = true;
@@ -150,11 +158,11 @@ internal class ImGuiWidgetsDemo
 			OKPopupMessage = $"Yippee!";
 		}
 
-		ImGui.SameLine();
-		_ = Tile.Show("Tile2", 72, () =>
+		ImGui.SameLine(0, 0);
+		_ = Tile.Show("Tile2", tileWidth, padding, () =>
 		{
-			Image.Centered(ktsuTexture.TextureId, new(64, 64));
-			Text.Centered("Double Click Me");
+			Image.CenteredWithin(ktsuTexture.TextureId, iconSize, tileWidth);
+			Text.CenteredWithin("Double Click Me", tileWidth, clip: true);
 		},
 		new()
 		{
@@ -166,11 +174,11 @@ internal class ImGuiWidgetsDemo
 			},
 		});
 
-		ImGui.SameLine();
-		_ = Tile.Show("Tile3", 72, () =>
+		ImGui.SameLine(0, 0);
+		_ = Tile.Show("Tile3", tileWidth, padding, () =>
 		{
-			Image.Centered(ktsuTexture.TextureId, new(64, 64));
-			Text.Centered("Right Click Me");
+			Image.CenteredWithin(ktsuTexture.TextureId, iconSize, tileWidth);
+			Text.CenteredWithin("Right Click Me", tileWidth, clip: true);
 		},
 		new()
 		{

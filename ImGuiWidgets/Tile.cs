@@ -13,57 +13,64 @@ public static class Tile
 		public Action? OnContextMenu { get; init; }
 	}
 
-	public static bool Show(string id, float width, Action? onShow, ResponseDelegates responseDelegates)
+	public static bool Show(string id, float width, float padding, Action? onShow, ResponseDelegates responseDelegates)
 	{
 		bool wasClicked = false;
 
-		if (ImGui.BeginChild(id, new(width, 0), false, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
+		bool isHovered = false;
+		var cursorScreenStartPos = ImGui.GetCursorScreenPos();
+
+		ImGui.BeginGroup();
+		var cursorStartPos = ImGui.GetCursorPos();
+		ImGui.Dummy(new Vector2(0, padding));
+		ImGui.Indent(padding);
+		onShow?.Invoke();
+		ImGui.Unindent(padding);
+		var cursorEndPos = ImGui.GetCursorPos() + new Vector2(width + (padding * 2), padding);
+		ImGui.EndGroup();
+
+		var contentSize = cursorEndPos - cursorStartPos;
+
+		ImGui.SetCursorScreenPos(cursorScreenStartPos);
+		ImGui.Dummy(contentSize);
+
+		isHovered = ImGui.IsItemHovered();
+
+		if (isHovered)
 		{
-			var cursorPos = ImGui.GetCursorPos();
-			var cursorScreenPos = ImGui.GetCursorScreenPos();
-
-			onShow?.Invoke();
-
-			var endCursorPos = ImGui.GetCursorPos();
-			float height = endCursorPos.Y - cursorPos.Y;
-			var frameSize = new Vector2(width, height);
-			ImGui.SetCursorPos(cursorPos + Vector2.Zero);
-			ImGui.Dummy(frameSize);
-			bool isHovered = ImGui.IsItemHovered();
-
-			if (isHovered)
+			if (ImGui.IsMouseClicked(ImGuiMouseButton.Left))
 			{
-				uint color = ImGui.GetColorU32(ImGui.GetStyle().Colors[(int)ImGuiCol.Border]);
-				ImGui.GetWindowDrawList().AddRect(cursorScreenPos, cursorScreenPos + frameSize, color);
-				if (ImGui.IsMouseClicked(ImGuiMouseButton.Left))
-				{
-					responseDelegates.OnClick?.Invoke();
-					wasClicked = true;
-				}
-				if (ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
-				{
-					responseDelegates.OnDoubleClick?.Invoke();
-				}
-				if (ImGui.IsMouseClicked(ImGuiMouseButton.Right))
-				{
-					responseDelegates.OnRightClick?.Invoke();
-				}
-				if (ImGui.IsMouseReleased(ImGuiMouseButton.Right))
-				{
-					ImGui.OpenPopup($"{id}_Context");
-				}
+				responseDelegates.OnClick?.Invoke();
+				wasClicked = true;
 			}
-
-			if (ImGui.BeginPopup($"{id}_Context"))
+			if (ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
 			{
-				responseDelegates.OnContextMenu?.Invoke();
-				ImGui.EndPopup();
+				responseDelegates.OnDoubleClick?.Invoke();
+			}
+			if (ImGui.IsMouseClicked(ImGuiMouseButton.Right))
+			{
+				responseDelegates.OnRightClick?.Invoke();
+			}
+			if (ImGui.IsMouseReleased(ImGuiMouseButton.Right) && responseDelegates.OnContextMenu is not null)
+			{
+				ImGui.OpenPopup($"{id}_Context");
 			}
 		}
-		ImGui.EndChild();
+
+		if (isHovered)
+		{
+			uint color = ImGui.GetColorU32(ImGui.GetStyle().Colors[(int)ImGuiCol.Border]);
+			ImGui.GetWindowDrawList().AddRect(cursorScreenStartPos, cursorScreenStartPos + contentSize, color);
+		}
+
+		if (ImGui.BeginPopup($"{id}_Context"))
+		{
+			responseDelegates.OnContextMenu?.Invoke();
+			ImGui.EndPopup();
+		}
 
 		return wasClicked;
 	}
 
-	public static bool Show(string id, float width, Action? onShow) => Show(id, width, onShow, new());
+	public static bool Show(string id, float width, float padding, Action? onShow) => Show(id, width, padding, onShow, new());
 }
