@@ -4,11 +4,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ktsu.io.ImGuiApp" Version="1.0.0-alpha.16" />
+    <PackageReference Include="ktsu.io.ImGuiApp" Version="1.0.0-alpha.17" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ImGuiWidgets\ImGuiWidgets.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="ktsu.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

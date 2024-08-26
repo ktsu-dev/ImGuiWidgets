@@ -3,6 +3,7 @@ namespace ktsu.io.ImGuiWidgetsDemo;
 using ImGuiNET;
 using ktsu.io.ImGuiApp;
 using ktsu.io.ImGuiWidgets;
+using ktsu.io.StrongPaths;
 
 internal class ImGuiWidgetsDemo
 {
@@ -125,6 +126,41 @@ internal class ImGuiWidgetsDemo
 				OKPopupTitle = "Best Friend Chosen";
 				OKPopupMessage = $"You chose: {result}";
 			});
+		}
+
+		var ktsuIconPath = (AbsoluteDirectoryPath)Environment.CurrentDirectory / (FileName)"ktsu.png";
+		var ktsuTexture = ImGuiApp.GetOrLoadTexture(ktsuIconPath);
+
+		if (Image.Show(ktsuTexture.TextureId, new(128, 128)))
+		{
+			ShouldOpenOKPopup = true;
+			OKPopupTitle = "Click";
+			OKPopupMessage = $"You chose the image";
+		}
+
+		if (IconTile.Show(new()
+		{
+			Label = "Click me",
+			TextureId = ktsuTexture.TextureId,
+		}))
+		{
+			ShouldOpenOKPopup = true;
+			OKPopupTitle = "Click";
+			OKPopupMessage = $"Yippee!";
+		}
+
+		ImGui.SameLine();
+		IconTile.Show(new()
+		{
+			Label = "Double click me",
+			TextureId = ktsuTexture.TextureId,
+		});
+
+		if (ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left) && ImGui.IsItemHovered())
+		{
+			ShouldOpenOKPopup = true;
+			OKPopupTitle = "Double Click";
+			OKPopupMessage = $"Yippee!";
 		}
 
 		if (ShouldOpenOKPopup)
