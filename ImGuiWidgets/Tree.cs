@@ -4,6 +4,7 @@ namespace ktsu.io.ImGuiWidgets;
 
 using System.Numerics;
 using ImGuiNET;
+using ktsu.io.ImGuiStyler;
 using ktsu.io.ScopedAction;
 
 public class Tree : ScopedAction

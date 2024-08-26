@@ -2,6 +2,7 @@ namespace ktsu.io.ImGuiWidgetsDemo;
 
 using ImGuiNET;
 using ktsu.io.ImGuiApp;
+using ktsu.io.ImGuiStyler;
 using ktsu.io.ImGuiWidgets;
 using ktsu.io.StrongPaths;
 
@@ -138,10 +139,10 @@ internal class ImGuiWidgetsDemo
 			OKPopupMessage = $"You chose the image";
 		}
 
-		if (IconTile.Show(new()
+		if (Tile.Show("Tile1", 72, () =>
 		{
-			Label = "Click me",
-			TextureId = ktsuTexture.TextureId,
+			Image.Centered(ktsuTexture.TextureId, new(64, 64));
+			Text.Centered("Click me");
 		}))
 		{
 			ShouldOpenOKPopup = true;
@@ -150,18 +151,36 @@ internal class ImGuiWidgetsDemo
 		}
 
 		ImGui.SameLine();
-		IconTile.Show(new()
+		_ = Tile.Show("Tile2", 72, () =>
 		{
-			Label = "Double click me",
-			TextureId = ktsuTexture.TextureId,
+			Image.Centered(ktsuTexture.TextureId, new(64, 64));
+			Text.Centered("Double Click Me");
+		},
+		new()
+		{
+			OnDoubleClick = () =>
+			{
+				ShouldOpenOKPopup = true;
+				OKPopupTitle = "Double Click";
+				OKPopupMessage = $"Yippee!";
+			},
 		});
 
-		if (ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left) && ImGui.IsItemHovered())
+		ImGui.SameLine();
+		_ = Tile.Show("Tile3", 72, () =>
 		{
-			ShouldOpenOKPopup = true;
-			OKPopupTitle = "Double Click";
-			OKPopupMessage = $"Yippee!";
-		}
+			Image.Centered(ktsuTexture.TextureId, new(64, 64));
+			Text.Centered("Right Click Me");
+		},
+		new()
+		{
+			OnContextMenu = () =>
+			{
+				ImGui.MenuItem("Context Menu Item 1");
+				ImGui.MenuItem("Context Menu Item 2");
+				ImGui.MenuItem("Context Menu Item 3");
+			},
+		});
 
 		if (ShouldOpenOKPopup)
 		{
