@@ -3,46 +3,56 @@ namespace ktsu.io.ImGuiWidgets;
 using ImGuiNET;
 using ktsu.io.ImGuiStyler;
 
-public static class Text
+public static partial class ImGuiWidgets
 {
-	public static void Centered(string text)
-	{
-		float textWidth = ImGui.CalcTextSize(text).X;
-		Alignment.Center(textWidth);
-		ImGui.TextUnformatted(text);
-	}
+	public static void Text(string text) => TextImpl.Show(text);
+	public static void TextCentered(string text) => TextImpl.Centered(text);
+	public static void TextCenteredWithin(string text, float width) => TextImpl.CenteredWithin(text, new(width));
+	public static void TextCenteredWithin(string text, float width, bool clip) => TextImpl.CenteredWithin(text, new(width), clip);
 
-	public static void CenteredWithin(string text, float width) => CenteredWithin(text, width, false);
-
-	public static void CenteredWithin(string text, float width, bool clip)
+	internal static class TextImpl
 	{
-		if (clip)
+		public static void Show(string text) => ImGui.TextUnformatted(text);
+
+		public static void Centered(string text)
 		{
-			text = Clip(text, width);
+			float textWidth = ImGui.CalcTextSize(text).X;
+			Alignment.Center(textWidth);
+			ImGui.TextUnformatted(text);
 		}
 
-		float textWidth = ImGui.CalcTextSize(text).X;
-		Alignment.CenterWithin(textWidth, width);
-		ImGui.TextUnformatted(text);
-	}
+		public static void CenteredWithin(string text, Scaled<float> width) => CenteredWithin(text, width, false);
 
-	public static string Clip(string text, float width)
-	{
-		float textWidth = ImGui.CalcTextSize(text).X;
-		if (textWidth <= width)
+		public static void CenteredWithin(string text, Scaled<float> width, bool clip)
 		{
-			return text;
+			if (clip)
+			{
+				text = Clip(text, width.ScaledValue);
+			}
+
+			float textWidth = ImGui.CalcTextSize(text).X;
+			Alignment.CenterWithin(textWidth, width.ScaledValue);
+			ImGui.TextUnformatted(text);
 		}
 
-		string ellipsis = "...";
-		float ellipsisWidth = ImGui.CalcTextSize(ellipsis).X;
-
-		while (textWidth + ellipsisWidth > width && text.Length > 0)
+		public static string Clip(string text, float width)
 		{
-			text = text[..^1];
-			textWidth = ImGui.CalcTextSize(text).X;
-		}
+			float textWidth = ImGui.CalcTextSize(text).X;
+			if (textWidth <= width)
+			{
+				return text;
+			}
 
-		return text + ellipsis;
+			string ellipsis = "...";
+			float ellipsisWidth = ImGui.CalcTextSize(ellipsis).X;
+
+			while (textWidth + ellipsisWidth > width && text.Length > 0)
+			{
+				text = text[..^1];
+				textWidth = ImGui.CalcTextSize(text).X;
+			}
+
+			return text + ellipsis;
+		}
 	}
 }
