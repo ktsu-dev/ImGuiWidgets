@@ -36,12 +36,7 @@ internal class ImGuiWidgetsDemo
 		DividerContainer.Add(new("Right", 0.75f, ShowRightPanel));
 	}
 
-	private void OnTick(float dt)
-	{
-		ImGuiWidgets.PushScale(ImGuiApp.ScaleFactor);
-		DividerContainer.Tick(dt);
-		ImGuiWidgets.PopScale();
-	}
+	private void OnTick(float dt) => DividerContainer.Tick(dt);
 
 	private void OnMenu()
 	{
@@ -145,16 +140,20 @@ internal class ImGuiWidgetsDemo
 			OKPopupMessage = $"You chose the image";
 		}
 
-		float iconWidth = 64;
-		float tileWidth = iconWidth + 48;
-		float padding = 8;
-		var iconSize = new Vector2(iconWidth, iconWidth);
+		float tileWidthEms = 10;
+		float iconWidthEms = 7.5f;
+		float tilePaddingEms = 0.5f;
+		float tileWidthPx = ImGuiApp.EmsToPx(tileWidthEms);
+		float iconWidthPx = ImGuiApp.EmsToPx(iconWidthEms);
+		float tilePaddingPx = ImGuiApp.EmsToPx(tilePaddingEms);
+
+		var iconSize = new Vector2(iconWidthPx, iconWidthPx);
 
 
-		if (ImGuiWidgets.Tile("Tile1", tileWidth, padding, () =>
+		if (ImGuiWidgets.Tile("Tile1", tileWidthPx, tilePaddingPx, () =>
 		{
-			ImGuiWidgets.ImageCenteredWithin(ktsuTexture.TextureId, iconSize, tileWidth);
-			ImGuiWidgets.TextCenteredWithin("Click me", tileWidth, clip: true);
+			ImGuiWidgets.ImageCenteredWithin(ktsuTexture.TextureId, iconSize, tileWidthPx);
+			ImGuiWidgets.TextCenteredWithin("Click me", tileWidthPx, clip: true);
 		}))
 		{
 			ShouldOpenOKPopup = true;
@@ -163,10 +162,10 @@ internal class ImGuiWidgetsDemo
 		}
 
 		ImGui.SameLine(0, 0);
-		_ = ImGuiWidgets.Tile("Tile2", tileWidth, padding, () =>
+		_ = ImGuiWidgets.Tile("Tile2", tileWidthPx, tilePaddingPx, () =>
 		{
-			ImGuiWidgets.ImageCenteredWithin(ktsuTexture.TextureId, iconSize, tileWidth);
-			ImGuiWidgets.TextCenteredWithin("Double Click Me", tileWidth, clip: true);
+			ImGuiWidgets.ImageCenteredWithin(ktsuTexture.TextureId, iconSize, tileWidthPx);
+			ImGuiWidgets.TextCenteredWithin("Double Click Me", tileWidthPx, clip: true);
 		},
 		new()
 		{
@@ -179,10 +178,10 @@ internal class ImGuiWidgetsDemo
 		});
 
 		ImGui.SameLine(0, 0);
-		_ = ImGuiWidgets.Tile("Tile3", tileWidth, padding, () =>
+		_ = ImGuiWidgets.Tile("Tile3", tileWidthPx, tilePaddingPx, () =>
 		{
-			ImGuiWidgets.ImageCenteredWithin(ktsuTexture.TextureId, iconSize, tileWidth);
-			ImGuiWidgets.TextCenteredWithin("Right Click Me", tileWidth, clip: true);
+			ImGuiWidgets.ImageCenteredWithin(ktsuTexture.TextureId, iconSize, tileWidthPx);
+			ImGuiWidgets.TextCenteredWithin("Right Click Me", tileWidthPx, clip: true);
 		},
 		new()
 		{

@@ -34,10 +34,10 @@ public enum ImGuiKnobVariant
 public static partial class ImGuiWidgets
 {
 	public static bool Knob(string label, ref float value, float vMin, float vMax, float speed = 0, string? format = null, ImGuiKnobVariant variant = ImGuiKnobVariant.Tick, float size = 0, ImGuiKnobFlags flags = ImGuiKnobFlags.None, int steps = 10) =>
-		KnobImpl.Draw(label, ref value, vMin, vMax, speed, format, variant, new(size), flags, steps);
+		KnobImpl.Draw(label, ref value, vMin, vMax, speed, format, variant, size, flags, steps);
 
 	public static bool Knob(string label, ref int value, int vMin, int vMax, float speed = 0, string? format = null, ImGuiKnobVariant variant = ImGuiKnobVariant.Tick, float size = 0, ImGuiKnobFlags flags = ImGuiKnobFlags.None, int steps = 10) =>
-		KnobImpl.Draw(label, ref value, vMin, vMax, speed, format, variant, new(size), flags, steps);
+		KnobImpl.Draw(label, ref value, vMin, vMax, speed, format, variant, size, flags, steps);
 
 	/// <summary>
 	/// Knob widget for ImGui.NET
@@ -60,13 +60,13 @@ public static partial class ImGuiWidgets
 			}
 		}
 
-		public static bool Draw(string label, ref float value, float vMin, float vMax, float speed = 0, string? format = null, ImGuiKnobVariant variant = ImGuiKnobVariant.Tick, Scaled<float>? size = null, ImGuiKnobFlags flags = ImGuiKnobFlags.None, int steps = 10)
+		public static bool Draw(string label, ref float value, float vMin, float vMax, float speed = 0, string? format = null, ImGuiKnobVariant variant = ImGuiKnobVariant.Tick, float? size = null, ImGuiKnobFlags flags = ImGuiKnobFlags.None, int steps = 10)
 		{
 			format ??= "%.3f";
 			return KnobInternal<float>.BaseKnob(label, ImGuiDataType.Float, ref value, vMin, vMax, speed, format, variant, size, flags, steps);
 		}
 
-		public static bool Draw(string label, ref int value, int vMin, int vMax, float speed = 0, string? format = null, ImGuiKnobVariant variant = ImGuiKnobVariant.Tick, Scaled<float>? size = null, ImGuiKnobFlags flags = ImGuiKnobFlags.None, int steps = 10)
+		public static bool Draw(string label, ref int value, int vMin, int vMax, float speed = 0, string? format = null, ImGuiKnobVariant variant = ImGuiKnobVariant.Tick, float? size = null, ImGuiKnobFlags flags = ImGuiKnobFlags.None, int steps = 10)
 		{
 			format ??= "%if";
 			return KnobInternal<int>.BaseKnob(label, ImGuiDataType.S32, ref value, vMin, vMax, speed, format, variant, size, flags, steps);
@@ -421,12 +421,12 @@ public static partial class ImGuiWidgets
 				return lines;
 			}
 
-			public static KnobInternal<TDataType> KnobWithDrag(string label, ImGuiDataType dataType, ref TDataType value, TDataType vMin, TDataType vMax, float speed, string format, Scaled<float>? size, ImGuiKnobFlags flags)
+			public static KnobInternal<TDataType> KnobWithDrag(string label, ImGuiDataType dataType, ref TDataType value, TDataType vMin, TDataType vMax, float speed, string format, float? size, ImGuiKnobFlags flags)
 			{
 				speed = speed == 0 ? float.CreateSaturating(vMax - vMin) / 250.0f : speed;
 				ImGui.PushID(label);
 				float lineBasedHeight = ImGui.GetTextLineHeight() * 4.0f;
-				float width = size?.ScaledValue ?? lineBasedHeight;
+				float width = size ?? lineBasedHeight;
 				if (width == 0)
 				{
 					width = lineBasedHeight;
@@ -509,7 +509,7 @@ public static partial class ImGuiWidgets
 				}
 			}
 
-			public static bool BaseKnob(string label, ImGuiDataType dataType, ref TDataType value, TDataType vMin, TDataType vMax, float speed, string format, ImGuiKnobVariant variant, Scaled<float>? size, ImGuiKnobFlags flags, int steps = 10)
+			public static bool BaseKnob(string label, ImGuiDataType dataType, ref TDataType value, TDataType vMin, TDataType vMax, float speed, string format, ImGuiKnobVariant variant, float? size, ImGuiKnobFlags flags, int steps = 10)
 			{
 
 				var knob = KnobWithDrag(label, dataType, ref value, vMin, vMax, speed, format, size, flags);

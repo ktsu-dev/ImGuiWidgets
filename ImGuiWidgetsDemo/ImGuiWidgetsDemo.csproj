@@ -4,7 +4,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ktsu.io.ImGuiApp" Version="1.0.0-alpha.31" />
+    <PackageReference Include="ktsu.io.ImGuiApp" Version="1.0.0-alpha.32" />
   </ItemGroup>
 
   <ItemGroup>

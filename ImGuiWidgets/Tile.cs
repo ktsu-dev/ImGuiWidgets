@@ -16,13 +16,13 @@ public static partial class ImGuiWidgets
 	}
 
 	public static bool Tile(string id, float width, float padding, Action? onShow) =>
-	TileImpl.Show(id, new(width), new(padding), onShow, new TileWidgetResponseDelegates());
+	TileImpl.Show(id, width, padding, onShow, new TileWidgetResponseDelegates());
 	public static bool Tile(string id, float width, float padding, Action? onShow, TileWidgetResponseDelegates responseDelegates) =>
-		TileImpl.Show(id, new(width), new(padding), onShow, responseDelegates);
+		TileImpl.Show(id, width, padding, onShow, responseDelegates);
 
 	internal static class TileImpl
 	{
-		public static bool Show(string id, Scaled<float> width, Scaled<float> padding, Action? onShow, TileWidgetResponseDelegates responseDelegates)
+		public static bool Show(string id, float width, float padding, Action? onShow, TileWidgetResponseDelegates responseDelegates)
 		{
 			bool wasClicked = false;
 
@@ -31,11 +31,11 @@ public static partial class ImGuiWidgets
 
 			ImGui.BeginGroup();
 			var cursorStartPos = ImGui.GetCursorPos();
-			ImGui.Dummy(new Vector2(0, padding.ScaledValue));
-			ImGui.Indent(padding.ScaledValue);
+			ImGui.Dummy(new Vector2(0, padding));
+			ImGui.Indent(padding);
 			onShow?.Invoke();
-			ImGui.Unindent(padding.ScaledValue);
-			var cursorEndPos = ImGui.GetCursorPos() + new Vector2(width.ScaledValue + (padding.ScaledValue * 2), padding.ScaledValue);
+			ImGui.Unindent(padding);
+			var cursorEndPos = ImGui.GetCursorPos() + new Vector2(width + (padding * 2), padding);
 			ImGui.EndGroup();
 
 			var contentSize = cursorEndPos - cursorStartPos;
@@ -81,6 +81,6 @@ public static partial class ImGuiWidgets
 			return wasClicked;
 		}
 
-		public static bool Show(string id, Scaled<float> width, Scaled<float> padding, Action? onShow) => Show(id, width, padding, onShow, new());
+		public static bool Show(string id, float width, float padding, Action? onShow) => Show(id, width, padding, onShow, new());
 	}
 }

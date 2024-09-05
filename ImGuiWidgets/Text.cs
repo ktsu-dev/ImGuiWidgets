@@ -7,8 +7,8 @@ public static partial class ImGuiWidgets
 {
 	public static void Text(string text) => TextImpl.Show(text);
 	public static void TextCentered(string text) => TextImpl.Centered(text);
-	public static void TextCenteredWithin(string text, float width) => TextImpl.CenteredWithin(text, new(width));
-	public static void TextCenteredWithin(string text, float width, bool clip) => TextImpl.CenteredWithin(text, new(width), clip);
+	public static void TextCenteredWithin(string text, float width) => TextImpl.CenteredWithin(text, width);
+	public static void TextCenteredWithin(string text, float width, bool clip) => TextImpl.CenteredWithin(text, width, clip);
 
 	internal static class TextImpl
 	{
@@ -21,17 +21,17 @@ public static partial class ImGuiWidgets
 			ImGui.TextUnformatted(text);
 		}
 
-		public static void CenteredWithin(string text, Scaled<float> width) => CenteredWithin(text, width, false);
+		public static void CenteredWithin(string text, float width) => CenteredWithin(text, width, false);
 
-		public static void CenteredWithin(string text, Scaled<float> width, bool clip)
+		public static void CenteredWithin(string text, float width, bool clip)
 		{
 			if (clip)
 			{
-				text = Clip(text, width.ScaledValue);
+				text = Clip(text, width);
 			}
 
 			float textWidth = ImGui.CalcTextSize(text).X;
-			Alignment.CenterWithin(textWidth, width.ScaledValue);
+			Alignment.CenterWithin(textWidth, width);
 			ImGui.TextUnformatted(text);
 		}
 
