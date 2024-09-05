@@ -6,7 +6,6 @@ using ktsu.io.ImGuiApp;
 using ktsu.io.ImGuiStyler;
 using ktsu.io.ImGuiWidgets;
 using ktsu.io.StrongPaths;
-using Text = ImGuiWidgets.Text;
 
 internal class ImGuiWidgetsDemo
 {
@@ -27,7 +26,7 @@ internal class ImGuiWidgetsDemo
 	private readonly PopupSearchableList<string> popupSearchableList = new();
 	private string OKPopupMessage { get; set; } = string.Empty;
 	private string OKPopupTitle { get; set; } = string.Empty;
-	private DividerContainer DividerContainer { get; } = new("DemoDividerContainer");
+	private ImGuiWidgets.DividerContainer DividerContainer { get; } = new("DemoDividerContainer");
 
 	internal static readonly string[] Friends = ["James", "Cameron", "Matt", "Troy", "Hali"];
 
@@ -53,31 +52,31 @@ internal class ImGuiWidgetsDemo
 	{
 		ImGui.Text("Left Divider Zone");
 
-		Knob.Draw(nameof(ImGuiKnobVariant.Wiper) + "Test Pascal Case", ref value, 0, 1, 0, null, ImGuiKnobVariant.Wiper);
-		Knob.Draw(nameof(ImGuiKnobVariant.WiperOnly), ref value, 0, 1, 0, null, ImGuiKnobVariant.WiperOnly);
-		Knob.Draw(nameof(ImGuiKnobVariant.WiperDot), ref value, 0, 1, 0, null, ImGuiKnobVariant.WiperDot);
-		Knob.Draw(nameof(ImGuiKnobVariant.Tick), ref value, 0, 1, 0, null, ImGuiKnobVariant.Tick);
-		Knob.Draw(nameof(ImGuiKnobVariant.Stepped), ref value, 0, 1, 0, null, ImGuiKnobVariant.Stepped);
-		Knob.Draw(nameof(ImGuiKnobVariant.Space), ref value, 0, 1, 0, null, ImGuiKnobVariant.Space);
-		Knob.Draw("Throttle Position", ref value, 0, 1, 0, null, ImGuiKnobVariant.Space);
+		ImGuiWidgets.Knob(nameof(ImGuiKnobVariant.Wiper) + "Test Pascal Case", ref value, 0, 1, 0, null, ImGuiKnobVariant.Wiper);
+		ImGuiWidgets.Knob(nameof(ImGuiKnobVariant.WiperOnly), ref value, 0, 1, 0, null, ImGuiKnobVariant.WiperOnly);
+		ImGuiWidgets.Knob(nameof(ImGuiKnobVariant.WiperDot), ref value, 0, 1, 0, null, ImGuiKnobVariant.WiperDot);
+		ImGuiWidgets.Knob(nameof(ImGuiKnobVariant.Tick), ref value, 0, 1, 0, null, ImGuiKnobVariant.Tick);
+		ImGuiWidgets.Knob(nameof(ImGuiKnobVariant.Stepped), ref value, 0, 1, 0, null, ImGuiKnobVariant.Stepped);
+		ImGuiWidgets.Knob(nameof(ImGuiKnobVariant.Space), ref value, 0, 1, 0, null, ImGuiKnobVariant.Space);
+		ImGuiWidgets.Knob("Throttle Position", ref value, 0, 1, 0, null, ImGuiKnobVariant.Space);
 
-		ColorIndicator.Show(Color.Red, true);
+		ImGuiWidgets.ColorIndicator(Color.Red, true);
 		ImGui.SameLine();
-		ColorIndicator.Show(Color.Red, false);
+		ImGuiWidgets.ColorIndicator(Color.Red, false);
 		ImGui.SameLine();
-		ColorIndicator.Show(Color.Green, true);
+		ImGuiWidgets.ColorIndicator(Color.Green, true);
 		ImGui.SameLine();
-		ColorIndicator.Show(Color.Green, false);
+		ImGuiWidgets.ColorIndicator(Color.Green, false);
 
 		ImGui.Button("Hello, Tree!");
-		using (var tree = new Tree())
+		using (var tree = new ImGuiWidgets.Tree())
 		{
 			for (int i = 0; i < 5; i++)
 			{
 				using (tree.Child)
 				{
 					ImGui.Button($"Hello, Child {i}!");
-					using (var subtree = new Tree())
+					using (var subtree = new ImGuiWidgets.Tree())
 					{
 						using (subtree.Child)
 						{
@@ -134,23 +133,27 @@ internal class ImGuiWidgetsDemo
 		var ktsuIconPath = (AbsoluteDirectoryPath)Environment.CurrentDirectory / (FileName)"ktsu.png";
 		var ktsuTexture = ImGuiApp.GetOrLoadTexture(ktsuIconPath);
 
-		if (Image.Show(ktsuTexture.TextureId, new(128, 128)))
+		if (ImGuiWidgets.Image(ktsuTexture.TextureId, new(128, 128)))
 		{
 			ShouldOpenOKPopup = true;
 			OKPopupTitle = "Click";
 			OKPopupMessage = $"You chose the image";
 		}
 
-		float iconWidth = 64;
-		float tileWidth = iconWidth + 48;
-		float padding = 8;
-		var iconSize = new Vector2(iconWidth, iconWidth);
+		float tileWidthEms = 10;
+		float iconWidthEms = 7.5f;
+		float tilePaddingEms = 0.5f;
+		float tileWidthPx = ImGuiApp.EmsToPx(tileWidthEms);
+		float iconWidthPx = ImGuiApp.EmsToPx(iconWidthEms);
+		float tilePaddingPx = ImGuiApp.EmsToPx(tilePaddingEms);
+
+		var iconSize = new Vector2(iconWidthPx, iconWidthPx);
 
 
-		if (Tile.Show("Tile1", tileWidth, padding, () =>
+		if (ImGuiWidgets.Tile("Tile1", tileWidthPx, tilePaddingPx, () =>
 		{
-			Image.CenteredWithin(ktsuTexture.TextureId, iconSize, tileWidth);
-			Text.CenteredWithin("Click me", tileWidth, clip: true);
+			ImGuiWidgets.ImageCenteredWithin(ktsuTexture.TextureId, iconSize, tileWidthPx);
+			ImGuiWidgets.TextCenteredWithin("Click me", tileWidthPx, clip: true);
 		}))
 		{
 			ShouldOpenOKPopup = true;
@@ -159,10 +162,10 @@ internal class ImGuiWidgetsDemo
 		}
 
 		ImGui.SameLine(0, 0);
-		_ = Tile.Show("Tile2", tileWidth, padding, () =>
+		_ = ImGuiWidgets.Tile("Tile2", tileWidthPx, tilePaddingPx, () =>
 		{
-			Image.CenteredWithin(ktsuTexture.TextureId, iconSize, tileWidth);
-			Text.CenteredWithin("Double Click Me", tileWidth, clip: true);
+			ImGuiWidgets.ImageCenteredWithin(ktsuTexture.TextureId, iconSize, tileWidthPx);
+			ImGuiWidgets.TextCenteredWithin("Double Click Me", tileWidthPx, clip: true);
 		},
 		new()
 		{
@@ -175,10 +178,10 @@ internal class ImGuiWidgetsDemo
 		});
 
 		ImGui.SameLine(0, 0);
-		_ = Tile.Show("Tile3", tileWidth, padding, () =>
+		_ = ImGuiWidgets.Tile("Tile3", tileWidthPx, tilePaddingPx, () =>
 		{
-			Image.CenteredWithin(ktsuTexture.TextureId, iconSize, tileWidth);
-			Text.CenteredWithin("Right Click Me", tileWidth, clip: true);
+			ImGuiWidgets.ImageCenteredWithin(ktsuTexture.TextureId, iconSize, tileWidthPx);
+			ImGuiWidgets.TextCenteredWithin("Right Click Me", tileWidthPx, clip: true);
 		},
 		new()
 		{
