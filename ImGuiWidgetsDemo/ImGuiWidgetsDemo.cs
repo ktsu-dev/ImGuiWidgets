@@ -4,6 +4,7 @@ using System.Numerics;
 using ImGuiNET;
 using ktsu.io.ImGuiApp;
 using ktsu.io.ImGuiStyler;
+using ktsu.io.ImGuiPopups;
 using ktsu.io.ImGuiWidgets;
 using ktsu.io.StrongPaths;
 
@@ -16,19 +17,9 @@ internal class ImGuiWidgetsDemo
 	}
 
 	private static float value = 0.5f;
-	private static string inputString = "String Input Popup";
 
-	private bool ShouldOpenOKPopup { get; set; }
-
-	private readonly PopupInputString popupInputString = new();
-	private readonly PopupFilesystemBrowser popupFilesystemBrowser = new();
-	private readonly PopupMessageOK popupMessageOK = new();
-	private readonly PopupSearchableList<string> popupSearchableList = new();
-	private string OKPopupMessage { get; set; } = string.Empty;
-	private string OKPopupTitle { get; set; } = string.Empty;
 	private ImGuiWidgets.DividerContainer DividerContainer { get; } = new("DemoDividerContainer");
-
-	internal static readonly string[] Friends = ["James", "Cameron", "Matt", "Troy", "Hali"];
+	private ImGuiPopups.MessageOK MessageOK { get; } = new();
 
 	private void OnStart()
 	{
@@ -48,6 +39,7 @@ internal class ImGuiWidgetsDemo
 		// Method intentionally left empty.
 	}
 
+	[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0063:Use simple 'using' statement", Justification = "<Pending>")]
 	private void ShowLeftPanel(float size)
 	{
 		ImGui.Text("Left Divider Zone");
@@ -92,52 +84,12 @@ internal class ImGuiWidgetsDemo
 	{
 		ImGui.Text("Right Divider Zone");
 
-		if (ImGui.Button(inputString))
-		{
-			popupInputString.Open("Enter a string", "Enter", "Yeet", (string result) =>
-			{
-				inputString = result;
-			});
-		}
-
-		if (ImGui.Button("Open File"))
-		{
-			popupFilesystemBrowser.FileOpen("Open File", (f) =>
-			{
-				ShouldOpenOKPopup = true;
-				OKPopupTitle = "File Chosen";
-				OKPopupMessage = $"You chose: {f}";
-			}, "*.cs");
-		}
-
-		if (ImGui.Button("Save File"))
-		{
-			popupFilesystemBrowser.FileSave("Save File", (f) =>
-			{
-				ShouldOpenOKPopup = true;
-				OKPopupTitle = "File Chosen";
-				OKPopupMessage = $"You chose: {f}";
-			}, "*.cs");
-		}
-
-		if (ImGui.Button("Choose Best Friend"))
-		{
-			popupSearchableList.Open("Best Friend", "Who is your best friend?", Friends, (string result) =>
-			{
-				ShouldOpenOKPopup = true;
-				OKPopupTitle = "Best Friend Chosen";
-				OKPopupMessage = $"You chose: {result}";
-			});
-		}
-
 		var ktsuIconPath = (AbsoluteDirectoryPath)Environment.CurrentDirectory / (FileName)"ktsu.png";
 		var ktsuTexture = ImGuiApp.GetOrLoadTexture(ktsuIconPath);
 
 		if (ImGuiWidgets.Image(ktsuTexture.TextureId, new(128, 128)))
 		{
-			ShouldOpenOKPopup = true;
-			OKPopupTitle = "Click";
-			OKPopupMessage = $"You chose the image";
+			MessageOK.Open("Click", "You chose the image");
 		}
 
 		float tileWidthEms = 10;
@@ -156,9 +108,7 @@ internal class ImGuiWidgetsDemo
 			ImGuiWidgets.TextCenteredWithin("Click me", tileWidthPx, clip: true);
 		}))
 		{
-			ShouldOpenOKPopup = true;
-			OKPopupTitle = "Click";
-			OKPopupMessage = $"Yippee!";
+			MessageOK.Open("Click", "You chose Tile1");
 		}
 
 		ImGui.SameLine(0, 0);
@@ -171,9 +121,7 @@ internal class ImGuiWidgetsDemo
 		{
 			OnDoubleClick = () =>
 			{
-				ShouldOpenOKPopup = true;
-				OKPopupTitle = "Double Click";
-				OKPopupMessage = $"Yippee!";
+				MessageOK.Open("Double Click", $"Yippee!");
 			},
 		});
 
@@ -193,15 +141,6 @@ internal class ImGuiWidgetsDemo
 			},
 		});
 
-		if (ShouldOpenOKPopup)
-		{
-			popupMessageOK.Open(OKPopupTitle, OKPopupMessage);
-			ShouldOpenOKPopup = false;
-		}
-
-		popupSearchableList.ShowIfOpen();
-		popupMessageOK.ShowIfOpen();
-		popupInputString.ShowIfOpen();
-		popupFilesystemBrowser.ShowIfOpen();
+		MessageOK.ShowIfOpen();
 	}
 }
