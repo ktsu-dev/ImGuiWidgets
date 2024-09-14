@@ -1,12 +1,12 @@
-namespace ktsu.io.ImGuiWidgetsDemo;
+namespace ktsu.ImGuiWidgetsDemo;
 
 using System.Numerics;
 using ImGuiNET;
-using ktsu.io.ImGuiApp;
-using ktsu.io.ImGuiStyler;
-using ktsu.io.ImGuiPopups;
-using ktsu.io.ImGuiWidgets;
-using ktsu.io.StrongPaths;
+using ktsu.ImGuiApp;
+using ktsu.ImGuiStyler;
+using ktsu.ImGuiPopups;
+using ktsu.ImGuiWidgets;
+using ktsu.StrongPaths;
 
 internal class ImGuiWidgetsDemo
 {
