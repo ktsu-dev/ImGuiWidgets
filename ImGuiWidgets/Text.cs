@@ -1,7 +1,7 @@
-namespace ktsu.io.ImGuiWidgets;
+namespace ktsu.ImGuiWidgets;
 
 using ImGuiNET;
-using ktsu.io.ImGuiStyler;
+using ktsu.ImGuiStyler;
 
 public static partial class ImGuiWidgets
 {

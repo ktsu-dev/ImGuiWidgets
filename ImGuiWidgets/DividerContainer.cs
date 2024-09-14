@@ -1,4 +1,4 @@
-namespace ktsu.io.ImGuiWidgets;
+namespace ktsu.ImGuiWidgets;
 
 using System.Collections.ObjectModel;
 using System.Drawing;

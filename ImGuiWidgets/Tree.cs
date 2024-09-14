@@ -1,11 +1,11 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-namespace ktsu.io.ImGuiWidgets;
+namespace ktsu.ImGuiWidgets;
 
 using System.Numerics;
 using ImGuiNET;
-using ktsu.io.ImGuiStyler;
-using ktsu.io.ScopedAction;
+using ktsu.ImGuiStyler;
+using ktsu.ScopedAction;
 
 public static partial class ImGuiWidgets
 {

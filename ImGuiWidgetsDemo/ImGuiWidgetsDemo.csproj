@@ -4,8 +4,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ktsu.io.ImGuiApp" Version="1.0.0-alpha.34" />
-    <PackageReference Include="ktsu.io.ImGuiPopups" Version="1.0.0-alpha.2" />
+    <PackageReference Include="ktsu.ImGuiApp" Version="1.0.0-alpha.36" />
+    <PackageReference Include="ktsu.ImGuiPopups" Version="1.0.0-alpha.3" />
   </ItemGroup>
 
   <ItemGroup>

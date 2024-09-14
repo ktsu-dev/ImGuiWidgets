@@ -1,4 +1,4 @@
-namespace ktsu.io.ImGuiWidgets;
+namespace ktsu.ImGuiWidgets;
 
 public static partial class ImGuiWidgets
 {

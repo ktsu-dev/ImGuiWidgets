@@ -1,4 +1,4 @@
-namespace ktsu.io.ImGuiWidgets;
+namespace ktsu.ImGuiWidgets;
 
 using System.Numerics;
 using ImGuiNET;
