@@ -149,13 +149,13 @@ public static partial class ImGuiWidgets
 			}
 
 			ImGui.SetNextWindowPos(advance);
-			ImGui.BeginChild(Id, containerSize, false, ImGuiWindowFlags.NoSavedSettings);
+			ImGui.BeginChild(Id, containerSize, ImGuiChildFlags.None, ImGuiWindowFlags.NoSavedSettings);
 
 			foreach (var z in Zones)
 			{
 				var zoneSize = CalculateZoneSize(z);
 				ImGui.SetNextWindowPos(advance);
-				ImGui.BeginChild(z.Id, zoneSize, true, ImGuiWindowFlags.NoSavedSettings);
+				ImGui.BeginChild(z.Id, zoneSize, ImGuiChildFlags.Border, ImGuiWindowFlags.NoSavedSettings);
 				z.Tick(dt);
 				ImGui.EndChild();
 
