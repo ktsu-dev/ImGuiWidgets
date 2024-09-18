@@ -1,36 +1,41 @@
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-namespace ktsu.io.ImGuiWidgets;
+namespace ktsu.ImGuiWidgets;
 
 using ImGuiNET;
 
-public static class ColorIndicator
+public static partial class ImGuiWidgets
 {
-	private static void PushCheckColor(ImColor color)
-	{
-		ImGui.PushStyleColor(ImGuiCol.FrameBg, color.Value);
-		ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, color.Value);
-		ImGui.PushStyleColor(ImGuiCol.FrameBgActive, color.Value);
-		ImGui.PushStyleColor(ImGuiCol.CheckMark, color.Value);
-	}
+	public static void ColorIndicator(ImColor color, bool enabled) => ColorIndicatorImpl.Show(color, enabled);
 
-	private static void PopCheckColor()
+	internal static class ColorIndicatorImpl
 	{
-		ImGui.PopStyleColor();
-		ImGui.PopStyleColor();
-		ImGui.PopStyleColor();
-		ImGui.PopStyleColor();
-	}
-
-	public static void Show(ImColor color, bool enabled)
-	{
-		if (enabled)
+		private static void PushCheckColor(ImColor color)
 		{
-			PushCheckColor(color);
+			ImGui.PushStyleColor(ImGuiCol.FrameBg, color.Value);
+			ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, color.Value);
+			ImGui.PushStyleColor(ImGuiCol.FrameBgActive, color.Value);
+			ImGui.PushStyleColor(ImGuiCol.CheckMark, color.Value);
 		}
-		ImGui.Checkbox("##hidelabel", ref enabled);
-		if (enabled)
+
+		private static void PopCheckColor()
 		{
-			PopCheckColor();
+			ImGui.PopStyleColor();
+			ImGui.PopStyleColor();
+			ImGui.PopStyleColor();
+			ImGui.PopStyleColor();
+		}
+
+		public static void Show(ImColor color, bool enabled)
+		{
+			if (enabled)
+			{
+				PushCheckColor(color);
+			}
+			ImGui.Checkbox("##hidelabel", ref enabled);
+			if (enabled)
+			{
+				PopCheckColor();
+			}
 		}
 	}
 }

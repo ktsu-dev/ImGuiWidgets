@@ -1,8 +1,12 @@
-namespace ktsu.io.ImGuiWidgetsDemo;
+namespace ktsu.ImGuiWidgetsDemo;
 
+using System.Numerics;
 using ImGuiNET;
-using ktsu.io.ImGuiApp;
-using ktsu.io.ImGuiWidgets;
+using ktsu.ImGuiApp;
+using ktsu.ImGuiStyler;
+using ktsu.ImGuiPopups;
+using ktsu.ImGuiWidgets;
+using ktsu.StrongPaths;
 
 internal class ImGuiWidgetsDemo
 {
@@ -13,19 +17,9 @@ internal class ImGuiWidgetsDemo
 	}
 
 	private static float value = 0.5f;
-	private static string inputString = "String Input Popup";
 
-	private bool ShouldOpenOKPopup { get; set; }
-
-	private readonly PopupInputString popupInputString = new();
-	private readonly PopupFilesystemBrowser popupFilesystemBrowser = new();
-	private readonly PopupMessageOK popupMessageOK = new();
-	private readonly PopupSearchableList<string> popupSearchableList = new();
-	private string OKPopupMessage { get; set; } = string.Empty;
-	private string OKPopupTitle { get; set; } = string.Empty;
-	private DividerContainer DividerContainer { get; } = new("DemoDividerContainer");
-
-	internal static readonly string[] Friends = ["James", "Cameron", "Matt", "Troy", "Hali"];
+	private ImGuiWidgets.DividerContainer DividerContainer { get; } = new("DemoDividerContainer");
+	private ImGuiPopups.MessageOK MessageOK { get; } = new();
 
 	private void OnStart()
 	{
@@ -45,35 +39,36 @@ internal class ImGuiWidgetsDemo
 		// Method intentionally left empty.
 	}
 
+	[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0063:Use simple 'using' statement", Justification = "<Pending>")]
 	private void ShowLeftPanel(float size)
 	{
 		ImGui.Text("Left Divider Zone");
 
-		Knob.Draw(nameof(ImGuiKnobVariant.Wiper) + "Test Pascal Case", ref value, 0, 1, 0, null, ImGuiKnobVariant.Wiper);
-		Knob.Draw(nameof(ImGuiKnobVariant.WiperOnly), ref value, 0, 1, 0, null, ImGuiKnobVariant.WiperOnly);
-		Knob.Draw(nameof(ImGuiKnobVariant.WiperDot), ref value, 0, 1, 0, null, ImGuiKnobVariant.WiperDot);
-		Knob.Draw(nameof(ImGuiKnobVariant.Tick), ref value, 0, 1, 0, null, ImGuiKnobVariant.Tick);
-		Knob.Draw(nameof(ImGuiKnobVariant.Stepped), ref value, 0, 1, 0, null, ImGuiKnobVariant.Stepped);
-		Knob.Draw(nameof(ImGuiKnobVariant.Space), ref value, 0, 1, 0, null, ImGuiKnobVariant.Space);
-		Knob.Draw("Throttle Position", ref value, 0, 1, 0, null, ImGuiKnobVariant.Space);
+		ImGuiWidgets.Knob(nameof(ImGuiKnobVariant.Wiper) + "Test Pascal Case", ref value, 0, 1, 0, null, ImGuiKnobVariant.Wiper);
+		ImGuiWidgets.Knob(nameof(ImGuiKnobVariant.WiperOnly), ref value, 0, 1, 0, null, ImGuiKnobVariant.WiperOnly);
+		ImGuiWidgets.Knob(nameof(ImGuiKnobVariant.WiperDot), ref value, 0, 1, 0, null, ImGuiKnobVariant.WiperDot);
+		ImGuiWidgets.Knob(nameof(ImGuiKnobVariant.Tick), ref value, 0, 1, 0, null, ImGuiKnobVariant.Tick);
+		ImGuiWidgets.Knob(nameof(ImGuiKnobVariant.Stepped), ref value, 0, 1, 0, null, ImGuiKnobVariant.Stepped);
+		ImGuiWidgets.Knob(nameof(ImGuiKnobVariant.Space), ref value, 0, 1, 0, null, ImGuiKnobVariant.Space);
+		ImGuiWidgets.Knob("Throttle Position", ref value, 0, 1, 0, null, ImGuiKnobVariant.Space);
 
-		ColorIndicator.Show(Color.Red, true);
+		ImGuiWidgets.ColorIndicator(Color.Red, true);
 		ImGui.SameLine();
-		ColorIndicator.Show(Color.Red, false);
+		ImGuiWidgets.ColorIndicator(Color.Red, false);
 		ImGui.SameLine();
-		ColorIndicator.Show(Color.Green, true);
+		ImGuiWidgets.ColorIndicator(Color.Green, true);
 		ImGui.SameLine();
-		ColorIndicator.Show(Color.Green, false);
+		ImGuiWidgets.ColorIndicator(Color.Green, false);
 
 		ImGui.Button("Hello, Tree!");
-		using (var tree = new Tree())
+		using (var tree = new ImGuiWidgets.Tree())
 		{
 			for (int i = 0; i < 5; i++)
 			{
 				using (tree.Child)
 				{
 					ImGui.Button($"Hello, Child {i}!");
-					using (var subtree = new Tree())
+					using (var subtree = new ImGuiWidgets.Tree())
 					{
 						using (subtree.Child)
 						{
@@ -89,53 +84,63 @@ internal class ImGuiWidgetsDemo
 	{
 		ImGui.Text("Right Divider Zone");
 
-		if (ImGui.Button(inputString))
+		var ktsuIconPath = (AbsoluteDirectoryPath)Environment.CurrentDirectory / (FileName)"ktsu.png";
+		var ktsuTexture = ImGuiApp.GetOrLoadTexture(ktsuIconPath);
+
+		if (ImGuiWidgets.Image(ktsuTexture.TextureId, new(128, 128)))
 		{
-			popupInputString.Open("Enter a string", "Enter", "Yeet", (string result) =>
+			MessageOK.Open("Click", "You chose the image");
+		}
+
+		float tileWidthEms = 10;
+		float iconWidthEms = 7.5f;
+		float tilePaddingEms = 0.5f;
+		float tileWidthPx = ImGuiApp.EmsToPx(tileWidthEms);
+		float iconWidthPx = ImGuiApp.EmsToPx(iconWidthEms);
+		float tilePaddingPx = ImGuiApp.EmsToPx(tilePaddingEms);
+
+		var iconSize = new Vector2(iconWidthPx, iconWidthPx);
+
+
+		if (ImGuiWidgets.Tile("Tile1", tileWidthPx, tilePaddingPx, () =>
+		{
+			ImGuiWidgets.ImageCenteredWithin(ktsuTexture.TextureId, iconSize, tileWidthPx);
+			ImGuiWidgets.TextCenteredWithin("Click me", tileWidthPx, clip: true);
+		}))
+		{
+			MessageOK.Open("Click", "You chose Tile1");
+		}
+
+		ImGui.SameLine(0, 0);
+		_ = ImGuiWidgets.Tile("Tile2", tileWidthPx, tilePaddingPx, () =>
+		{
+			ImGuiWidgets.ImageCenteredWithin(ktsuTexture.TextureId, iconSize, tileWidthPx);
+			ImGuiWidgets.TextCenteredWithin("Double Click Me", tileWidthPx, clip: true);
+		},
+		new()
+		{
+			OnDoubleClick = () =>
 			{
-				inputString = result;
-			});
-		}
+				MessageOK.Open("Double Click", $"Yippee!");
+			},
+		});
 
-		if (ImGui.Button("Open File"))
+		ImGui.SameLine(0, 0);
+		_ = ImGuiWidgets.Tile("Tile3", tileWidthPx, tilePaddingPx, () =>
 		{
-			popupFilesystemBrowser.FileOpen("Open File", (f) =>
+			ImGuiWidgets.ImageCenteredWithin(ktsuTexture.TextureId, iconSize, tileWidthPx);
+			ImGuiWidgets.TextCenteredWithin("Right Click Me", tileWidthPx, clip: true);
+		},
+		new()
+		{
+			OnContextMenu = () =>
 			{
-				ShouldOpenOKPopup = true;
-				OKPopupTitle = "File Chosen";
-				OKPopupMessage = $"You chose: {f}";
-			}, "*.cs");
-		}
+				ImGui.MenuItem("Context Menu Item 1");
+				ImGui.MenuItem("Context Menu Item 2");
+				ImGui.MenuItem("Context Menu Item 3");
+			},
+		});
 
-		if (ImGui.Button("Save File"))
-		{
-			popupFilesystemBrowser.FileSave("Save File", (f) =>
-			{
-				ShouldOpenOKPopup = true;
-				OKPopupTitle = "File Chosen";
-				OKPopupMessage = $"You chose: {f}";
-			}, "*.cs");
-		}
-
-		if (ImGui.Button("Choose Best Friend"))
-		{
-			popupSearchableList.Open("Best Friend", "Who is your best friend?", Friends, (string result) =>
-			{
-				ShouldOpenOKPopup = true;
-				OKPopupTitle = "Best Friend Chosen";
-				OKPopupMessage = $"You chose: {result}";
-			});
-		}
-
-		if (ShouldOpenOKPopup)
-		{
-			popupMessageOK.Open(OKPopupTitle, OKPopupMessage);
-			ShouldOpenOKPopup = false;
-		}
-
-		popupSearchableList.ShowIfOpen();
-		popupMessageOK.ShowIfOpen();
-		popupInputString.ShowIfOpen();
-		popupFilesystemBrowser.ShowIfOpen();
+		MessageOK.ShowIfOpen();
 	}
 }
