@@ -26,6 +26,8 @@ public static partial class ImGuiWidgets
 		{
 			bool wasClicked = false;
 
+			ImGui.PushID(id);
+
 			bool isHovered = false;
 			var cursorScreenStartPos = ImGui.GetCursorScreenPos();
 
@@ -77,6 +79,8 @@ public static partial class ImGuiWidgets
 				responseDelegates.OnContextMenu?.Invoke();
 				ImGui.EndPopup();
 			}
+
+			ImGui.PopID();
 
 			return wasClicked;
 		}
