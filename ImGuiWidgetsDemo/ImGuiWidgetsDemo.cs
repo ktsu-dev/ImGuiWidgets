@@ -21,10 +21,24 @@ internal class ImGuiWidgetsDemo
 	private ImGuiWidgets.DividerContainer DividerContainer { get; } = new("DemoDividerContainer");
 	private ImGuiPopups.MessageOK MessageOK { get; } = new();
 
+	private List<string> GridStrings { get; } = [];
+
 	private void OnStart()
 	{
 		DividerContainer.Add(new("Left", 0.25f, ShowLeftPanel));
 		DividerContainer.Add(new("Right", 0.75f, ShowRightPanel));
+
+
+		for (int i = 0; i < 32; i++)
+		{
+			string randomString = $"{i}:";
+			int randomAmount = new Random().Next(12, 32);
+			for (int j = 0; j < randomAmount; j++)
+			{
+				randomString += (char)new Random().Next(32, 127);
+			}
+			GridStrings.Add(randomString);
+		}
 	}
 
 	private void OnTick(float dt) => DividerContainer.Tick(dt);
@@ -139,6 +153,20 @@ internal class ImGuiWidgetsDemo
 				ImGui.MenuItem("Context Menu Item 2");
 				ImGui.MenuItem("Context Menu Item 3");
 			},
+		});
+
+		float iconSizePx = ImGuiApp.EmsToPx(2.5f);
+
+		ImGuiWidgets.Grid(GridStrings, i => ImGuiWidgets.CalcIconSize(i, iconSizePx), (item, cellSize) =>
+		{
+			ImGuiWidgets.Icon(item, ktsuTexture.TextureId, iconSizePx, Color.White.Value);
+		});
+
+		ImGuiWidgets.Grid(GridStrings, i => ImGuiWidgets.CalcIconSize(i, iconSizePx, ImGuiWidgets.IconAlignment.Vertical), (item, cellSize) =>
+		{
+			var sizeWithLabel = ImGuiWidgets.CalcIconSize(item, iconSizePx, ImGuiWidgets.IconAlignment.Vertical);
+			Alignment.CenterWithin(sizeWithLabel.X, cellSize.X);
+			ImGuiWidgets.Icon(item, ktsuTexture.TextureId, iconSizePx, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical);
 		});
 
 		MessageOK.ShowIfOpen();
