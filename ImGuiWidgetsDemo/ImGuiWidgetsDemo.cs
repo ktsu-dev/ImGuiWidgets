@@ -157,16 +157,18 @@ internal class ImGuiWidgetsDemo
 
 		float iconSizePx = ImGuiApp.EmsToPx(2.5f);
 
-		ImGuiWidgets.Grid(GridStrings, i => ImGuiWidgets.CalcIconSize(i, iconSizePx), (item, cellSize) =>
+		ImGuiWidgets.Grid(GridStrings, i => ImGuiWidgets.CalcIconSize(i, iconSizePx), (item, cellSize, itemSize) =>
 		{
 			ImGuiWidgets.Icon(item, ktsuTexture.TextureId, iconSizePx, Color.White.Value);
 		});
 
-		ImGuiWidgets.Grid(GridStrings, i => ImGuiWidgets.CalcIconSize(i, iconSizePx, ImGuiWidgets.IconAlignment.Vertical), (item, cellSize) =>
+		float bigIconSize = iconSizePx * 2;
+		string label = "IconIconIcon";
+
+		ImGuiWidgets.Grid(GridStrings, i => ImGuiWidgets.CalcIconSize(label, bigIconSize, ImGuiWidgets.IconAlignment.Vertical), (item, cellSize, itemSize) =>
 		{
-			var sizeWithLabel = ImGuiWidgets.CalcIconSize(item, iconSizePx, ImGuiWidgets.IconAlignment.Vertical);
-			Alignment.CenterWithin(sizeWithLabel.X, cellSize.X);
-			ImGuiWidgets.Icon(item, ktsuTexture.TextureId, iconSizePx, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical);
+			Alignment.CenterWithin(itemSize.X, cellSize.X);
+			ImGuiWidgets.Icon(label, ktsuTexture.TextureId, bigIconSize, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical);
 		});
 
 		MessageOK.ShowIfOpen();

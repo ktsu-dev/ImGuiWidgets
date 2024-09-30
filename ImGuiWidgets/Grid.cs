@@ -21,8 +21,9 @@ public static partial class ImGuiWidgets
 	/// </summary>
 	/// <typeparam name="T">The type of the item.</typeparam>
 	/// <param name="item">The item to draw.</param>
-	/// <param name="size">The size of the item.</param>
-	public delegate void DrawGridCell<T>(T item, Vector2 size);
+	/// <param name="cellSize">The calculated size of the grid cell.</param>
+	/// <param name="itemSize">The calculated size of the item.</param>
+	public delegate void DrawGridCell<T>(T item, Vector2 cellSize, Vector2 itemSize);
 
 	/// <summary>
 	/// Renders a grid with the specified items and delegates.
@@ -150,7 +151,7 @@ public static partial class ImGuiWidgets
 
 				if (itemIndex < itemList.Length)
 				{
-					drawDelegate(itemList[itemIndex], cellCize);
+					drawDelegate(itemList[itemIndex], cellCize, itemDimensions[itemIndex]);
 				}
 
 				var advance = new Vector2(marginTopLeftCursor.X, itemStartCursor.Y + cellCize.Y);
