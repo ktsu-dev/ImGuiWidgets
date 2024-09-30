@@ -2,6 +2,7 @@ namespace ktsu.ImGuiWidgets;
 
 using System.Numerics;
 using ImGuiNET;
+using ktsu.ImGuiStyler;
 
 /// <summary>
 /// Provides custom ImGui widgets.
@@ -308,7 +309,10 @@ public static partial class ImGuiWidgets
 			ImGui.Image((nint)textureId, size, Vector2.Zero, Vector2.One, color);
 
 			var labelSize = ImGui.CalcTextSize(label);
-			ImGui.SetCursorScreenPos(cursorStartPos + new Vector2(size.X + itemSpacing.X, (size.Y - labelSize.Y) / 2));
+			var widgetSize = CalcIconSize(label, size, IconAlignment.Horizontal);
+			var leftAlign = new Vector2(0, widgetSize.Y);
+			ImGui.SetCursorScreenPos(cursorStartPos + new Vector2(size.X + itemSpacing.X, 0));
+			Alignment.CenterWithin(labelSize, leftAlign);
 			ImGui.TextUnformatted(label);
 		}
 	}
