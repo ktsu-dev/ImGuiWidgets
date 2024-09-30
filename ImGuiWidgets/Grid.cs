@@ -99,8 +99,6 @@ public static partial class ImGuiWidgets
 				numColumns++;
 			}
 
-			ImGui.TextUnformatted($"Num Columns: {numColumns}");
-
 			int numRows = (int)Math.Ceiling((float)itemList.Length / numColumns);
 
 			// calculate column widths and row heights
