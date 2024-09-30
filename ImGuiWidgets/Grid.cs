@@ -113,7 +113,6 @@ public static partial class ImGuiWidgets
 
 			for (int i = 0; i < numColumns * numRows; i++)
 			{
-				var itemStartCursor = ImGui.GetCursorScreenPos();
 				int column = i % numColumns;
 				int row = i / numColumns;
 
@@ -152,17 +151,17 @@ public static partial class ImGuiWidgets
 					? (column * numRows) + row
 					: i;
 
-				var cellCize = new Vector2(columnWidths[column], rowHeights[row]);
+				var cellSize = new Vector2(columnWidths[column], rowHeights[row]);
 
 				if (itemIndex < itemList.Length)
 				{
-					drawDelegate(itemList[itemIndex], cellCize, itemDimensions[itemIndex]);
+					drawDelegate(itemList[itemIndex], cellSize, itemDimensions[itemIndex]);
 				}
 
-				var advance = new Vector2(marginTopLeftCursor.X, itemStartCursor.Y + cellCize.Y);
+				var advance = new Vector2(marginTopLeftCursor.X, itemStartCursor.Y + cellSize.Y);
 				if (column < numColumns - 1)
 				{
-					advance = new Vector2(itemStartCursor.X + cellCize.X, itemStartCursor.Y);
+					advance = new Vector2(itemStartCursor.X + cellSize.X, itemStartCursor.Y);
 				}
 				ImGui.SetCursorScreenPos(advance);
 			}

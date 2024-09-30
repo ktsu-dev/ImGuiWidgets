@@ -56,123 +56,123 @@ public static partial class ImGuiWidgets
 	/// </summary>
 	/// <param name="label">The label of the icon.</param>
 	/// <param name="textureId">The texture ID of the icon.</param>
-	/// <param name="size">The size of the icon.</param>
+	/// <param name="imageSize">The size of the image.</param>
 	/// <param name="color">The color of the icon.</param>
 	/// <returns>True if the icon was clicked; otherwise, false.</returns>
-	public static bool Icon(string label, uint textureId, float size, Vector4 color) => Icon(label, textureId, new Vector2(size), color, IconAlignment.Horizontal, new());
+	public static bool Icon(string label, uint textureId, float imageSize, Vector4 color) => Icon(label, textureId, new Vector2(imageSize), color, IconAlignment.Horizontal, new());
 
 	/// <summary>
 	/// Renders an icon with the specified parameters.
 	/// </summary>
 	/// <param name="label">The label of the icon.</param>
 	/// <param name="textureId">The texture ID of the icon.</param>
-	/// <param name="size">The size of the icon.</param>
-	/// <param name="color">The color of the icon.</param>
-	/// <param name="iconAlignment">The alignment of the icon.</param>
-	/// <returns>True if the icon was clicked; otherwise, false.</returns>
-	public static bool Icon(string label, uint textureId, float size, Vector4 color, IconAlignment iconAlignment) => Icon(label, textureId, new Vector2(size), color, iconAlignment, new());
-
-	/// <summary>
-	/// Renders an icon with the specified parameters.
-	/// </summary>
-	/// <param name="label">The label of the icon.</param>
-	/// <param name="textureId">The texture ID of the icon.</param>
-	/// <param name="size">The size of the icon.</param>
-	/// <param name="color">The color of the icon.</param>
-	/// <param name="iconDelegates">The delegates for icon events.</param>
-	/// <returns>True if the icon was clicked; otherwise, false.</returns>
-	public static bool Icon(string label, uint textureId, float size, Vector4 color, IconDelegates iconDelegates) => Icon(label, textureId, new Vector2(size), color, IconAlignment.Horizontal, iconDelegates);
-
-	/// <summary>
-	/// Renders an icon with the specified parameters.
-	/// </summary>
-	/// <param name="label">The label of the icon.</param>
-	/// <param name="textureId">The texture ID of the icon.</param>
-	/// <param name="size">The size of the icon.</param>
-	/// <param name="color">The color of the icon.</param>
-	/// <param name="iconAlignment">The alignment of the icon.</param>
-	/// <param name="iconDelegates">The delegates for icon events.</param>
-	/// <returns>True if the icon was clicked; otherwise, false.</returns>
-	public static bool Icon(string label, uint textureId, float size, Vector4 color, IconAlignment iconAlignment, IconDelegates iconDelegates) => Icon(label, textureId, new Vector2(size), color, iconAlignment, iconDelegates);
-
-	/// <summary>
-	/// Renders an icon with the specified parameters.
-	/// </summary>
-	/// <param name="label">The label of the icon.</param>
-	/// <param name="textureId">The texture ID of the icon.</param>
-	/// <param name="size">The size of the icon.</param>
-	/// <param name="color">The color of the icon.</param>
-	/// <returns>True if the icon was clicked; otherwise, false.</returns>
-	public static bool Icon(string label, uint textureId, Vector2 size, Vector4 color) => Icon(label, textureId, size, color, IconAlignment.Horizontal, new());
-
-	/// <summary>
-	/// Renders an icon with the specified parameters.
-	/// </summary>
-	/// <param name="label">The label of the icon.</param>
-	/// <param name="textureId">The texture ID of the icon.</param>
-	/// <param name="size">The size of the icon.</param>
+	/// <param name="imageSize">The size of the image.</param>
 	/// <param name="color">The color of the icon.</param>
 	/// <param name="iconAlignment">The alignment of the icon.</param>
 	/// <returns>True if the icon was clicked; otherwise, false.</returns>
-	public static bool Icon(string label, uint textureId, Vector2 size, Vector4 color, IconAlignment iconAlignment) => Icon(label, textureId, size, color, iconAlignment, new());
+	public static bool Icon(string label, uint textureId, float imageSize, Vector4 color, IconAlignment iconAlignment) => Icon(label, textureId, new Vector2(imageSize), color, iconAlignment, new());
 
 	/// <summary>
 	/// Renders an icon with the specified parameters.
 	/// </summary>
 	/// <param name="label">The label of the icon.</param>
 	/// <param name="textureId">The texture ID of the icon.</param>
-	/// <param name="size">The size of the icon.</param>
+	/// <param name="imageSize">The size of the image.</param>
 	/// <param name="color">The color of the icon.</param>
 	/// <param name="iconDelegates">The delegates for icon events.</param>
 	/// <returns>True if the icon was clicked; otherwise, false.</returns>
-	public static bool Icon(string label, uint textureId, Vector2 size, Vector4 color, IconDelegates iconDelegates) => Icon(label, textureId, size, color, IconAlignment.Horizontal, iconDelegates);
+	public static bool Icon(string label, uint textureId, float imageSize, Vector4 color, IconDelegates iconDelegates) => Icon(label, textureId, new Vector2(imageSize), color, IconAlignment.Horizontal, iconDelegates);
 
 	/// <summary>
 	/// Renders an icon with the specified parameters.
 	/// </summary>
 	/// <param name="label">The label of the icon.</param>
 	/// <param name="textureId">The texture ID of the icon.</param>
-	/// <param name="size">The size of the icon.</param>
+	/// <param name="imageSize">The size of the image.</param>
 	/// <param name="color">The color of the icon.</param>
 	/// <param name="iconAlignment">The alignment of the icon.</param>
 	/// <param name="iconDelegates">The delegates for icon events.</param>
 	/// <returns>True if the icon was clicked; otherwise, false.</returns>
-	public static bool Icon(string label, uint textureId, Vector2 size, Vector4 color, IconAlignment iconAlignment, IconDelegates iconDelegates) =>
-		IconImpl.Show(label, textureId, size, color, iconAlignment, iconDelegates);
+	public static bool Icon(string label, uint textureId, float imageSize, Vector4 color, IconAlignment iconAlignment, IconDelegates iconDelegates) => Icon(label, textureId, new Vector2(imageSize), color, iconAlignment, iconDelegates);
+
+	/// <summary>
+	/// Renders an icon with the specified parameters.
+	/// </summary>
+	/// <param name="label">The label of the icon.</param>
+	/// <param name="textureId">The texture ID of the icon.</param>
+	/// <param name="imageSize">The size of the image.</param>
+	/// <param name="color">The color of the icon.</param>
+	/// <returns>True if the icon was clicked; otherwise, false.</returns>
+	public static bool Icon(string label, uint textureId, Vector2 imageSize, Vector4 color) => Icon(label, textureId, imageSize, color, IconAlignment.Horizontal, new());
+
+	/// <summary>
+	/// Renders an icon with the specified parameters.
+	/// </summary>
+	/// <param name="label">The label of the icon.</param>
+	/// <param name="textureId">The texture ID of the icon.</param>
+	/// <param name="imageSize">The size of the image.</param>
+	/// <param name="color">The color of the icon.</param>
+	/// <param name="iconAlignment">The alignment of the icon.</param>
+	/// <returns>True if the icon was clicked; otherwise, false.</returns>
+	public static bool Icon(string label, uint textureId, Vector2 imageSize, Vector4 color, IconAlignment iconAlignment) => Icon(label, textureId, imageSize, color, iconAlignment, new());
+
+	/// <summary>
+	/// Renders an icon with the specified parameters.
+	/// </summary>
+	/// <param name="label">The label of the icon.</param>
+	/// <param name="textureId">The texture ID of the icon.</param>
+	/// <param name="imageSize">The size of the image.</param>
+	/// <param name="color">The color of the icon.</param>
+	/// <param name="iconDelegates">The delegates for icon events.</param>
+	/// <returns>True if the icon was clicked; otherwise, false.</returns>
+	public static bool Icon(string label, uint textureId, Vector2 imageSize, Vector4 color, IconDelegates iconDelegates) => Icon(label, textureId, imageSize, color, IconAlignment.Horizontal, iconDelegates);
+
+	/// <summary>
+	/// Renders an icon with the specified parameters.
+	/// </summary>
+	/// <param name="label">The label of the icon.</param>
+	/// <param name="textureId">The texture ID of the icon.</param>
+	/// <param name="imageSize">The size of the image.</param>
+	/// <param name="color">The color of the icon.</param>
+	/// <param name="iconAlignment">The alignment of the icon.</param>
+	/// <param name="iconDelegates">The delegates for icon events.</param>
+	/// <returns>True if the icon was clicked; otherwise, false.</returns>
+	public static bool Icon(string label, uint textureId, Vector2 imageSize, Vector4 color, IconAlignment iconAlignment, IconDelegates iconDelegates) =>
+		IconImpl.Show(label, textureId, imageSize, color, iconAlignment, iconDelegates);
 
 	/// <summary>
 	/// Calculates the size of the icon with the specified parameters.
 	/// </summary>
 	/// <param name="label">The label of the icon.</param>
-	/// <param name="size">The size of the icon.</param>
+	/// <param name="imageSize">The size of the image.</param>
 	/// <returns>The calculated size of the icon.</returns>
-	public static Vector2 CalcIconSize(string label, float size) => CalcIconSize(label, new Vector2(size), IconAlignment.Horizontal);
+	public static Vector2 CalcIconSize(string label, float imageSize) => CalcIconSize(label, new Vector2(imageSize), IconAlignment.Horizontal);
 
 	/// <summary>
 	/// Calculates the size of the icon with the specified parameters.
 	/// </summary>
 	/// <param name="label">The label of the icon.</param>
-	/// <param name="size">The size of the icon.</param>
+	/// <param name="imageSize">The size of the image.</param>
 	/// <param name="iconAlignment">The alignment of the icon.</param>
 	/// <returns>The calculated size of the icon.</returns>
-	public static Vector2 CalcIconSize(string label, float size, IconAlignment iconAlignment) => CalcIconSize(label, new Vector2(size), iconAlignment);
+	public static Vector2 CalcIconSize(string label, float imageSize, IconAlignment iconAlignment) => CalcIconSize(label, new Vector2(imageSize), iconAlignment);
 
 	/// <summary>
 	/// Calculates the size of the icon with the specified parameters.
 	/// </summary>
 	/// <param name="label">The label of the icon.</param>
-	/// <param name="size">The size of the icon.</param>
+	/// <param name="imageSize">The size of the image.</param>
 	/// <returns>The calculated size of the icon.</returns>
-	public static Vector2 CalcIconSize(string label, Vector2 size) => CalcIconSize(label, size, IconAlignment.Horizontal);
+	public static Vector2 CalcIconSize(string label, Vector2 imageSize) => CalcIconSize(label, imageSize, IconAlignment.Horizontal);
 
 	/// <summary>
 	/// Calculates the size of the icon with the specified parameters.
 	/// </summary>
 	/// <param name="label">The label of the icon.</param>
-	/// <param name="size">The size of the icon.</param>
-	/// <param name="iconAlignment">The alignment of the icon.</param>
-	/// <returns>The calculated size of the icon.</returns>
-	public static Vector2 CalcIconSize(string label, Vector2 size, IconAlignment iconAlignment)
+	/// <param name="imageSize">The size of the image.</param>
+	/// <param name="iconAlignment">The alignment of the image and label with respect to each other.</param>
+	/// <returns>The calculated size of the widget.</returns>
+	public static Vector2 CalcIconSize(string label, Vector2 imageSize, IconAlignment iconAlignment)
 	{
 		var style = ImGui.GetStyle();
 		var framePadding = style.FramePadding;
@@ -180,18 +180,18 @@ public static partial class ImGuiWidgets
 		var labelSize = ImGui.CalcTextSize(label);
 		if (iconAlignment == IconAlignment.Horizontal)
 		{
-			var sizeWithLabel = size + new Vector2(labelSize.X + itemSpacing.X, 0);
-			sizeWithLabel.Y = Math.Max(sizeWithLabel.Y, labelSize.Y);
-			return sizeWithLabel + (framePadding * 2);
+			var boundingBoxSize = imageSize + new Vector2(labelSize.X + itemSpacing.X, 0);
+			boundingBoxSize.Y = Math.Max(boundingBoxSize.Y, labelSize.Y);
+			return boundingBoxSize + (framePadding * 2);
 		}
 		else if (iconAlignment == IconAlignment.Vertical)
 		{
-			var sizeWithLabel = size + new Vector2(0, labelSize.Y + itemSpacing.Y);
-			sizeWithLabel.X = Math.Max(sizeWithLabel.X, labelSize.X);
-			return sizeWithLabel + (framePadding * 2);
+			var boundingBoxSize = imageSize + new Vector2(0, labelSize.Y + itemSpacing.Y);
+			boundingBoxSize.X = Math.Max(boundingBoxSize.X, labelSize.X);
+			return boundingBoxSize + (framePadding * 2);
 		}
 
-		return size;
+		return imageSize;
 	}
 
 	/// <summary>
@@ -204,12 +204,12 @@ public static partial class ImGuiWidgets
 		/// </summary>
 		/// <param name="label">The label of the icon.</param>
 		/// <param name="textureId">The texture ID of the icon.</param>
-		/// <param name="size">The size of the icon.</param>
+		/// <param name="imageSize">The size of the image.</param>
 		/// <param name="color">The color of the icon.</param>
 		/// <param name="iconAlignment">The alignment of the icon.</param>
 		/// <param name="iconDelegates">The delegates for icon events.</param>
 		/// <returns>True if the icon was clicked; otherwise, false.</returns>
-		public static bool Show(string label, uint textureId, Vector2 size, Vector4 color, IconAlignment iconAlignment, IconDelegates iconDelegates)
+		public static bool Show(string label, uint textureId, Vector2 imageSize, Vector4 color, IconAlignment iconAlignment, IconDelegates iconDelegates)
 		{
 			bool wasClicked = false;
 
@@ -220,29 +220,31 @@ public static partial class ImGuiWidgets
 			ImGui.PushID(label);
 
 			var cursorStartPos = ImGui.GetCursorScreenPos();
-			var sizeWithLabel = CalcIconSize(label, size, iconAlignment);
+			var labelSize = ImGui.CalcTextSize(label);// TODO, maybe pass this to an internal overload of CalcIconSize to save recalculating
+			var boundingBoxSize = CalcIconSize(label, imageSize, iconAlignment);
+
 			ImGui.SetCursorScreenPos(cursorStartPos + framePadding);
 
 			switch (iconAlignment)
 			{
 				case IconAlignment.Horizontal:
-					HorizontalLayout(label, textureId, size, itemSpacing, color, cursorStartPos);
+					HorizontalLayout(label, textureId, imageSize, labelSize, boundingBoxSize, itemSpacing, color, cursorStartPos);
 					break;
 				case IconAlignment.Vertical:
-					VerticalLayout(label, textureId, size, itemSpacing, color, cursorStartPos);
+					VerticalLayout(label, textureId, imageSize, labelSize, boundingBoxSize, itemSpacing, color, cursorStartPos);
 					break;
 				default:
 					throw new NotImplementedException();
 			}
 
 			ImGui.SetCursorScreenPos(cursorStartPos);
-			ImGui.Dummy(sizeWithLabel);
+			ImGui.Dummy(boundingBoxSize);
 			bool isHovered = ImGui.IsItemHovered();
 			if (isHovered)
 			{
 				uint borderColor = ImGui.GetColorU32(ImGui.GetStyle().Colors[(int)ImGuiCol.Border]);
 				var drawList = ImGui.GetWindowDrawList();
-				drawList.AddRect(cursorStartPos, cursorStartPos + sizeWithLabel, ImGui.GetColorU32(borderColor));
+				drawList.AddRect(cursorStartPos, cursorStartPos + boundingBoxSize, ImGui.GetColorU32(borderColor));
 
 				if (ImGui.IsMouseClicked(ImGuiMouseButton.Left))
 				{
@@ -274,44 +276,22 @@ public static partial class ImGuiWidgets
 			return wasClicked;
 		}
 
-		/// <summary>
-		/// Arranges the icon and label in a vertical layout.
-		/// </summary>
-		/// <param name="label">The label of the icon.</param>
-		/// <param name="textureId">The texture ID of the icon.</param>
-		/// <param name="size">The size of the icon.</param>
-		/// <param name="itemSpacing">The spacing between items.</param>
-		/// <param name="color">The color of the icon.</param>
-		/// <param name="cursorStartPos">The starting position of the cursor.</param>
-		private static void VerticalLayout(string label, uint textureId, Vector2 size, Vector2 itemSpacing, Vector4 color, Vector2 cursorStartPos)
+		private static void VerticalLayout(string label, uint textureId, Vector2 imageSize, Vector2 labelSize, Vector2 boundingBoxSize, Vector2 itemSpacing, Vector4 color, Vector2 cursorStartPos)
 		{
-			var sizeWithLabel = CalcIconSize(label, size, IconAlignment.Vertical);
-			var imageTopLeft = cursorStartPos + new Vector2((sizeWithLabel.X - size.X) / 2, 0);
+			var imageTopLeft = cursorStartPos + new Vector2((boundingBoxSize.X - imageSize.X) / 2, 0);
 			ImGui.SetCursorScreenPos(imageTopLeft);
-			ImGui.Image((nint)textureId, size, Vector2.Zero, Vector2.One, color);
-			var labelSize = ImGui.CalcTextSize(label);
-			var labelTopLeft = cursorStartPos + new Vector2((sizeWithLabel.X - labelSize.X) / 2, size.Y + itemSpacing.Y);
+			ImGui.Image((nint)textureId, imageSize, Vector2.Zero, Vector2.One, color);
+
+			var labelTopLeft = cursorStartPos + new Vector2((boundingBoxSize.X - labelSize.X) / 2, imageSize.Y + itemSpacing.Y);
 			ImGui.SetCursorScreenPos(labelTopLeft);
 			ImGui.TextUnformatted(label);
 		}
 
-		/// <summary>
-		/// Arranges the icon and label in a horizontal layout.
-		/// </summary>
-		/// <param name="label">The label of the icon.</param>
-		/// <param name="textureId">The texture ID of the icon.</param>
-		/// <param name="size">The size of the icon.</param>
-		/// <param name="itemSpacing">The spacing between items.</param>
-		/// <param name="color">The color of the icon.</param>
-		/// <param name="cursorStartPos">The starting position of the cursor.</param>
-		private static void HorizontalLayout(string label, uint textureId, Vector2 size, Vector2 itemSpacing, Vector4 color, Vector2 cursorStartPos)
+		private static void HorizontalLayout(string label, uint textureId, Vector2 imageSize, Vector2 labelSize, Vector2 boundingBoxSize, Vector2 itemSpacing, Vector4 color, Vector2 cursorStartPos)
 		{
-			ImGui.Image((nint)textureId, size, Vector2.Zero, Vector2.One, color);
-
-			var labelSize = ImGui.CalcTextSize(label);
-			var widgetSize = CalcIconSize(label, size, IconAlignment.Horizontal);
-			var leftAlign = new Vector2(0, widgetSize.Y);
-			ImGui.SetCursorScreenPos(cursorStartPos + new Vector2(size.X + itemSpacing.X, 0));
+			ImGui.Image((nint)textureId, imageSize, Vector2.Zero, Vector2.One, color);
+			var leftAlign = new Vector2(0, boundingBoxSize.Y);
+			ImGui.SetCursorScreenPos(cursorStartPos + new Vector2(imageSize.X + itemSpacing.X, 0));
 			Alignment.CenterWithin(labelSize, leftAlign);
 			ImGui.TextUnformatted(label);
 		}
