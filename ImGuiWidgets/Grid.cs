@@ -56,7 +56,7 @@ public static partial class ImGuiWidgets
 			int numColumns = 1;
 			bool columnFirst = true;
 
-			while (numColumns < itemList.Length)
+			while (numColumns <= itemList.Length)
 			{
 				int numRowsForColumns = (int)Math.Ceiling((float)itemList.Length / numColumns);
 
@@ -71,7 +71,7 @@ public static partial class ImGuiWidgets
 						var colItems = itemDimensions.Skip(colOffset).Take(numRowsForColumns);
 						if (colItems.Any())
 						{
-							maxRowWidth += colItems.Max(item => item.X);
+							maxRowWidth += colItems.Max(item => item.X) + itemSpacing.X;
 						}
 					}
 				}
@@ -87,7 +87,7 @@ public static partial class ImGuiWidgets
 							rowWidth = 0f;
 						}
 
-						rowWidth += itemDimensions[i].X;
+						rowWidth += itemDimensions[i].X + itemSpacing.X;
 						maxRowWidth = Math.Max(maxRowWidth, rowWidth);
 					}
 				}
@@ -98,6 +98,11 @@ public static partial class ImGuiWidgets
 					break;
 				}
 				numColumns++;
+			}
+
+			if (numColumns < 1)
+			{
+				numColumns = 1;
 			}
 
 			int numRows = (int)Math.Ceiling((float)itemList.Length / numColumns);
