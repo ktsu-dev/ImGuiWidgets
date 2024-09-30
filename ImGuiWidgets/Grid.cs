@@ -3,14 +3,50 @@ namespace ktsu.ImGuiWidgets;
 using System.Numerics;
 using ImGuiNET;
 
+/// <summary>
+/// Provides custom ImGui widgets.
+/// </summary>
 public static partial class ImGuiWidgets
 {
-	public static void Grid<T>(IEnumerable<T> items, Func<T, Vector2> measureDelegate, Action<T, Vector2> drawDelegate) =>
-	GridImpl.Show(items, measureDelegate, drawDelegate);
+	/// <summary>
+	/// Delegate to measure the size of a grid cell.
+	/// </summary>
+	/// <typeparam name="T">The type of the item.</typeparam>
+	/// <param name="item">The item to measure.</param>
+	/// <returns>The size of the item.</returns>
+	public delegate Vector2 MeasureGridCell<T>(T item);
 
+	/// <summary>
+	/// Delegate to draw a grid cell.
+	/// </summary>
+	/// <typeparam name="T">The type of the item.</typeparam>
+	/// <param name="item">The item to draw.</param>
+	/// <param name="size">The size of the item.</param>
+	public delegate void DrawGridCell<T>(T item, Vector2 size);
+
+	/// <summary>
+	/// Renders a grid with the specified items and delegates.
+	/// </summary>
+	/// <typeparam name="T">The type of the items.</typeparam>
+	/// <param name="items">The items to be displayed in the grid.</param>
+	/// <param name="measureDelegate">The delegate to measure the size of each item.</param>
+	/// <param name="drawDelegate">The delegate to draw each item.</param>
+	public static void Grid<T>(IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate) =>
+		GridImpl.Show(items, measureDelegate, drawDelegate);
+
+	/// <summary>
+	/// Contains the implementation details for rendering grids.
+	/// </summary>
 	internal static class GridImpl
 	{
-		public static void Show<T>(IEnumerable<T> items, Func<T, Vector2> measureDelegate, Action<T, Vector2> drawDelegate)
+		/// <summary>
+		/// Shows the grid with the specified items and delegates.
+		/// </summary>
+		/// <typeparam name="T">The type of the items.</typeparam>
+		/// <param name="items">The items to be displayed in the grid.</param>
+		/// <param name="measureDelegate">The delegate to measure the size of each item.</param>
+		/// <param name="drawDelegate">The delegate to draw each item.</param>
+		public static void Show<T>(IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate)
 		{
 			var itemSpacing = ImGui.GetStyle().ItemSpacing;
 			var itemList = items.ToArray();
@@ -77,7 +113,6 @@ public static partial class ImGuiWidgets
 				int column = i % numColumns;
 				int row = i / numColumns;
 
-
 				int itemIndex = columnFirst
 					? (column * numRows) + row
 					: i;
@@ -108,7 +143,6 @@ public static partial class ImGuiWidgets
 				var itemStartCursor = ImGui.GetCursorScreenPos();
 				int column = i % numColumns;
 				int row = i / numColumns;
-
 
 				int itemIndex = columnFirst
 					? (column * numRows) + row
