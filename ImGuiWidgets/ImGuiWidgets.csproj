@@ -11,7 +11,7 @@
     <PackageReference Include="ktsu.FuzzySearch" Version="1.0.0-alpha.11" />
     <PackageReference Include="ktsu.ImGuiStyler" Version="1.0.0-alpha.37" />
     <PackageReference Include="ktsu.ScopedAction" Version="1.0.0-alpha.16" />
-    <PackageReference Include="ktsu.StrongPaths" Version="1.1.15" />
+    <PackageReference Include="ktsu.StrongPaths" Version="1.1.16" />
     <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="8.0.0" />
   </ItemGroup>
 
