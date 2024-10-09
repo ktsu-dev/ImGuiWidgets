@@ -6,7 +6,7 @@
   <ItemGroup>
     <PackageReference Include="ktsu.ImGuiApp" Version="1.0.0-alpha.52" />
     <PackageReference Include="ktsu.ImGuiPopups" Version="1.0.0-alpha.24" />
-    <PackageReference Include="System.Text.Json" Version="8.0.4" />
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
   </ItemGroup>
 
   <ItemGroup>
