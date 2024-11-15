@@ -9,9 +9,9 @@
     <PackageReference Include="ktsu.Extensions" Version="1.0.25" />
     <PackageReference Include="ktsu.CaseConverter" Version="1.0.14" />
     <PackageReference Include="ktsu.FuzzySearch" Version="1.0.0-alpha.14" />
-    <PackageReference Include="ktsu.ImGuiStyler" Version="1.0.0-alpha.49" />
+    <PackageReference Include="ktsu.ImGuiStyler" Version="1.0.0-alpha.50" />
     <PackageReference Include="ktsu.ScopedAction" Version="1.0.0-alpha.18" />
-    <PackageReference Include="ktsu.StrongPaths" Version="1.1.22" />
+    <PackageReference Include="ktsu.StrongPaths" Version="1.1.23" />
     <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="9.0.0" />
   </ItemGroup>
 
