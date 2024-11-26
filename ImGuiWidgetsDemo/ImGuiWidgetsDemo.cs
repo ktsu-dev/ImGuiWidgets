@@ -32,7 +32,7 @@ internal class ImGuiWidgetsDemo
 		for (int i = 0; i < 32; i++)
 		{
 			string randomString = $"{i}:";
-			int randomAmount = new Random().Next(12, 32);
+			int randomAmount = new Random().Next(2, 32);
 			for (int j = 0; j < randomAmount; j++)
 			{
 				randomString += (char)new Random().Next(32, 127);
@@ -163,12 +163,11 @@ internal class ImGuiWidgetsDemo
 		});
 
 		float bigIconSize = iconSizePx * 2;
-		string label = "IconIconIcon";
 
-		ImGuiWidgets.Grid(GridStrings, i => ImGuiWidgets.CalcIconSize(label, bigIconSize, ImGuiWidgets.IconAlignment.Vertical), (item, cellSize, itemSize) =>
+		ImGuiWidgets.Grid(GridStrings, i => ImGuiWidgets.CalcIconSize(i, bigIconSize, ImGuiWidgets.IconAlignment.Vertical), (item, cellSize, itemSize) =>
 		{
 			Alignment.CenterWithin(itemSize.X, cellSize.X);
-			ImGuiWidgets.Icon(label, ktsuTexture.TextureId, bigIconSize, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical);
+			ImGuiWidgets.Icon(item, ktsuTexture.TextureId, bigIconSize, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical);
 		});
 
 		MessageOK.ShowIfOpen();
