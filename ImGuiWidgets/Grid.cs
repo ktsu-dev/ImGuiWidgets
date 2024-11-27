@@ -97,6 +97,10 @@ public static partial class ImGuiWidgets
 					numColumns--;
 					break;
 				}
+				else if (numColumns == itemList.Length)
+				{
+					break;
+				}
 				numColumns++;
 			}
 
