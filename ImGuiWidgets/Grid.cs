@@ -97,6 +97,8 @@ public static partial class ImGuiWidgets
 					numColumns--;
 					break;
 				}
+				// Once we have iterated all items without exceeding the contentRegionAvailable.X we
+				// want to break without incrementing the number of columns because the content will fit
 				else if (numColumns == itemList.Length)
 				{
 					break;
