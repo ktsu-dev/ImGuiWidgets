@@ -157,14 +157,32 @@ internal class ImGuiWidgetsDemo
 
 		float iconSizePx = ImGuiApp.EmsToPx(2.5f);
 
+		ImGui.NewLine();
+		ImGui.SeparatorText("Grid, Icon Alignment Horizontal");
 		ImGuiWidgets.Grid(GridStrings, i => ImGuiWidgets.CalcIconSize(i, iconSizePx), (item, cellSize, itemSize) =>
 		{
 			ImGuiWidgets.Icon(item, ktsuTexture.TextureId, iconSizePx, Color.White.Value);
 		});
 
+		ImGui.NewLine();
+		ImGui.SeparatorText("Grid, Icon Alignment Vertical");
 		float bigIconSize = iconSizePx * 2;
-
 		ImGuiWidgets.Grid(GridStrings, i => ImGuiWidgets.CalcIconSize(i, bigIconSize, ImGuiWidgets.IconAlignment.Vertical), (item, cellSize, itemSize) =>
+		{
+			Alignment.CenterWithin(itemSize.X, cellSize.X);
+			ImGuiWidgets.Icon(item, ktsuTexture.TextureId, bigIconSize, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical);
+		});
+
+		ImGui.NewLine();
+		ImGui.SeparatorText("Grid, Single Item, Icon Alignment Horizontal");
+		ImGuiWidgets.Grid(GridStrings.Take(1), i => ImGuiWidgets.CalcIconSize(i, iconSizePx), (item, cellSize, itemSize) =>
+		{
+			ImGuiWidgets.Icon(item, ktsuTexture.TextureId, iconSizePx, Color.White.Value);
+		});
+
+		ImGui.NewLine();
+		ImGui.SeparatorText("Grid, Single Item, Icon Alignment Vertical");
+		ImGuiWidgets.Grid(GridStrings.Take(1), i => ImGuiWidgets.CalcIconSize(i, iconSizePx), (item, cellSize, itemSize) =>
 		{
 			Alignment.CenterWithin(itemSize.X, cellSize.X);
 			ImGuiWidgets.Icon(item, ktsuTexture.TextureId, bigIconSize, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical);
