@@ -22,14 +22,15 @@ internal class ImGuiWidgetsDemo
 	private ImGuiPopups.MessageOK MessageOK { get; } = new();
 
 	private List<string> GridStrings { get; } = [];
+	private static int InitialGridSize { get; } = 32;
+	private int gridItemsToShow = InitialGridSize;
 
 	private void OnStart()
 	{
 		DividerContainer.Add(new("Left", 0.25f, ShowLeftPanel));
 		DividerContainer.Add(new("Right", 0.75f, ShowRightPanel));
 
-
-		for (int i = 0; i < 32; i++)
+		for (int i = 0; i < InitialGridSize; i++)
 		{
 			string randomString = $"{i}:";
 			int randomAmount = new Random().Next(2, 32);
@@ -94,6 +95,7 @@ internal class ImGuiWidgetsDemo
 		}
 	}
 
+	private int gridItemsToShow = 32;
 
 	private void ShowRightPanel(float size)
 	{
@@ -115,7 +117,6 @@ internal class ImGuiWidgetsDemo
 		float tilePaddingPx = ImGuiApp.EmsToPx(tilePaddingEms);
 
 		var iconSize = new Vector2(iconWidthPx, iconWidthPx);
-
 
 		if (ImGuiWidgets.Tile("Tile1", tileWidthPx, tilePaddingPx, () =>
 		{
@@ -165,29 +166,22 @@ internal class ImGuiWidgetsDemo
 			ImGuiWidgets.Icon(item, ktsuTexture.TextureId, iconSizePx, Color.White.Value);
 		});
 
-		ImGui.NewLine();
-		ImGui.SeparatorText("Grid, Icon Alignment Vertical");
-		float bigIconSize = iconSizePx * 2;
-		ImGuiWidgets.Grid(GridStrings, i => ImGuiWidgets.CalcIconSize(i, bigIconSize, ImGuiWidgets.IconAlignment.Vertical), (item, cellSize, itemSize) =>
-		{
-			Alignment.CenterWithin(itemSize.X, cellSize.X);
-			ImGuiWidgets.Icon(item, ktsuTexture.TextureId, bigIconSize, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical);
-		});
+		ImGui.SliderInt("Items to show##Vertical", ref gridItemsToShow, 1, GridStrings.Count);
 
-		ImGui.NewLine();
-		ImGui.SeparatorText("Grid, Single Item, Icon Alignment Horizontal");
-		ImGuiWidgets.Grid(GridStrings.Take(1), i => ImGuiWidgets.CalcIconSize(i, iconSizePx), (item, cellSize, itemSize) =>
+		ImGui.SeparatorText("Grid (Column Major) Icon Alignment Horizontal");
+		ImGuiWidgets.Grid(GridStrings.Take(gridItemsToShow), i => ImGuiWidgets.CalcIconSize(i, iconSizePx), (item, cellSize, itemSize) =>
 		{
 			ImGuiWidgets.Icon(item, ktsuTexture.TextureId, iconSizePx, Color.White.Value);
-		});
+		}, ImGuiWidgets.GridOrder.ColumnMajor);
 
 		ImGui.NewLine();
-		ImGui.SeparatorText("Grid, Single Item, Icon Alignment Vertical");
-		ImGuiWidgets.Grid(GridStrings.Take(1), i => ImGuiWidgets.CalcIconSize(i, bigIconSize, ImGuiWidgets.IconAlignment.Vertical), (item, cellSize, itemSize) =>
+		ImGui.SeparatorText("Grid (Row Major) Icon Alignment Vertical");
+		float bigIconSize = iconSizePx * 2;
+		ImGuiWidgets.Grid(GridStrings.Take(gridItemsToShow), i => ImGuiWidgets.CalcIconSize(i, bigIconSize, ImGuiWidgets.IconAlignment.Vertical), (item, cellSize, itemSize) =>
 		{
 			Alignment.CenterWithin(itemSize.X, cellSize.X);
 			ImGuiWidgets.Icon(item, ktsuTexture.TextureId, bigIconSize, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical);
-		});
+		}, ImGuiWidgets.GridOrder.RowMajor);
 
 		MessageOK.ShowIfOpen();
 	}
