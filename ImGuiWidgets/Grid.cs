@@ -8,7 +8,7 @@ using ImGuiNET;
 /// </summary>
 public static partial class ImGuiWidgets
 {
-	public static bool EnableGridDebugDraw { get; set; } = true;
+	public static bool EnableGridDebugDraw { get; set; }
 	public enum GridOrder
 	{
 		// Items are displayed in order left to right before dropping to the next row
