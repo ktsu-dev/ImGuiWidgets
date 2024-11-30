@@ -8,6 +8,7 @@ using ImGuiNET;
 /// </summary>
 public static partial class ImGuiWidgets
 {
+	public static bool EnableGridDebugDraw { get; set; } = true;
 	public enum GridOrder
 	{
 		// Items are displayed in order left to right before dropping to the next row
@@ -214,6 +215,13 @@ public static partial class ImGuiWidgets
 
 				if (itemIndex < itemList.Length)
 				{
+					if (EnableGridDebugDraw)
+					{
+						uint borderColor = ImGui.GetColorU32(ImGui.GetStyle().Colors[(int)ImGuiCol.Border]);
+						var drawList = ImGui.GetWindowDrawList();
+						drawList.AddRect(itemStartCursor, itemStartCursor + cellSize, ImGui.GetColorU32(borderColor));
+					}
+
 					drawDelegate(itemList[itemIndex], cellSize, itemDimensions[itemIndex]);
 				}
 
