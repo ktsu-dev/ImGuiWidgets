@@ -94,6 +94,7 @@ internal class ImGuiWidgetsDemo
 		}
 	}
 
+
 	private void ShowRightPanel(float size)
 	{
 		ImGui.Text("Right Divider Zone");
@@ -182,7 +183,7 @@ internal class ImGuiWidgetsDemo
 
 		ImGui.NewLine();
 		ImGui.SeparatorText("Grid, Single Item, Icon Alignment Vertical");
-		ImGuiWidgets.Grid(GridStrings.Take(1), i => ImGuiWidgets.CalcIconSize(i, iconSizePx), (item, cellSize, itemSize) =>
+		ImGuiWidgets.Grid(GridStrings.Take(1), i => ImGuiWidgets.CalcIconSize(i, bigIconSize, ImGuiWidgets.IconAlignment.Vertical), (item, cellSize, itemSize) =>
 		{
 			Alignment.CenterWithin(itemSize.X, cellSize.X);
 			ImGuiWidgets.Icon(item, ktsuTexture.TextureId, bigIconSize, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical);
