@@ -95,8 +95,6 @@ internal class ImGuiWidgetsDemo
 		}
 	}
 
-	private int gridItemsToShow = 32;
-
 	private void ShowRightPanel(float size)
 	{
 		ImGui.Text("Right Divider Zone");
@@ -160,14 +158,7 @@ internal class ImGuiWidgetsDemo
 		float iconSizePx = ImGuiApp.EmsToPx(2.5f);
 
 		ImGui.NewLine();
-		ImGui.SeparatorText("Grid, Icon Alignment Horizontal");
-		ImGuiWidgets.Grid(GridStrings, i => ImGuiWidgets.CalcIconSize(i, iconSizePx), (item, cellSize, itemSize) =>
-		{
-			ImGuiWidgets.Icon(item, ktsuTexture.TextureId, iconSizePx, Color.White.Value);
-		});
-
-		ImGui.SliderInt("Items to show##Vertical", ref gridItemsToShow, 1, GridStrings.Count);
-
+		ImGui.SliderInt("Grid items to show", ref gridItemsToShow, 1, GridStrings.Count);
 		ImGui.SeparatorText("Grid (Column Major) Icon Alignment Horizontal");
 		ImGuiWidgets.Grid(GridStrings.Take(gridItemsToShow), i => ImGuiWidgets.CalcIconSize(i, iconSizePx), (item, cellSize, itemSize) =>
 		{
