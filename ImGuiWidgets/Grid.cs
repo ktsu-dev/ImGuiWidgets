@@ -81,18 +81,18 @@ public static partial class ImGuiWidgets
 				switch (gridOrder)
 				{
 					case GridOrder.RowMajor:
-					float rowWidth = 0f;
+						float rowWidth = 0f;
 
-					for (int i = 0; i < itemList.Length; i++)
-					{
-						if (i % numColumns == 0)
+						for (int i = 0; i < itemList.Length; i++)
 						{
-							rowWidth = 0f;
-						}
+							if (i % numColumns == 0)
+							{
+								rowWidth = 0f;
+							}
 
-						rowWidth += itemDimensions[i].X + itemSpacing.X;
-						maxRowWidth = Math.Max(maxRowWidth, rowWidth);
-					}
+							rowWidth += itemDimensions[i].X + itemSpacing.X;
+							maxRowWidth = Math.Max(maxRowWidth, rowWidth);
+						}
 						break;
 
 					case GridOrder.ColumnMajor:
@@ -104,7 +104,7 @@ public static partial class ImGuiWidgets
 							{
 								maxRowWidth += colItems.Max(item => item.X) + itemSpacing.X;
 							}
-				}
+						}
 						break;
 
 					default:
