@@ -8,6 +8,31 @@ using ImGuiNET;
 /// </summary>
 public static partial class ImGuiWidgets
 {
+	public enum GridOrder
+	{
+		// Items are displayed in order left to right before dropping to the next row
+		// Recommended for when displaying grids of icons
+		// [ [1] [2] [3] ]
+		// [ [4] [5] [6] ]
+		// OR
+		// [ [1] [2] [3] [4] [5] ]
+		// [ [6]                 ]
+		RowMajor,
+		// Items are displayed top to bottom before moving to the next column
+		// Recommended when displaying tables of data
+		// Note: This will never display uneven rows that have more than 1 item
+		// missing relative to them
+		// [ [1] [3] [5] ]
+		// [ [2] [4] [6] ]
+		// OR
+		// [ [1] [3] [5] ]
+		// [ [2] [4]     ]
+		// NEVER
+		// [ [1] [3] [5] ]
+		// [ [2]         ]
+		ColumnMajor,
+	}
+
 	/// <summary>
 	/// Delegate to measure the size of a grid cell.
 	/// </summary>
@@ -32,8 +57,9 @@ public static partial class ImGuiWidgets
 	/// <param name="items">The items to be displayed in the grid.</param>
 	/// <param name="measureDelegate">The delegate to measure the size of each item.</param>
 	/// <param name="drawDelegate">The delegate to draw each item.</param>
-	public static void Grid<T>(IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate) =>
-		GridImpl.Show(items, measureDelegate, drawDelegate);
+	/// <param name="gridOrder">What ordering should grid items use</param>
+	public static void Grid<T>(IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate, GridOrder gridOrder) =>
+		GridImpl.Show(items, measureDelegate, drawDelegate, gridOrder);
 
 	/// <summary>
 	/// Contains the implementation details for rendering grids.
@@ -47,14 +73,14 @@ public static partial class ImGuiWidgets
 		/// <param name="items">The items to be displayed in the grid.</param>
 		/// <param name="measureDelegate">The delegate to measure the size of each item.</param>
 		/// <param name="drawDelegate">The delegate to draw each item.</param>
-		public static void Show<T>(IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate)
+		/// <param name="gridOrder">What ordering should grid items use</param>
+		public static void Show<T>(IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate, GridOrder gridOrder)
 		{
 			var itemSpacing = ImGui.GetStyle().ItemSpacing;
 			var itemList = items.ToArray();
 			var itemDimensions = items.Select(i => measureDelegate(i) + itemSpacing).ToArray();
 			var contentRegionAvailable = ImGui.GetContentRegionAvail();
 			int numColumns = 1;
-			bool columnFirst = true;
 
 			while (numColumns <= itemList.Length)
 			{
@@ -62,34 +88,37 @@ public static partial class ImGuiWidgets
 
 				float maxRowWidth = 0f;
 
-				if (columnFirst)
+				switch (gridOrder)
 				{
-					// column first layout
-					for (int i = 0; i < numColumns; i++)
-					{
-						int colOffset = i * numRowsForColumns;
-						var colItems = itemDimensions.Skip(colOffset).Take(numRowsForColumns);
-						if (colItems.Any())
-						{
-							maxRowWidth += colItems.Max(item => item.X) + itemSpacing.X;
-						}
-					}
-				}
-				else
-				{
-					// row first layout
-					float rowWidth = 0f;
+					case GridOrder.RowMajor:
+						float rowWidth = 0f;
 
-					for (int i = 0; i < itemList.Length; i++)
-					{
-						if (i % numColumns == 0)
+						for (int i = 0; i < itemList.Length; i++)
 						{
-							rowWidth = 0f;
-						}
+							if (i % numColumns == 0)
+							{
+								rowWidth = 0f;
+							}
 
-						rowWidth += itemDimensions[i].X + itemSpacing.X;
-						maxRowWidth = Math.Max(maxRowWidth, rowWidth);
-					}
+							rowWidth += itemDimensions[i].X + itemSpacing.X;
+							maxRowWidth = Math.Max(maxRowWidth, rowWidth);
+						}
+						break;
+
+					case GridOrder.ColumnMajor:
+						for (int i = 0; i < numColumns; i++)
+						{
+							int colOffset = i * numRowsForColumns;
+							var colItems = itemDimensions.Skip(colOffset).Take(numRowsForColumns);
+							if (colItems.Any())
+							{
+								maxRowWidth += colItems.Max(item => item.X) + itemSpacing.X;
+							}
+						}
+						break;
+
+					default:
+						throw new NotImplementedException($"GridOrder '{gridOrder}' not implemented in ImGuiWidgets.Grid.Show");
 				}
 
 				if (maxRowWidth > contentRegionAvailable.X)
@@ -102,6 +131,39 @@ public static partial class ImGuiWidgets
 				else if (numColumns == itemList.Length)
 				{
 					break;
+				}
+				// ColumnMajor grids are not allowed to have any rows with 2 or more unused cells. If we tried
+				// to draw such a case we would end up displaying items that were meant for the end cells on a
+				// different row which would then cause the grid to be misaligned.
+				// [1] [2] [3]  => [1] [3] [X]
+				// [4]			   [2] [4]
+				// Don't check for uneven columns if there is only 1 column as it isn't possible for them
+				// to be uneven (an simplifies the checking logic)
+				else if (gridOrder == GridOrder.ColumnMajor && numColumns != 1)
+				{
+					int maxItemsPerRow = numColumns;
+					int minItemsPerRow = numColumns - 1;
+
+					List<int> itemsPerRow = [];
+					int itemCount = 0;
+					for (int i = 0; i < itemList.Length; i++)
+					{
+						itemCount++;
+						// The first item will trigger the end of row log (0 % 1 == 0) and we only get in here
+						// if numColumns > 1 so we can safely ignore the end of row check in that situation
+						bool endOfRow = (i != 0) && (i % numColumns == 0);
+						if (endOfRow)
+						{
+							itemsPerRow.Add(itemCount);
+							itemCount = 0;
+						}
+					}
+
+					if (itemsPerRow.Any(c => c < minItemsPerRow))
+					{
+						numColumns--;
+						break;
+					}
 				}
 				numColumns++;
 			}
@@ -122,9 +184,12 @@ public static partial class ImGuiWidgets
 				int column = i % numColumns;
 				int row = i / numColumns;
 
-				int itemIndex = columnFirst
-					? (column * numRows) + row
-					: i;
+				int itemIndex = gridOrder switch
+				{
+					GridOrder.RowMajor => i,
+					GridOrder.ColumnMajor => (column * numRows) + row,
+					_ => throw new NotImplementedException()
+				};
 
 				if (itemIndex < itemList.Length)
 				{
@@ -153,9 +218,12 @@ public static partial class ImGuiWidgets
 				int column = i % numColumns;
 				int row = i / numColumns;
 
-				int itemIndex = columnFirst
-					? (column * numRows) + row
-					: i;
+				int itemIndex = gridOrder switch
+				{
+					GridOrder.RowMajor => i,
+					GridOrder.ColumnMajor => (column * numRows) + row,
+					_ => throw new NotImplementedException()
+				};
 
 				var cellSize = new Vector2(columnWidths[column], rowHeights[row]);
 
