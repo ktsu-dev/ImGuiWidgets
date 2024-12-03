@@ -9,6 +9,8 @@ using ktsu.ImGuiStyler;
 /// </summary>
 public static partial class ImGuiWidgets
 {
+	public static bool EnableIconDebugDraw { get; set; }
+
 	/// <summary>
 	/// Specifies the alignment of the icon.
 	/// </summary>
@@ -240,12 +242,15 @@ public static partial class ImGuiWidgets
 			ImGui.SetCursorScreenPos(cursorStartPos);
 			ImGui.Dummy(boundingBoxSize);
 			bool isHovered = ImGui.IsItemHovered();
-			if (isHovered)
+			if (isHovered || EnableIconDebugDraw)
 			{
 				uint borderColor = ImGui.GetColorU32(ImGui.GetStyle().Colors[(int)ImGuiCol.Border]);
 				var drawList = ImGui.GetWindowDrawList();
 				drawList.AddRect(cursorStartPos, cursorStartPos + boundingBoxSize, ImGui.GetColorU32(borderColor));
+			}
 
+			if (isHovered)
+			{
 				if (ImGui.IsMouseClicked(ImGuiMouseButton.Left))
 				{
 					iconDelegates.OnClick?.Invoke();

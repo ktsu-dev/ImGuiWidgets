@@ -158,7 +158,19 @@ internal class ImGuiWidgetsDemo
 		float iconSizePx = ImGuiApp.EmsToPx(2.5f);
 
 		ImGui.NewLine();
+
+		bool showGridDebug = ImGuiWidgets.EnableGridDebugDraw;
+		if (ImGui.Checkbox("Show Grid Debug", ref showGridDebug))
+		{
+			ImGuiWidgets.EnableGridDebugDraw = showGridDebug;
+		}
+		bool showIconDebug = ImGuiWidgets.EnableIconDebugDraw;
+		if (ImGui.Checkbox("Show Icon Debug", ref showIconDebug))
+		{
+			ImGuiWidgets.EnableIconDebugDraw = showIconDebug;
+		}
 		ImGui.SliderInt("Grid items to show", ref gridItemsToShow, 1, GridStrings.Count);
+
 		ImGui.SeparatorText("Grid (Column Major) Icon Alignment Horizontal");
 		ImGuiWidgets.Grid(GridStrings.Take(gridItemsToShow), i => ImGuiWidgets.CalcIconSize(i, iconSizePx), (item, cellSize, itemSize) =>
 		{
