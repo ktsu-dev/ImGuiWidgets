@@ -12,14 +12,24 @@ public static partial class ImGuiWidgets
 	{
 		// Items are displayed in order left to right before dropping to the next row
 		// Recommended for when displaying grids of icons
-		// [1] [2] [3]
-		// [4] [5] [6]
+		// [ [1] [2] [3] ]
+		// [ [4] [5] [6] ]
+		// OR
+		// [ [1] [2] [3] [4] [5] ]
+		// [ [6]                 ]
 		RowMajor,
 		// Items are displayed top to bottom before moving to the next column
-		// Note: Only 1 row may show 1 missing item. All other rows will be full.
 		// Recommended when displaying tables of data
-		// [1] [3] [5]
-		// [2] [4] [6]
+		// Note: This will never display uneven rows that have more than 1 item
+		// missing relative to them
+		// [ [1] [3] [5] ]
+		// [ [2] [4] [6] ]
+		// OR
+		// [ [1] [3] [5] ]
+		// [ [2] [4]     ]
+		// NEVER
+		// [ [1] [3] [5] ]
+		// [ [2]         ]
 		ColumnMajor,
 	}
 
@@ -126,21 +136,26 @@ public static partial class ImGuiWidgets
 				// to draw such a case we would end up displaying items that were meant for the end cells on a
 				// different row which would then cause the grid to be misaligned.
 				// [1] [2] [3]  => [1] [3] [X]
-				// [4]			   [2] [4] 
-				else if (gridOrder == GridOrder.ColumnMajor)
+				// [4]			   [2] [4]
+				// Don't check for uneven columns if there is only 1 column as it isn't possible for them
+				// to be uneven (an simplifies the checking logic)
+				else if (gridOrder == GridOrder.ColumnMajor && numColumns != 1)
 				{
-					List<int> itemsPerRow = [];
 					int maxItemsPerRow = numColumns;
 					int minItemsPerRow = numColumns - 1;
 
-					int count = 0;
+					List<int> itemsPerRow = [];
+					int itemCount = 0;
 					for (int i = 0; i < itemList.Length; i++)
 					{
-						count++;
-						if ((i % numColumns == 0) && (i != itemList.Length))
+						itemCount++;
+						// The first item will trigger the end of row log (0 % 1 == 0) and we only get in here
+						// if numColumns > 1 so we can safely ignore the end of row check in that situation
+						bool endOfRow = (i != 0) && (i % numColumns == 0);
+						if (endOfRow)
 						{
-							itemsPerRow.Add(count);
-							count = 0;
+							itemsPerRow.Add(itemCount);
+							itemCount = 0;
 						}
 					}
 
