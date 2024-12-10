@@ -107,45 +107,24 @@ internal class ImGuiWidgetsDemo
 			MessageOK.Open("Click", "You chose the image");
 		}
 
-		float tileWidthEms = 10;
 		float iconWidthEms = 7.5f;
 		float tilePaddingEms = 0.5f;
-		float tileWidthPx = ImGuiApp.EmsToPx(tileWidthEms);
 		float iconWidthPx = ImGuiApp.EmsToPx(iconWidthEms);
 		float tilePaddingPx = ImGuiApp.EmsToPx(tilePaddingEms);
 
 		var iconSize = new Vector2(iconWidthPx, iconWidthPx);
 
-		if (ImGuiWidgets.Tile("Tile1", tileWidthPx, tilePaddingPx, () =>
+		ImGuiWidgets.Icon("Click Me", ktsuTexture.TextureId, iconWidthPx, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical, new ImGuiWidgets.IconDelegates()
 		{
-			ImGuiWidgets.ImageCenteredWithin(ktsuTexture.TextureId, iconSize, tileWidthPx);
-			ImGuiWidgets.TextCenteredWithin("Click me", tileWidthPx, clip: true);
-		}))
-		{
-			MessageOK.Open("Click", "You chose Tile1");
-		}
-
-		ImGui.SameLine(0, 0);
-		_ = ImGuiWidgets.Tile("Tile2", tileWidthPx, tilePaddingPx, () =>
-		{
-			ImGuiWidgets.ImageCenteredWithin(ktsuTexture.TextureId, iconSize, tileWidthPx);
-			ImGuiWidgets.TextCenteredWithin("Double Click Me", tileWidthPx, clip: true);
-		},
-		new()
-		{
-			OnDoubleClick = () =>
-			{
-				MessageOK.Open("Double Click", $"Yippee!");
-			},
+			OnClick = () => MessageOK.Open("Click", "You chose Tile1")
 		});
-
-		ImGui.SameLine(0, 0);
-		_ = ImGuiWidgets.Tile("Tile3", tileWidthPx, tilePaddingPx, () =>
+		ImGui.SameLine();
+		ImGuiWidgets.Icon("Double Click Me", ktsuTexture.TextureId, iconWidthPx, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical, new ImGuiWidgets.IconDelegates()
 		{
-			ImGuiWidgets.ImageCenteredWithin(ktsuTexture.TextureId, iconSize, tileWidthPx);
-			ImGuiWidgets.TextCenteredWithin("Right Click Me", tileWidthPx, clip: true);
-		},
-		new()
+			OnDoubleClick = () => MessageOK.Open("Double Click", "Yippee!!!!!!!!")
+		});
+		ImGui.SameLine();
+		ImGuiWidgets.Icon("Right Click me", ktsuTexture.TextureId, iconWidthPx, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical, new ImGuiWidgets.IconDelegates()
 		{
 			OnContextMenu = () =>
 			{
@@ -182,8 +161,10 @@ internal class ImGuiWidgetsDemo
 		float bigIconSize = iconSizePx * 2;
 		ImGuiWidgets.Grid(GridStrings.Take(gridItemsToShow), i => ImGuiWidgets.CalcIconSize(i, bigIconSize, ImGuiWidgets.IconAlignment.Vertical), (item, cellSize, itemSize) =>
 		{
-			Alignment.CenterWithin(itemSize.X, cellSize.X);
-			ImGuiWidgets.Icon(item, ktsuTexture.TextureId, bigIconSize, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical);
+			using (new Alignment.CenterWithin(itemSize, cellSize))
+			{
+				ImGuiWidgets.Icon(item, ktsuTexture.TextureId, bigIconSize, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical);
+			}
 		}, ImGuiWidgets.GridOrder.RowMajor);
 
 		MessageOK.ShowIfOpen();

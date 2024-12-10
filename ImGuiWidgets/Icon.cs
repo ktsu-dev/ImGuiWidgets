@@ -295,10 +295,12 @@ public static partial class ImGuiWidgets
 		private static void HorizontalLayout(string label, uint textureId, Vector2 imageSize, Vector2 labelSize, Vector2 boundingBoxSize, Vector2 itemSpacing, Vector4 color, Vector2 cursorStartPos)
 		{
 			ImGui.Image((nint)textureId, imageSize, Vector2.Zero, Vector2.One, color);
-			var leftAlign = new Vector2(0, boundingBoxSize.Y);
+			var leftAlign = new Vector2(labelSize.X, boundingBoxSize.Y);
 			ImGui.SetCursorScreenPos(cursorStartPos + new Vector2(imageSize.X + itemSpacing.X, 0));
-			Alignment.CenterWithin(labelSize, leftAlign);
-			ImGui.TextUnformatted(label);
+			using (new Alignment.CenterWithin(labelSize, leftAlign))
+			{
+				ImGui.TextUnformatted(label);
+			}
 		}
 	}
 }
