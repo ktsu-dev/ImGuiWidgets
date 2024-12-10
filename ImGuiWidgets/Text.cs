@@ -16,9 +16,11 @@ public static partial class ImGuiWidgets
 
 		public static void Centered(string text)
 		{
-			float textWidth = ImGui.CalcTextSize(text).X;
-			Alignment.Center(textWidth);
-			ImGui.TextUnformatted(text);
+			var textSize = ImGui.CalcTextSize(text);
+			using (new Alignment.Center(textSize))
+			{
+				ImGui.TextUnformatted(text);
+			}
 		}
 
 		public static void CenteredWithin(string text, float width) => CenteredWithin(text, width, false);
@@ -30,9 +32,11 @@ public static partial class ImGuiWidgets
 				text = Clip(text, width);
 			}
 
-			float textWidth = ImGui.CalcTextSize(text).X;
-			Alignment.CenterWithin(textWidth, width);
-			ImGui.TextUnformatted(text);
+			var textSize = ImGui.CalcTextSize(text);
+			using (new Alignment.Center(textSize))
+			{
+				ImGui.TextUnformatted(text);
+			}
 		}
 
 		public static string Clip(string text, float width)
