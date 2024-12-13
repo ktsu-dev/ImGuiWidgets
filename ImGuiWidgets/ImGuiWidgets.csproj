@@ -6,10 +6,10 @@
 
   <ItemGroup>
     <PackageReference Include="ImGui.NET" Version="1.91.0.1" />
-    <PackageReference Include="ktsu.Extensions" Version="1.0.36" />
+    <PackageReference Include="ktsu.Extensions" Version="1.0.37" />
     <PackageReference Include="ktsu.CaseConverter" Version="1.0.19" />
     <PackageReference Include="ktsu.FuzzySearch" Version="1.0.0" />
-    <PackageReference Include="ktsu.ImGuiStyler" Version="1.0.0" />
+    <PackageReference Include="ktsu.ImGuiStyler" Version="1.0.1" />
     <PackageReference Include="ktsu.ScopedAction" Version="1.0.1" />
     <PackageReference Include="ktsu.StrongPaths" Version="1.1.35" />
     <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="9.0.0" />
