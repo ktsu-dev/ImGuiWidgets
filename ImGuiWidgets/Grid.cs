@@ -8,29 +8,46 @@ using ImGuiNET;
 /// </summary>
 public static partial class ImGuiWidgets
 {
+	/// <summary>
+	/// Gets or sets a value indicating whether to enable grid debug drawing.
+	/// </summary>
 	public static bool EnableGridDebugDraw { get; set; }
+
+	/// <summary>
+	/// Specifies the order in which grid items are displayed.
+	/// </summary>
+	/// <remarks>
+	/// <see cref="RowMajor"/> displays items left to right before moving to the next row.
+	/// <see cref="ColumnMajor"/> displays items top to bottom before moving to the next column.
+	/// </remarks>
 	public enum GridOrder
 	{
-		// Items are displayed in order left to right before dropping to the next row
-		// Recommended for when displaying grids of icons
-		// [ [1] [2] [3] ]
-		// [ [4] [5] [6] ]
-		// OR
-		// [ [1] [2] [3] [4] [5] ]
-		// [ [6]                 ]
+		/// <summary>
+		/// Items are displayed in order left to right before dropping to the next row.
+		/// Recommended for when displaying grids of icons.
+		/// Example:
+		/// [ [1] [2] [3] ]
+		/// [ [4] [5] [6] ]
+		/// OR
+		/// [ [1] [2] [3] [4] [5] ]
+		/// [ [6]                 ]
+		/// </summary>
 		RowMajor,
-		// Items are displayed top to bottom before moving to the next column
-		// Recommended when displaying tables of data
-		// Note: This will never display uneven rows that have more than 1 item
-		// missing relative to them
-		// [ [1] [3] [5] ]
-		// [ [2] [4] [6] ]
-		// OR
-		// [ [1] [3] [5] ]
-		// [ [2] [4]     ]
-		// NEVER
-		// [ [1] [3] [5] ]
-		// [ [2]         ]
+		/// <summary>
+		/// Items are displayed top to bottom before moving to the next column.
+		/// Recommended when displaying tables of data.
+		/// Note: This will never display uneven rows that have more than 1 item
+		/// missing relative to them.
+		/// Example:
+		/// [ [1] [3] [5] ]
+		/// [ [2] [4] [6] ]
+		/// OR
+		/// [ [1] [3] [5] ]
+		/// [ [2] [4]     ]
+		/// NEVER
+		/// [ [1] [3] [5] ]
+		/// [ [2]         ]
+		/// </summary>
 		ColumnMajor,
 	}
 
@@ -59,8 +76,14 @@ public static partial class ImGuiWidgets
 	/// <param name="measureDelegate">The delegate to measure the size of each item.</param>
 	/// <param name="drawDelegate">The delegate to draw each item.</param>
 	/// <param name="gridOrder">What ordering should grid items use</param>
-	public static void Grid<T>(IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate, GridOrder gridOrder) =>
+	public static void Grid<T>(IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate, GridOrder gridOrder)
+	{
+		ArgumentNullException.ThrowIfNull(items);
+		ArgumentNullException.ThrowIfNull(measureDelegate);
+		ArgumentNullException.ThrowIfNull(drawDelegate);
+
 		GridImpl.Show(items, measureDelegate, drawDelegate, gridOrder);
+	}
 
 	/// <summary>
 	/// Contains the implementation details for rendering grids.
@@ -79,7 +102,7 @@ public static partial class ImGuiWidgets
 		{
 			var itemSpacing = ImGui.GetStyle().ItemSpacing;
 			var itemList = items.ToArray();
-			var itemDimensions = items.Select(i => measureDelegate(i) + itemSpacing).ToArray();
+			var itemDimensions = itemList.Select(i => measureDelegate(i) + itemSpacing).ToArray();
 			var contentRegionAvailable = ImGui.GetContentRegionAvail();
 			int numColumns = 1;
 
@@ -110,8 +133,8 @@ public static partial class ImGuiWidgets
 						for (int i = 0; i < numColumns; i++)
 						{
 							int colOffset = i * numRowsForColumns;
-							var colItems = itemDimensions.Skip(colOffset).Take(numRowsForColumns);
-							if (colItems.Any())
+							var colItems = itemDimensions.Skip(colOffset).Take(numRowsForColumns).ToArray();
+							if (colItems.Length != 0)
 							{
 								maxRowWidth += colItems.Max(item => item.X) + itemSpacing.X;
 							}

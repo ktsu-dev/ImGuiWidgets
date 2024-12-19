@@ -1,14 +1,178 @@
-# ImGuiWidgets
+# ktsu.ImGuiWidgets
 
-A library for custom widgets using ImGui.NET.
+ImGuiWidgets is a library of custom widgets using ImGui.NET. This library provides a variety of widgets and utilities to enhance your ImGui-based applications.
 
-Includes:
+## Features
 
-Knobs ported from: https://github.com/imgui-works/imgui-knobs-dial-gauge-meter
+- **Knobs**: Ported to .NET from [imgui-works/imgui-knobs-dial-gauge-meter](https://github.com/imgui-works/imgui-knobs-dial-gauge-meter)
+- **Resizable Layout Dividers**: Draggable layout dividers for resizable layouts
+- **Icons**: Customizable icons with various alignment options and event delegates
+- **Grid**: Flexible grid layout for displaying items
+- **Color Indicator**: An indicator that displays a color when enabled
+- **Image**: An image widget with alignment options
+- **Text**: A text widget with alignment options
+- **Tree**: A tree widget for displaying hierarchical data
+- **Scoped Id**: A utility class for creating scoped IDs
 
-Resizable Layout Dividers
+## Installation
 
-Input Popups
-- String
-- Integer
-- Float
+To install ImGuiWidgets, you can add the library to your .NET project using the following command:
+
+```bash
+dotnet add package ktsu.ImGuiWidgets
+```
+
+## Usage
+
+To use ImGuiWidgets, you need to include the `ktsu.ImGuiWidgets` namespace in your code:
+```csharp
+using ktsu.ImGuiWidgets;
+```
+
+Then, you can start using the widgets provided by ImGuiWidgets in your ImGui-based applications.
+
+## Examples
+
+Here are some examples of using ImGuiWidgets:
+
+### Knobs
+
+Knobs are useful for creating dial-like controls:
+
+```csharp
+float value = 0.5f;
+float minValue = 0.0f;
+
+ImGuiWidgets.Knob("Knob", ref value, minValue);
+```
+
+### Icons
+
+Icons can be used to display images with various alignment options and event delegates:
+
+```csharp
+float iconWidthEms = 7.5f;
+float iconWidthPx = ImGuiApp.EmsToPx(iconWidthEms);
+
+uint textureId = ImGuiApp.GetOrLoadTexture("icon.png");
+
+ImGuiWidgets.Icon("Click Me", textureId, iconWidthPx, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical, new ImGuiWidgets.IconDelegates()
+{
+	OnClick = () => MessageOK.Open("Click", "You clicked")
+});
+
+ImGui.SameLine();
+ImGuiWidgets.Icon("Double Click Me", textureId, iconWidthPx, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical, new ImGuiWidgets.IconDelegates()
+{
+	OnDoubleClick = () => MessageOK.Open("Double Click", "You clicked twice")
+});
+
+ImGui.SameLine();
+ImGuiWidgets.Icon("Right Click Me", textureId, iconWidthPx, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical, new ImGuiWidgets.IconDelegates()
+{
+	OnContextMenu = () =>
+	{
+		ImGui.MenuItem("Context Menu Item 1");
+		ImGui.MenuItem("Context Menu Item 2");
+		ImGui.MenuItem("Context Menu Item 3");
+	},
+});
+```
+
+### Grid
+
+The grid layout allows you to display items in a flexible grid:
+
+```csharp
+float iconSizeEms = 7.5f;
+float iconSizePx = ImGuiApp.EmsToPx(iconSizeEms);
+
+uint textureId = ImGuiApp.GetOrLoadTexture("icon.png");
+
+ImGuiWidgets.Grid(items, i => ImGuiWidgets.CalcIconSize(i, iconSizePx), (item, cellSize, itemSize) =>
+{
+	ImGuiWidgets.Icon(item, textureId, iconSizePx, Color.White.Value);
+});
+```
+
+### Color Indicator
+
+The color indicator widget displays a color when enabled:
+
+```csharp
+bool enabled = true;
+Color color = Color.Red;
+
+ImGuiWidgets.ColorIndicator("Color Indicator", enabled, color);
+```
+
+### Image
+
+The image widget allows you to display images with alignment options:
+
+```csharp
+uint textureId = ImGuiApp.GetOrLoadTexture("image.png");
+
+ImGuiWidgets.Image(textureId, new Vector2(100, 100));
+```
+
+### Text
+
+The text widget allows you to display text with alignment options:
+
+```csharp
+ImGuiWidgets.Text("Hello, ImGuiWidgets!");
+ImGuiWidgets.TextCentered("Hello, ImGuiWidgets!");
+ImGuiWidgets.TextCenteredWithin("Hello, ImGuiWidgets!", new Vector2(100, 100));
+```
+
+### Tree
+
+The tree widget allows you to display hierarchical data:
+
+```csharp
+using (var tree = new ImGuiWidgets.Tree())
+{
+	for (int i = 0; i < 5; i++)
+	{
+		using (tree.Child)
+		{
+			ImGui.Button($"Hello, Child {i}!");
+			using (var subtree = new ImGuiWidgets.Tree())
+			{
+				using (subtree.Child)
+				{
+					ImGui.Button($"Hello, Grandchild!");
+				}
+			}
+		}
+	}
+}
+```
+
+### Scoped Id
+
+The scoped ID utility class helps in creating scoped IDs for ImGui elements and ensuring they get popped appropriatley:
+
+```csharp
+using (new ImGuiWidgets.ScopedId())
+{
+    ImGui.Button("Hello, Scoped ID!");
+}
+```
+
+## Contributing
+
+Contributions are welcome! For feature requests, bug reports, or questions, please open an issue on the GitHub repository. If you would like to contribute code, please open a pull request with your changes.
+
+## Acknowledgements
+
+ImGuiWidgets is inspired by the following projects:
+
+- [ocornut/imgui](https://github.com/ocornut/imgui)
+- [ImGui.NET](https://github.com/ImGuiNET/ImGui.NET)
+- [imgui-works/imgui-knobs-dial-gauge-meter](https://github.com/imgui-works/imgui-knobs-dial-gauge-meter)
+
+## License
+
+ImGuiWidgets is licensed under the MIT License. See [LICENSE](LICENSE) for more information.

@@ -1,14 +1,32 @@
 namespace ktsu.ImGuiWidgets;
 
+using System.Numerics;
 using ImGuiNET;
 using ktsu.ImGuiStyler;
 
+/// <summary>
+/// Provides custom ImGui widgets.
+/// </summary>
 public static partial class ImGuiWidgets
 {
+	/// <summary>
+	/// Displays the specified text.
+	/// </summary>
+	/// <param name="text">The text to display.</param>
 	public static void Text(string text) => TextImpl.Show(text);
+
+	/// <summary>
+	/// Displays the specified text centered within the available space.
+	/// </summary>
+	/// <param name="text">The text to display.</param>
 	public static void TextCentered(string text) => TextImpl.Centered(text);
-	public static void TextCenteredWithin(string text, float width) => TextImpl.CenteredWithin(text, width);
-	public static void TextCenteredWithin(string text, float width, bool clip) => TextImpl.CenteredWithin(text, width, clip);
+
+	/// <summary>
+	/// Displays the specified text centered horizontally within the given bounds.
+	/// </summary>
+	/// <param name="text">The text to display.</param>
+	/// <param name="containerSize">The size of the container within which the text will be centered.</param>
+	public static void TextCenteredWithin(string text, Vector2 containerSize) => TextImpl.CenteredWithin(text, containerSize);
 
 	internal static class TextImpl
 	{
@@ -23,26 +41,26 @@ public static partial class ImGuiWidgets
 			}
 		}
 
-		public static void CenteredWithin(string text, float width) => CenteredWithin(text, width, false);
+		public static void CenteredWithin(string text, Vector2 containerSize) => CenteredWithin(text, containerSize, false);
 
-		public static void CenteredWithin(string text, float width, bool clip)
+		public static void CenteredWithin(string text, Vector2 containerSize, bool clip)
 		{
 			if (clip)
 			{
-				text = Clip(text, width);
+				text = Clip(text, containerSize);
 			}
 
 			var textSize = ImGui.CalcTextSize(text);
-			using (new Alignment.Center(textSize))
+			using (new Alignment.CenterWithin(textSize, containerSize))
 			{
 				ImGui.TextUnformatted(text);
 			}
 		}
 
-		public static string Clip(string text, float width)
+		public static string Clip(string text, Vector2 containerSize)
 		{
 			float textWidth = ImGui.CalcTextSize(text).X;
-			if (textWidth <= width)
+			if (textWidth <= containerSize.X)
 			{
 				return text;
 			}
@@ -50,7 +68,7 @@ public static partial class ImGuiWidgets
 			string ellipsis = "...";
 			float ellipsisWidth = ImGui.CalcTextSize(ellipsis).X;
 
-			while (textWidth + ellipsisWidth > width && text.Length > 0)
+			while (textWidth + ellipsisWidth > containerSize.X && text.Length > 0)
 			{
 				text = text[..^1];
 				textWidth = ImGui.CalcTextSize(text).X;

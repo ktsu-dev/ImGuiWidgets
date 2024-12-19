@@ -9,6 +9,9 @@ using ktsu.ImGuiStyler;
 /// </summary>
 public static partial class ImGuiWidgets
 {
+	/// <summary>
+	/// Gets or sets a value indicating whether to enable debug drawing for icons.
+	/// </summary>
 	public static bool EnableIconDebugDraw { get; set; }
 
 	/// <summary>
@@ -139,8 +142,13 @@ public static partial class ImGuiWidgets
 	/// <param name="iconAlignment">The alignment of the icon.</param>
 	/// <param name="iconDelegates">The delegates for icon events.</param>
 	/// <returns>True if the icon was clicked; otherwise, false.</returns>
-	public static bool Icon(string label, uint textureId, Vector2 imageSize, Vector4 color, IconAlignment iconAlignment, IconDelegates iconDelegates) =>
-		IconImpl.Show(label, textureId, imageSize, color, iconAlignment, iconDelegates);
+	public static bool Icon(string label, uint textureId, Vector2 imageSize, Vector4 color, IconAlignment iconAlignment, IconDelegates iconDelegates)
+	{
+		ArgumentNullException.ThrowIfNull(label);
+		ArgumentNullException.ThrowIfNull(iconDelegates);
+
+		return IconImpl.Show(label, textureId, imageSize, color, iconAlignment, iconDelegates);
+	}
 
 	/// <summary>
 	/// Calculates the size of the icon with the specified parameters.

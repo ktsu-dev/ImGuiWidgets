@@ -1,5 +1,8 @@
 namespace ktsu.ImGuiWidgets;
 
+/// <summary>
+/// Provides custom ImGui widgets.
+/// </summary>
 public static partial class ImGuiWidgets
 {
 	/// <summary>

@@ -25,6 +25,7 @@ internal class ImGuiWidgetsDemo
 	private static int InitialGridSize { get; } = 32;
 	private int gridItemsToShow = InitialGridSize;
 
+#pragma warning disable CA5394 //Do not use insecure randomness
 	private void OnStart()
 	{
 		DividerContainer.Add(new("Left", 0.25f, ShowLeftPanel));
@@ -41,6 +42,7 @@ internal class ImGuiWidgetsDemo
 			GridStrings.Add(randomString);
 		}
 	}
+#pragma warning restore CA5394 //Do not use insecure randomness
 
 	private void OnTick(float dt) => DividerContainer.Tick(dt);
 
@@ -124,7 +126,7 @@ internal class ImGuiWidgetsDemo
 			OnDoubleClick = () => MessageOK.Open("Double Click", "Yippee!!!!!!!!")
 		});
 		ImGui.SameLine();
-		ImGuiWidgets.Icon("Right Click me", ktsuTexture.TextureId, iconWidthPx, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical, new ImGuiWidgets.IconDelegates()
+		ImGuiWidgets.Icon("Right Click Me", ktsuTexture.TextureId, iconWidthPx, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical, new ImGuiWidgets.IconDelegates()
 		{
 			OnContextMenu = () =>
 			{

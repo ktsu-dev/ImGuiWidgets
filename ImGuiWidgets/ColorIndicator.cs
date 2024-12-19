@@ -1,10 +1,17 @@
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 namespace ktsu.ImGuiWidgets;
 
 using ImGuiNET;
 
+/// <summary>
+/// Provides custom ImGui widgets.
+/// </summary>
 public static partial class ImGuiWidgets
 {
+	/// <summary>
+	/// Displays a color indicator checkbox widget.
+	/// </summary>
+	/// <param name="color">The color to be displayed in the checkbox when it is enabled.</param>
+	/// <param name="enabled">A boolean indicating whether the checkbox is enabled.</param>
 	public static void ColorIndicator(ImColor color, bool enabled) => ColorIndicatorImpl.Show(color, enabled);
 
 	internal static class ColorIndicatorImpl

@@ -5,40 +5,113 @@ using System.Numerics;
 using ImGuiNET;
 
 
-#pragma warning disable CA1711 // Identifiers should not have incorrect suffix
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-
+/// <summary>
+/// Options for customizing the appearance and behavior of the knob widget.
+/// </summary>
 [Flags]
-public enum ImGuiKnobFlags
+public enum ImGuiKnobOptions
 {
+	/// <summary>
+	/// No options selected.
+	/// </summary>
 	None = 0,
+	/// <summary>
+	/// Hides the title of the knob.
+	/// </summary>
 	NoTitle = 1 << 0,
+	/// <summary>
+	/// Disables the input field for the knob.
+	/// </summary>
 	NoInput = 1 << 1,
+	/// <summary>
+	/// Shows a tooltip with the current value when hovering over the knob.
+	/// </summary>
 	ValueTooltip = 1 << 2,
+	/// <summary>
+	/// Allows horizontal dragging to change the knob value.
+	/// </summary>
 	DragHorizontal = 1 << 3,
+	/// <summary>
+	/// Displays the title below the knob.
+	/// </summary>
 	TitleBelow = 1 << 4,
 };
 
+
+/// <summary>
+/// Variants for customizing the visual appearance of the knob widget.
+/// </summary>
 [Flags]
 public enum ImGuiKnobVariant
 {
+	/// <summary>
+	/// Represents a knob variant with tick marks.
+	/// </summary>
 	Tick = 1 << 0,
+	/// <summary>
+	/// Represents a knob variant with a dot indicator.
+	/// </summary>
 	Dot = 1 << 1,
+	/// <summary>
+	/// Represents a knob variant with a wiper indicator.
+	/// </summary>
 	Wiper = 1 << 2,
+	/// <summary>
+	/// Represents a knob variant with only a wiper indicator.
+	/// </summary>
 	WiperOnly = 1 << 3,
+	/// <summary>
+	/// Represents a knob variant with a wiper and dot indicator.
+	/// </summary>
 	WiperDot = 1 << 4,
+	/// <summary>
+	/// Represents a knob variant with stepped values.
+	/// </summary>
 	Stepped = 1 << 5,
+	/// <summary>
+	/// Represents a knob variant with a space theme.
+	/// </summary>
 	Space = 1 << 6,
 };
 
+/// <summary>
+/// Provides custom ImGui widgets.
+/// </summary>
 public static partial class ImGuiWidgets
 {
-	public static bool Knob(string label, ref float value, float vMin, float vMax, float speed = 0, string? format = null, ImGuiKnobVariant variant = ImGuiKnobVariant.Tick, float size = 0, ImGuiKnobFlags flags = ImGuiKnobFlags.None, int steps = 10) =>
+	/// <summary>
+	/// Draws a knob widget with a floating-point value.
+	/// </summary>
+	/// <param name="label">The label for the knob.</param>
+	/// <param name="value">The current value of the knob.</param>
+	/// <param name="vMin">The minimum value of the knob.</param>
+	/// <param name="vMax">The maximum value of the knob.</param>
+	/// <param name="speed">The speed at which the knob value changes.</param>
+	/// <param name="format">The format string for displaying the value.</param>
+	/// <param name="variant">The visual variant of the knob.</param>
+	/// <param name="size">The size of the knob.</param>
+	/// <param name="flags">The options for the knob.</param>
+	/// <param name="steps">The number of steps for the knob.</param>
+	/// <returns>True if the value was changed, otherwise false.</returns>
+	public static bool Knob(string label, ref float value, float vMin, float vMax, float speed = 0, string? format = null, ImGuiKnobVariant variant = ImGuiKnobVariant.Tick, float size = 0, ImGuiKnobOptions flags = ImGuiKnobOptions.None, int steps = 10) =>
 		KnobImpl.Draw(label, ref value, vMin, vMax, speed, format, variant, size, flags, steps);
 
-	public static bool Knob(string label, ref int value, int vMin, int vMax, float speed = 0, string? format = null, ImGuiKnobVariant variant = ImGuiKnobVariant.Tick, float size = 0, ImGuiKnobFlags flags = ImGuiKnobFlags.None, int steps = 10) =>
+	/// <summary>
+	/// Draws a knob widget with an integer value.
+	/// </summary>
+	/// <param name="label">The label for the knob.</param>
+	/// <param name="value">The current value of the knob.</param>
+	/// <param name="vMin">The minimum value of the knob.</param>
+	/// <param name="vMax">The maximum value of the knob.</param>
+	/// <param name="speed">The speed at which the knob value changes.</param>
+	/// <param name="format">The format string for displaying the value.</param>
+	/// <param name="variant">The visual variant of the knob.</param>
+	/// <param name="size">The size of the knob.</param>
+	/// <param name="flags">The options for the knob.</param>
+	/// <param name="steps">The number of steps for the knob.</param>
+	/// <returns>True if the value was changed, otherwise false.</returns>
+	public static bool Knob(string label, ref int value, int vMin, int vMax, float speed = 0, string? format = null, ImGuiKnobVariant variant = ImGuiKnobVariant.Tick, float size = 0, ImGuiKnobOptions flags = ImGuiKnobOptions.None, int steps = 10) =>
 		KnobImpl.Draw(label, ref value, vMin, vMax, speed, format, variant, size, flags, steps);
-
 	/// <summary>
 	/// Knob widget for ImGui.NET
 	/// </summary>
@@ -60,13 +133,13 @@ public static partial class ImGuiWidgets
 			}
 		}
 
-		public static bool Draw(string label, ref float value, float vMin, float vMax, float speed = 0, string? format = null, ImGuiKnobVariant variant = ImGuiKnobVariant.Tick, float? size = null, ImGuiKnobFlags flags = ImGuiKnobFlags.None, int steps = 10)
+		public static bool Draw(string label, ref float value, float vMin, float vMax, float speed = 0, string? format = null, ImGuiKnobVariant variant = ImGuiKnobVariant.Tick, float? size = null, ImGuiKnobOptions flags = ImGuiKnobOptions.None, int steps = 10)
 		{
 			format ??= "%.3f";
 			return KnobInternal<float>.BaseKnob(label, ImGuiDataType.Float, ref value, vMin, vMax, speed, format, variant, size, flags, steps);
 		}
 
-		public static bool Draw(string label, ref int value, int vMin, int vMax, float speed = 0, string? format = null, ImGuiKnobVariant variant = ImGuiKnobVariant.Tick, float? size = null, ImGuiKnobFlags flags = ImGuiKnobFlags.None, int steps = 10)
+		public static bool Draw(string label, ref int value, int vMin, int vMax, float speed = 0, string? format = null, ImGuiKnobVariant variant = ImGuiKnobVariant.Tick, float? size = null, ImGuiKnobOptions flags = ImGuiKnobOptions.None, int steps = 10)
 		{
 			format ??= "%if";
 			return KnobInternal<int>.BaseKnob(label, ImGuiDataType.S32, ref value, vMin, vMax, speed, format, variant, size, flags, steps);
@@ -135,7 +208,7 @@ public static partial class ImGuiWidgets
 
 			private static float InverseLerp(TDataType min, TDataType max, TDataType value) => float.CreateSaturating(value - min) / float.CreateSaturating(max - min);
 
-			public KnobInternal(string label_, ImGuiDataType dataType, ref TDataType value, TDataType vMin, TDataType vMax, float speed, float radius_, string format, ImGuiKnobFlags flags)
+			public KnobInternal(string label_, ImGuiDataType dataType, ref TDataType value, TDataType vMin, TDataType vMax, float speed, float radius_, string format, ImGuiKnobOptions flags)
 			{
 				Radius = radius_;
 				T = InverseLerp(vMin, vMax, value);
@@ -154,7 +227,7 @@ public static partial class ImGuiWidgets
 				AngleSin = MathF.Sin(Angle);
 			}
 
-			private bool DragBehavior(ImGuiDataType dataType, ref TDataType v, TDataType vMin, TDataType vMax, float speed, string format, ImGuiKnobFlags flags)
+			private bool DragBehavior(ImGuiDataType dataType, ref TDataType v, TDataType vMin, TDataType vMax, float speed, string format, ImGuiKnobOptions flags)
 			{
 				float floatValue = float.CreateSaturating(v);
 				float floatMin = float.CreateSaturating(vMin);
@@ -175,7 +248,7 @@ public static partial class ImGuiWidgets
 				speed = MathF.Max(speed, GetMinimumStepAtDecimalPrecision(decimalPrecision));
 
 				var mouseDelta = ImGui.GetIO().MouseDelta;
-				float diff = (flags.HasFlag(ImGuiKnobFlags.DragHorizontal) ? mouseDelta.X : -mouseDelta.Y) * speed;
+				float diff = (flags.HasFlag(ImGuiKnobOptions.DragHorizontal) ? mouseDelta.X : -mouseDelta.Y) * speed;
 
 				diff = IsActive ? diff : 0.0f;
 
@@ -421,7 +494,7 @@ public static partial class ImGuiWidgets
 				return lines;
 			}
 
-			public static KnobInternal<TDataType> KnobWithDrag(string label, ImGuiDataType dataType, ref TDataType value, TDataType vMin, TDataType vMax, float speed, string format, float? size, ImGuiKnobFlags flags)
+			public static KnobInternal<TDataType> KnobWithDrag(string label, ImGuiDataType dataType, ref TDataType value, TDataType vMin, TDataType vMax, float speed, string format, float? size, ImGuiKnobOptions flags)
 			{
 				speed = speed == 0 ? float.CreateSaturating(vMax - vMin) / 250.0f : speed;
 				ImGui.PushID(label);
@@ -436,7 +509,7 @@ public static partial class ImGuiWidgets
 
 				float maxTitleLineWidth = 0.0f;
 
-				if (!flags.HasFlag(ImGuiKnobFlags.NoTitle))
+				if (!flags.HasFlag(ImGuiKnobOptions.NoTitle))
 				{
 					maxTitleLineWidth = titleLines.Max(line => ImGui.CalcTextSize(line).X);
 				}
@@ -452,7 +525,7 @@ public static partial class ImGuiWidgets
 				// This is probably not the best solution, but seems to work for now
 				//ImGui.GetCurrentWindow().DC.CurrLineTextBaseOffset = 0;
 
-				if (!flags.HasFlag(ImGuiKnobFlags.TitleBelow))
+				if (!flags.HasFlag(ImGuiKnobOptions.TitleBelow))
 				{
 					DrawTitle(flags, maxTitleLineWidth, titleLines);
 				}
@@ -462,7 +535,7 @@ public static partial class ImGuiWidgets
 				var k = new KnobInternal<TDataType>(label, dataType, ref value, vMin, vMax, speed, width * 0.5f, format, flags);
 
 				// Draw tooltip
-				if (flags.HasFlag(ImGuiKnobFlags.ValueTooltip) && (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled) || ImGui.IsItemActive()))
+				if (flags.HasFlag(ImGuiKnobOptions.ValueTooltip) && (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled) || ImGui.IsItemActive()))
 				{
 					ImGui.BeginTooltip();
 					ImGui.Text(string.Format(CultureInfo.CurrentCulture, format, value));
@@ -470,7 +543,7 @@ public static partial class ImGuiWidgets
 				}
 
 				// Draw input
-				if (!flags.HasFlag(ImGuiKnobFlags.NoInput))
+				if (!flags.HasFlag(ImGuiKnobOptions.NoInput))
 				{
 					ImGui.SetCursorPosX(ImGui.GetCursorPosX() + knobPadding);
 					unsafe
@@ -484,7 +557,7 @@ public static partial class ImGuiWidgets
 					}
 				}
 
-				if (flags.HasFlag(ImGuiKnobFlags.TitleBelow))
+				if (flags.HasFlag(ImGuiKnobOptions.TitleBelow))
 				{
 					DrawTitle(flags, maxTitleLineWidth, titleLines);
 				}
@@ -495,9 +568,9 @@ public static partial class ImGuiWidgets
 
 				return k;
 
-				static void DrawTitle(ImGuiKnobFlags flags, float width, List<string> titleLines)
+				static void DrawTitle(ImGuiKnobOptions flags, float width, List<string> titleLines)
 				{
-					if (!flags.HasFlag(ImGuiKnobFlags.NoTitle))
+					if (!flags.HasFlag(ImGuiKnobOptions.NoTitle))
 					{
 						foreach (string line in titleLines)
 						{
@@ -509,7 +582,7 @@ public static partial class ImGuiWidgets
 				}
 			}
 
-			public static bool BaseKnob(string label, ImGuiDataType dataType, ref TDataType value, TDataType vMin, TDataType vMax, float speed, string format, ImGuiKnobVariant variant, float? size, ImGuiKnobFlags flags, int steps = 10)
+			public static bool BaseKnob(string label, ImGuiDataType dataType, ref TDataType value, TDataType vMin, TDataType vMax, float speed, string format, ImGuiKnobVariant variant, float? size, ImGuiKnobOptions flags, int steps = 10)
 			{
 
 				var knob = KnobWithDrag(label, dataType, ref value, vMin, vMax, speed, format, size, flags);

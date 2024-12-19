@@ -6,6 +6,9 @@ using System.Numerics;
 using Extensions;
 using ImGuiNET;
 
+/// <summary>
+/// Provides custom ImGui widgets.
+/// </summary>
 public static partial class ImGuiWidgets
 {
 	/// <summary>

@@ -1,5 +1,3 @@
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-
 namespace ktsu.ImGuiWidgets;
 
 using System.Numerics;
@@ -7,8 +5,14 @@ using ImGuiNET;
 using ktsu.ImGuiStyler;
 using ktsu.ScopedAction;
 
+/// <summary>
+/// Provides custom ImGui widgets.
+/// </summary>
 public static partial class ImGuiWidgets
 {
+	/// <summary>
+	/// Represents a tree structure widget in ImGui with custom drawing logic.
+	/// </summary>
 	public class Tree : ScopedAction
 	{
 		private Vector2 CursorStart { get; init; }
@@ -23,6 +27,10 @@ public static partial class ImGuiWidgets
 		private const float LineThickness = 2f;
 		private const float HalfLineThickness = LineThickness / 2f;
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="Tree"/> class.
+		/// Sets up the initial cursor position, indent width, item spacing, frame height, and drawing logic for the tree structure.
+		/// </summary>
 		public Tree() : base()
 		{
 			ImGui.Indent();
@@ -45,8 +53,15 @@ public static partial class ImGuiWidgets
 			};
 		}
 
+		/// <summary>
+		/// Gets a new instance of the <see cref="TreeChild"/> class, representing a child node in the tree structure.
+		/// </summary>
 		public TreeChild Child => new(this);
 
+		/// <summary>
+		/// Represents a child node in the tree structure.
+		/// </summary>
+		/// <param name="parent">The parent tree node.</param>
 		public class TreeChild(Tree parent) : ScopedAction(
 			onOpen: () =>
 				{
