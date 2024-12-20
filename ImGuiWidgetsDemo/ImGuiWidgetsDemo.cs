@@ -23,7 +23,12 @@ internal class ImGuiWidgetsDemo
 
 	private List<string> GridStrings { get; } = [];
 	private static int InitialGridSize { get; } = 32;
-	private int gridItemsToShow = InitialGridSize;
+	private int GridItemsToShow { get; set; } = InitialGridSize;
+	private ImGuiWidgets.GridOrder GridOrder { get; set; } = ImGuiWidgets.GridOrder.RowMajor;
+	private ImGuiWidgets.GridAlignment GridAlignment { get; set; } = ImGuiWidgets.GridAlignment.Left;
+	private ImGuiWidgets.IconAlignment GridIconAlignment { get; set; } = ImGuiWidgets.IconAlignment.Vertical;
+	private bool GridIconSizeBig { get; set; } = true;
+	private bool GridIconCenterWithinCell { get; set; } = true;
 
 #pragma warning disable CA5394 //Do not use insecure randomness
 	private void OnStart()
@@ -136,38 +141,80 @@ internal class ImGuiWidgetsDemo
 			},
 		});
 
-		float iconSizePx = ImGuiApp.EmsToPx(2.5f);
-
 		ImGui.NewLine();
 
-		bool showGridDebug = ImGuiWidgets.EnableGridDebugDraw;
-		if (ImGui.Checkbox("Show Grid Debug", ref showGridDebug))
+		if (ImGui.CollapsingHeader("Grid Settings"))
 		{
-			ImGuiWidgets.EnableGridDebugDraw = showGridDebug;
-		}
-		bool showIconDebug = ImGuiWidgets.EnableIconDebugDraw;
-		if (ImGui.Checkbox("Show Icon Debug", ref showIconDebug))
-		{
-			ImGuiWidgets.EnableIconDebugDraw = showIconDebug;
-		}
-		ImGui.SliderInt("Grid items to show", ref gridItemsToShow, 1, GridStrings.Count);
-
-		ImGui.SeparatorText("Grid (Column Major) Icon Alignment Horizontal");
-		ImGuiWidgets.Grid(GridStrings.Take(gridItemsToShow), i => ImGuiWidgets.CalcIconSize(i, iconSizePx), (item, cellSize, itemSize) =>
-		{
-			ImGuiWidgets.Icon(item, ktsuTexture.TextureId, iconSizePx, Color.White.Value);
-		}, ImGuiWidgets.GridOrder.ColumnMajor);
-
-		ImGui.NewLine();
-		ImGui.SeparatorText("Grid (Row Major) Icon Alignment Vertical");
-		float bigIconSize = iconSizePx * 2;
-		ImGuiWidgets.Grid(GridStrings.Take(gridItemsToShow), i => ImGuiWidgets.CalcIconSize(i, bigIconSize, ImGuiWidgets.IconAlignment.Vertical), (item, cellSize, itemSize) =>
-		{
-			using (new Alignment.CenterWithin(itemSize, cellSize))
+			bool showGridDebug = ImGuiWidgets.EnableGridDebugDraw;
+			if (ImGui.Checkbox("Show Grid Debug", ref showGridDebug))
 			{
-				ImGuiWidgets.Icon(item, ktsuTexture.TextureId, bigIconSize, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical);
+				ImGuiWidgets.EnableGridDebugDraw = showGridDebug;
 			}
-		}, ImGuiWidgets.GridOrder.RowMajor);
+			bool showIconDebug = ImGuiWidgets.EnableIconDebugDraw;
+			if (ImGui.Checkbox("Show Icon Debug", ref showIconDebug))
+			{
+				ImGuiWidgets.EnableIconDebugDraw = showIconDebug;
+			}
+
+			{
+				bool gridIconCenterWithinCell = GridIconCenterWithinCell;
+				bool gridIconSizeBig = GridIconSizeBig;
+				int gridItemsToShow = GridItemsToShow;
+				int gridOrder = (int)GridOrder;
+				string[] gridOrderComboNames = Enum.GetNames<ImGuiWidgets.GridOrder>();
+				int gridAlignment = (int)GridAlignment;
+				string[] gridAlignmentComboNames = Enum.GetNames<ImGuiWidgets.GridAlignment>();
+				int gridIconAlignment = (int)GridIconAlignment;
+				string[] gridIconAlignmentComboNames = Enum.GetNames<ImGuiWidgets.IconAlignment>();
+
+				if (ImGui.Checkbox("Use Big Grid Icons", ref gridIconSizeBig))
+				{
+					GridIconSizeBig = gridIconSizeBig;
+				}
+				if (ImGui.Checkbox("Center within cell", ref gridIconCenterWithinCell))
+				{
+					GridIconCenterWithinCell = gridIconCenterWithinCell;
+				}
+				if (ImGui.SliderInt("Items to show", ref gridItemsToShow, 1, GridStrings.Count))
+				{
+					GridItemsToShow = gridItemsToShow;
+				}
+				if (ImGui.Combo("Order", ref gridOrder, gridOrderComboNames, gridOrderComboNames.Length))
+				{
+					GridOrder = (ImGuiWidgets.GridOrder)gridOrder;
+				}
+				if (ImGui.Combo("Alignment", ref gridAlignment, gridAlignmentComboNames, gridAlignmentComboNames.Length))
+				{
+					GridAlignment = (ImGuiWidgets.GridAlignment)gridAlignment;
+				}
+				if (ImGui.Combo("Icon Alignment", ref gridIconAlignment, gridIconAlignmentComboNames, gridIconAlignmentComboNames.Length))
+				{
+					GridIconAlignment = (ImGuiWidgets.IconAlignment)gridIconAlignment;
+				}
+			}
+		}
+
+		float iconSizePx = ImGuiApp.EmsToPx(2.5f);
+		float bigIconSizePx = iconSizePx * 2;
+		float gridIconSize = GridIconSizeBig ? bigIconSizePx : iconSizePx;
+
+		ImGui.Separator();
+
+		ImGuiWidgets.Grid(GridStrings.Take(GridItemsToShow), i => ImGuiWidgets.CalcIconSize(i, gridIconSize, GridIconAlignment), (item, cellSize, itemSize) =>
+		{
+			// TODO: Make CenterWithin take an enabled arg to avoid this duplication 
+			if (GridIconCenterWithinCell)
+			{
+				using (new Alignment.CenterWithin(itemSize, cellSize))
+				{
+					ImGuiWidgets.Icon(item, ktsuTexture.TextureId, gridIconSize, Color.White.Value, GridIconAlignment);
+				}
+			}
+			else
+			{
+				ImGuiWidgets.Icon(item, ktsuTexture.TextureId, gridIconSize, Color.White.Value, GridIconAlignment);
+			}
+		}, GridOrder, GridAlignment);
 
 		MessageOK.ShowIfOpen();
 	}
