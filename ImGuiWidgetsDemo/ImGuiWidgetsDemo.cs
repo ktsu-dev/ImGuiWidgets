@@ -25,7 +25,7 @@ internal class ImGuiWidgetsDemo
 	private static int InitialGridSize { get; } = 32;
 	private int GridItemsToShow { get; set; } = InitialGridSize;
 	private ImGuiWidgets.GridOrder GridOrder { get; set; } = ImGuiWidgets.GridOrder.RowMajor;
-	private ImGuiWidgets.GridAlignment GridAlignment { get; set; } = ImGuiWidgets.GridAlignment.Left;
+	private ImGuiWidgets.GridRowAlignment GridRowAlignment { get; set; } = ImGuiWidgets.GridRowAlignment.Left;
 	private ImGuiWidgets.IconAlignment GridIconAlignment { get; set; } = ImGuiWidgets.IconAlignment.Vertical;
 	private bool GridIconSizeBig { get; set; } = true;
 	private bool GridIconCenterWithinCell { get; set; } = true;
@@ -162,8 +162,8 @@ internal class ImGuiWidgetsDemo
 				int gridItemsToShow = GridItemsToShow;
 				int gridOrder = (int)GridOrder;
 				string[] gridOrderComboNames = Enum.GetNames<ImGuiWidgets.GridOrder>();
-				int gridAlignment = (int)GridAlignment;
-				string[] gridAlignmentComboNames = Enum.GetNames<ImGuiWidgets.GridAlignment>();
+				int gridAlignment = (int)GridRowAlignment;
+				string[] gridAlignmentComboNames = Enum.GetNames<ImGuiWidgets.GridRowAlignment>();
 				int gridIconAlignment = (int)GridIconAlignment;
 				string[] gridIconAlignmentComboNames = Enum.GetNames<ImGuiWidgets.IconAlignment>();
 
@@ -185,7 +185,7 @@ internal class ImGuiWidgetsDemo
 				}
 				if (ImGui.Combo("Alignment", ref gridAlignment, gridAlignmentComboNames, gridAlignmentComboNames.Length))
 				{
-					GridAlignment = (ImGuiWidgets.GridAlignment)gridAlignment;
+					GridRowAlignment = (ImGuiWidgets.GridRowAlignment)gridAlignment;
 				}
 				if (ImGui.Combo("Icon Alignment", ref gridIconAlignment, gridIconAlignmentComboNames, gridIconAlignmentComboNames.Length))
 				{
@@ -214,7 +214,7 @@ internal class ImGuiWidgetsDemo
 			{
 				ImGuiWidgets.Icon(item, ktsuTexture.TextureId, gridIconSize, Color.White.Value, GridIconAlignment);
 			}
-		}, GridOrder, GridAlignment);
+		}, GridOrder, GridRowAlignment);
 
 		MessageOK.ShowIfOpen();
 	}

@@ -58,7 +58,7 @@ public static partial class ImGuiWidgets
 	/// <see cref="Left"/>Items will start from the left edge of the grid
 	/// <see cref="Center"/>Items will be displayed evenly spaced out and centered on a per row basis
 	/// </remarks>
-	public enum GridAlignment
+	public enum GridRowAlignment
 	{
 		/// <summary>
 		/// Each row will start from the left edge of the grid
@@ -69,8 +69,9 @@ public static partial class ImGuiWidgets
 		Left,
 		/// <summary>
 		/// Items will be displayed evenly spaced out and centered on a per row basis
-		/// As this is per row, the rows will likely not appear aligned
-		///  Example:
+		/// As this is per row, the rows will likely not appear aligned unless each
+		/// row contains the exact same number of items with the exact same size
+		/// Example:
 		/// [ [1] [2] [3] ]
 		/// [   [4] [5]   ]
 		/// </summary>
@@ -108,7 +109,7 @@ public static partial class ImGuiWidgets
 		ArgumentNullException.ThrowIfNull(measureDelegate);
 		ArgumentNullException.ThrowIfNull(drawDelegate);
 
-		GridImpl.Show(items, measureDelegate, drawDelegate, gridOrder, GridAlignment.Left);
+		GridImpl.Show(items, measureDelegate, drawDelegate, gridOrder, GridRowAlignment.Left);
 	}
 
 	/// <summary>
@@ -120,7 +121,7 @@ public static partial class ImGuiWidgets
 	/// <param name="drawDelegate">The delegate to draw each item.</param>
 	/// <param name="gridOrder">What ordering should grid items use</param>
 	/// <param name="gridAlignment">What alignment should grid items use</param>
-	public static void Grid<T>(IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate, GridOrder gridOrder, GridAlignment gridAlignment)
+	public static void Grid<T>(IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate, GridOrder gridOrder, GridRowAlignment gridAlignment)
 	{
 		ArgumentNullException.ThrowIfNull(items);
 		ArgumentNullException.ThrowIfNull(measureDelegate);
@@ -143,7 +144,7 @@ public static partial class ImGuiWidgets
 		/// <param name="drawDelegate">The delegate to draw each item.</param>
 		/// <param name="gridOrder">What ordering should grid items use</param>
 		/// <param name="gridAlignment">What alignment should grid items use</param>
-		public static void Show<T>(IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate, GridOrder gridOrder, GridAlignment gridAlignment)
+		public static void Show<T>(IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate, GridOrder gridOrder, GridRowAlignment gridAlignment)
 		{
 			var itemSpacing = ImGui.GetStyle().ItemSpacing;
 			var itemList = items.ToArray();
@@ -258,7 +259,7 @@ public static partial class ImGuiWidgets
 				}
 			}
 
-			if (gridAlignment == GridAlignment.Center)
+			if (gridAlignment == GridRowAlignment.Center)
 			{
 				float extraSpace = contentRegionAvailable.X - totalContentWidth;
 				float extraSpacePerColumn = extraSpace / numColumns;
