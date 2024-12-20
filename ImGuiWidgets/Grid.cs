@@ -124,7 +124,7 @@ public static partial class ImGuiWidgets
 								rowWidth = 0f;
 							}
 
-							rowWidth += itemDimensions[i].X + itemSpacing.X;
+							rowWidth += itemDimensions[i].X;
 							maxRowWidth = Math.Max(maxRowWidth, rowWidth);
 						}
 						break;
@@ -136,7 +136,7 @@ public static partial class ImGuiWidgets
 							var colItems = itemDimensions.Skip(colOffset).Take(numRowsForColumns).ToArray();
 							if (colItems.Length != 0)
 							{
-								maxRowWidth += colItems.Max(item => item.X) + itemSpacing.X;
+								maxRowWidth += colItems.Max(item => item.X);
 							}
 						}
 						break;
