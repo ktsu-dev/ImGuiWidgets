@@ -1,3 +1,12 @@
+## v1.1.0 (minor)
+
+Changes since v1.0.0:
+
+- Add API documentation ([@matt-edmondson](https://github.com/matt-edmondson))
+- Add automation scripts for metadata management and versioning ([@matt-edmondson](https://github.com/matt-edmondson))
+- Renamed metadata files ([@matt-edmondson](https://github.com/matt-edmondson))
+- Replace LICENSE file with LICENSE.md and update copyright information ([@matt-edmondson](https://github.com/matt-edmondson))
+
 ## v1.0.14-pre.1 (patch)
 
 Changes since v1.0.13:
