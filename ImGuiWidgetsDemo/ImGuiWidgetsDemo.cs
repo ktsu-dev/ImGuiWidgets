@@ -8,6 +8,25 @@ using ktsu.ImGuiPopups;
 using ktsu.ImGuiWidgets;
 using ktsu.StrongPaths;
 
+/// <summary>
+/// Demo enum values.
+/// </summary>
+public enum EnumValues
+{
+	/// <summary>
+	/// First enum value.
+	/// </summary>
+	Value1,
+	/// <summary>
+	/// Second enum value.
+	/// </summary>
+	ValueB,
+	/// <summary>
+	/// Third enum value.
+	/// </summary>
+	ValueIII,
+}
+
 internal class ImGuiWidgetsDemo
 {
 	private static void Main()
@@ -24,6 +43,7 @@ internal class ImGuiWidgetsDemo
 	private List<string> GridStrings { get; } = [];
 	private static int InitialGridSize { get; } = 32;
 	private int gridItemsToShow = InitialGridSize;
+	private EnumValues selectedEnumValue = EnumValues.Value1;
 
 #pragma warning disable CA5394 //Do not use insecure randomness
 	private void OnStart()
@@ -76,6 +96,8 @@ internal class ImGuiWidgetsDemo
 		ImGuiWidgets.ColorIndicator(Color.Green, true);
 		ImGui.SameLine();
 		ImGuiWidgets.ColorIndicator(Color.Green, false);
+
+		ImGuiWidgets.Combo("Enum Combo", ref selectedEnumValue);
 
 		ImGui.Button("Hello, Tree!");
 		using (var tree = new ImGuiWidgets.Tree())
