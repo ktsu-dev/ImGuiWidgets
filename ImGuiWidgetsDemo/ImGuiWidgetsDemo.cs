@@ -52,10 +52,8 @@ internal class ImGuiWidgetsDemo
 	private string selectedStringValue = "Hello";
 	private readonly Collection<string> possibleStringValues = ["Hello", "World", "Goodbye"];
 	private StrongStringExample selectedStrongString = "Strong Hello".As<StrongStringExample>();
-	private readonly Collection<StrongStringExample> possibleStrongStringValues =
-		[ "Strong Hello".As<StrongStringExample>(),
-		  "Strong World".As<StrongStringExample>(),
-		  "Strong Goodbye".As<StrongStringExample>()];
+	private readonly Collection<StrongStringExample> possibleStrongStringValues = ["Strong Hello".As<StrongStringExample>(),
+		 "Strong World".As<StrongStringExample>(), "Strong Goodbye".As<StrongStringExample>()];
 
 #pragma warning disable CA5394 //Do not use insecure randomness
 	private void OnStart()
