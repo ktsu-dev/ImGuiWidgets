@@ -1,3 +1,15 @@
+## v1.1.1-pre.1 (patch)
+
+Changes since v1.1.0:
+
+- Add a new Combo widget that works with the enum type ([@Damon3000s](https://github.com/Damon3000s))
+- Add an IString and string combo implementation ([@Damon3000s](https://github.com/Damon3000s))
+- Add the new combo to the ImGuiWidgets demo project ([@Damon3000s](https://github.com/Damon3000s))
+- Changed formatting of collection member variable ([@Damon3000s](https://github.com/Damon3000s))
+- Review feedback ([@Damon3000s](https://github.com/Damon3000s))
+- Update the demo project with the new combos ([@Damon3000s](https://github.com/Damon3000s))
+- Updated all packages and fixed errors ([@Damon3000s](https://github.com/Damon3000s))
+
 ## v1.1.0 (minor)
 
 Changes since v1.0.0:
