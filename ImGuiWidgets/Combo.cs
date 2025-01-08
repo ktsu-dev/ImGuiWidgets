@@ -15,12 +15,12 @@ public static partial class ImGuiWidgets
 	/// <returns>If a combo value was selected.</returns>
 	public static bool Combo<TEnum>(string label, ref TEnum selectedValue) where TEnum : Enum
 	{
-		var possibleValues = new Collection<TEnum>((TEnum[])Enum.GetValues(typeof(TEnum)));
-		int currentIndex = possibleValues.IndexOf(selectedValue);
-		string[] possibleValuesNames = possibleValues.Select(e => e.ToString()).ToArray();
-		if (ImGui.Combo(label, ref currentIndex, possibleValuesNames, possibleValues.Count))
+		var possibleValues = Enum.GetValues(typeof(TEnum));
+		int currentIndex = Array.IndexOf(possibleValues, selectedValue);
+		string[] possibleValuesNames = Enum.GetNames(typeof(TEnum));
+		if (ImGui.Combo(label, ref currentIndex, possibleValuesNames, possibleValuesNames.Length))
 		{
-			selectedValue = possibleValues[currentIndex];
+			selectedValue = (TEnum)possibleValues.GetValue(currentIndex)!;
 			return true;
 		}
 		return false;
@@ -40,7 +40,7 @@ public static partial class ImGuiWidgets
 
 		int currentIndex = possibleValues.IndexOf(selectedValue);
 		string[] possibleValuesNames = possibleValues.Select(e => e.ToString()).ToArray();
-		if (ImGui.Combo(label, ref currentIndex, possibleValuesNames, possibleValues.Count))
+		if (ImGui.Combo(label, ref currentIndex, possibleValuesNames, possibleValuesNames.Length))
 		{
 			selectedValue = possibleValues[currentIndex];
 			return true;
@@ -60,8 +60,8 @@ public static partial class ImGuiWidgets
 		ArgumentNullException.ThrowIfNull(possibleValues);
 
 		int currentIndex = possibleValues.IndexOf(selectedValue);
-		string[] possibleValuesNames = possibleValues.Select(e => e.ToString()).ToArray();
-		if (ImGui.Combo(label, ref currentIndex, possibleValuesNames, possibleValues.Count))
+		string[] possibleValuesNames = [.. possibleValues];
+		if (ImGui.Combo(label, ref currentIndex, possibleValuesNames, possibleValuesNames.Length))
 		{
 			selectedValue = possibleValues[currentIndex];
 			return true;
