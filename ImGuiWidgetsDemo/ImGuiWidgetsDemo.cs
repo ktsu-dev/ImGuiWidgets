@@ -24,6 +24,10 @@ internal class ImGuiWidgetsDemo
 	private List<string> GridStrings { get; } = [];
 	private static int InitialGridSize { get; } = 32;
 	private int gridItemsToShow = InitialGridSize;
+	private bool colorIndicator1Enabled = true;
+	private bool colorIndicator2Enabled;
+	private bool colorIndicator3Enabled = true;
+	private bool colorIndicator4Enabled;
 
 #pragma warning disable CA5394 //Do not use insecure randomness
 	private void OnStart()
@@ -69,13 +73,13 @@ internal class ImGuiWidgetsDemo
 		ImGuiWidgets.Knob(nameof(ImGuiKnobVariant.Space), ref value, 0, 1, 0, null, ImGuiKnobVariant.Space);
 		ImGuiWidgets.Knob("Throttle Position", ref value, 0, 1, 0, null, ImGuiKnobVariant.Space);
 
-		ImGuiWidgets.ColorIndicator(Color.Red, true);
+		ImGuiWidgets.ColorIndicator("ColorIndicatorRed1", Color.Red, ref colorIndicator1Enabled);
 		ImGui.SameLine();
-		ImGuiWidgets.ColorIndicator(Color.Red, false);
+		ImGuiWidgets.ColorIndicator("ColorIndicatorRed2", Color.Red, ref colorIndicator2Enabled);
 		ImGui.SameLine();
-		ImGuiWidgets.ColorIndicator(Color.Green, true);
+		ImGuiWidgets.ColorIndicator("ColorIndicatorGreen1", Color.Green, ref colorIndicator3Enabled);
 		ImGui.SameLine();
-		ImGuiWidgets.ColorIndicator(Color.Green, false);
+		ImGuiWidgets.ColorIndicator("ColorIndicatorGreen2", Color.Green, ref colorIndicator4Enabled);
 
 		ImGui.Button("Hello, Tree!");
 		using (var tree = new ImGuiWidgets.Tree())
