@@ -19,7 +19,6 @@ public static partial class ImGuiWidgets
 		public static void Show(ImColor color, bool enabled)
 		{
 			float frameHeight = ImGui.GetFrameHeight();
-
 			ImGui.Dummy(new System.Numerics.Vector2(frameHeight, frameHeight));
 			var dummyRectMin = ImGui.GetItemRectMin();
 			var dummyRectMax = ImGui.GetItemRectMax();
