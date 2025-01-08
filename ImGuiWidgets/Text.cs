@@ -30,8 +30,16 @@ public static partial class ImGuiWidgets
 
 	internal static class TextImpl
 	{
+		/// <summary>
+		/// Displays the specified text.
+		/// </summary>
+		/// <param name="text">The text to display.</param>
 		public static void Show(string text) => ImGui.TextUnformatted(text);
 
+		/// <summary>
+		/// Displays the specified text centered within the available space.
+		/// </summary>
+		/// <param name="text">The text to display.</param>
 		public static void Centered(string text)
 		{
 			var textSize = ImGui.CalcTextSize(text);
@@ -41,8 +49,19 @@ public static partial class ImGuiWidgets
 			}
 		}
 
+		/// <summary>
+		/// Displays the specified text centered horizontally within the given bounds.
+		/// </summary>
+		/// <param name="text">The text to display.</param>
+		/// <param name="containerSize">The size of the container within which the text will be centered.</param>
 		public static void CenteredWithin(string text, Vector2 containerSize) => CenteredWithin(text, containerSize, false);
 
+		/// <summary>
+		/// Displays the specified text centered horizontally within the given bounds, with an option to clip the text.
+		/// </summary>
+		/// <param name="text">The text to display.</param>
+		/// <param name="containerSize">The size of the container within which the text will be centered.</param>
+		/// <param name="clip">If true, the text will be clipped to fit within the container size.</param>
 		public static void CenteredWithin(string text, Vector2 containerSize, bool clip)
 		{
 			if (clip)
@@ -57,6 +76,12 @@ public static partial class ImGuiWidgets
 			}
 		}
 
+		/// <summary>
+		/// Clips the specified text to fit within the given container size, adding an ellipsis if necessary.
+		/// </summary>
+		/// <param name="text">The text to clip.</param>
+		/// <param name="containerSize">The size of the container within which the text must fit.</param>
+		/// <returns>The clipped text with an ellipsis if it exceeds the container size.</returns>
 		public static string Clip(string text, Vector2 containerSize)
 		{
 			float textWidth = ImGui.CalcTextSize(text).X;

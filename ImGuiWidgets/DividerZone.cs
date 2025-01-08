@@ -83,6 +83,10 @@ public static partial class ImGuiWidgets
 			Resizable = resizable;
 		}
 
+		/// <summary>
+		/// Calls the tick delegate if it is set.
+		/// </summary>
+		/// <param name="dt">The delta time since the last tick.</param>
 		internal void Tick(float dt) => TickDelegate?.Invoke(dt);
 	}
 }
