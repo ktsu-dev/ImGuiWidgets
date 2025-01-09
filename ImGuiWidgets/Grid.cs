@@ -181,9 +181,12 @@ public static partial class ImGuiWidgets
 				totalContentWidth = columnWidths.Sum();
 				if (totalContentWidth > contentRegionAvailable.X)
 				{
-					numColumns--;
-					totalContentWidth = previousTotalContentWidth;
-					columnWidths = previousColumnWidths;
+					if (numColumns > 1)
+					{
+						numColumns--;
+						totalContentWidth = previousTotalContentWidth;
+						columnWidths = previousColumnWidths;
+					}
 					break;
 				}
 				// Once we have iterated all items without exceeding the contentRegionAvailable.X we
@@ -228,11 +231,6 @@ public static partial class ImGuiWidgets
 				numColumns++;
 				previousTotalContentWidth = totalContentWidth;
 				previousColumnWidths = columnWidths;
-			}
-
-			if (numColumns < 1)
-			{
-				numColumns = 1;
 			}
 
 			int numRows = (int)Math.Ceiling((float)itemList.Length / numColumns);
