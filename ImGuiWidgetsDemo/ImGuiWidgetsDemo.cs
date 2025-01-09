@@ -7,6 +7,30 @@ using ktsu.ImGuiStyler;
 using ktsu.ImGuiPopups;
 using ktsu.ImGuiWidgets;
 using ktsu.StrongPaths;
+using System.Collections.ObjectModel;
+using ktsu.StrongStrings;
+using ktsu.Extensions;
+
+internal sealed record class StrongStringExample : StrongStringAbstract<StrongStringExample> { }
+
+/// <summary>
+/// Demo enum values.
+/// </summary>
+public enum EnumValues
+{
+	/// <summary>
+	/// First enum value.
+	/// </summary>
+	Value1,
+	/// <summary>
+	/// Second enum value.
+	/// </summary>
+	ValueB,
+	/// <summary>
+	/// Third enum value.
+	/// </summary>
+	ValueIII,
+}
 
 internal class ImGuiWidgetsDemo
 {
@@ -29,6 +53,12 @@ internal class ImGuiWidgetsDemo
 	private ImGuiWidgets.IconAlignment GridIconAlignment { get; set; } = ImGuiWidgets.IconAlignment.Vertical;
 	private bool GridIconSizeBig { get; set; } = true;
 	private bool GridIconCenterWithinCell { get; set; } = true;
+	private EnumValues selectedEnumValue = EnumValues.Value1;
+	private string selectedStringValue = "Hello";
+	private readonly Collection<string> possibleStringValues = ["Hello", "World", "Goodbye"];
+	private StrongStringExample selectedStrongString = "Strong Hello".As<StrongStringExample>();
+	private readonly Collection<StrongStringExample> possibleStrongStringValues = ["Strong Hello".As<StrongStringExample>(),
+		 "Strong World".As<StrongStringExample>(), "Strong Goodbye".As<StrongStringExample>()];
 
 #pragma warning disable CA5394 //Do not use insecure randomness
 	private void OnStart()
@@ -66,6 +96,7 @@ internal class ImGuiWidgetsDemo
 	{
 		ImGui.Text("Left Divider Zone");
 
+		ImGui.SeparatorText("Knobs");
 		ImGuiWidgets.Knob(nameof(ImGuiKnobVariant.Wiper) + "Test Pascal Case", ref value, 0, 1, 0, null, ImGuiKnobVariant.Wiper);
 		ImGuiWidgets.Knob(nameof(ImGuiKnobVariant.WiperOnly), ref value, 0, 1, 0, null, ImGuiKnobVariant.WiperOnly);
 		ImGuiWidgets.Knob(nameof(ImGuiKnobVariant.WiperDot), ref value, 0, 1, 0, null, ImGuiKnobVariant.WiperDot);
@@ -74,6 +105,7 @@ internal class ImGuiWidgetsDemo
 		ImGuiWidgets.Knob(nameof(ImGuiKnobVariant.Space), ref value, 0, 1, 0, null, ImGuiKnobVariant.Space);
 		ImGuiWidgets.Knob("Throttle Position", ref value, 0, 1, 0, null, ImGuiKnobVariant.Space);
 
+		ImGui.SeparatorText("Color Indicators");
 		ImGuiWidgets.ColorIndicator(Color.Red, true);
 		ImGui.SameLine();
 		ImGuiWidgets.ColorIndicator(Color.Red, false);
@@ -82,7 +114,12 @@ internal class ImGuiWidgetsDemo
 		ImGui.SameLine();
 		ImGuiWidgets.ColorIndicator(Color.Green, false);
 
-		ImGui.Button("Hello, Tree!");
+		ImGui.SeparatorText("Combos");
+		ImGuiWidgets.Combo("Enum Combo", ref selectedEnumValue);
+		ImGuiWidgets.Combo("String Combo", ref selectedStringValue, possibleStringValues);
+		ImGuiWidgets.Combo("Strong String Combo", ref selectedStrongString, possibleStrongStringValues);
+
+		ImGui.SeparatorText("Tree");
 		using (var tree = new ImGuiWidgets.Tree())
 		{
 			for (int i = 0; i < 5; i++)

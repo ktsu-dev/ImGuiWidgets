@@ -158,7 +158,7 @@ public static partial class ImGuiWidgets
 			{
 				var zoneSize = CalculateZoneSize(z);
 				ImGui.SetNextWindowPos(advance);
-				ImGui.BeginChild(z.Id, zoneSize, ImGuiChildFlags.Border, ImGuiWindowFlags.NoSavedSettings);
+				ImGui.BeginChild(z.Id, zoneSize, ImGuiChildFlags.Borders, ImGuiWindowFlags.NoSavedSettings);
 				z.Tick(dt);
 				ImGui.EndChild();
 

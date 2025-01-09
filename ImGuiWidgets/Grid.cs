@@ -270,6 +270,8 @@ public static partial class ImGuiWidgets
 			}
 
 			var marginTopLeftCursor = ImGui.GetCursorScreenPos();
+			float gridWidth = contentRegionAvailable.X;
+			float gridHeight = rowHeights.Sum(h => h);
 
 			int numCells = numColumns * numRows;
 			for (int i = 0; i < numCells; i++)
@@ -306,6 +308,9 @@ public static partial class ImGuiWidgets
 				}
 				ImGui.SetCursorScreenPos(advance);
 			}
+
+			ImGui.SetCursorScreenPos(marginTopLeftCursor + new Vector2(gridWidth, 0f));
+			ImGui.Dummy(new Vector2(0, gridHeight));
 		}
 	}
 }

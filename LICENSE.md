@@ -1,6 +1,8 @@
 MIT License
 
-Copyright (c) 2023-2024 ktsu.dev
+https://github.com/ktsu-dev/ImGuiWidgets
+
+Copyright (c) 2023-2025 ktsu.dev contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
