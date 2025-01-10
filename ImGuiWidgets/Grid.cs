@@ -279,7 +279,7 @@ public static partial class ImGuiWidgets
 			Collection<float> columnWidths = [];
 			while (itemsToCount > 0)
 			{
-				int itemCountInColumn = (int)(maxHeight / rowHeight);
+				int itemCountInColumn = Math.Max(1, (int)(maxHeight / rowHeight));
 				var itemsInColumn = remainingItemList.Take(itemCountInColumn).ToArray();
 				columnWidths.Add(itemsInColumn.Max(d => d.X));
 				itemsToCount -= itemCountInColumn;
