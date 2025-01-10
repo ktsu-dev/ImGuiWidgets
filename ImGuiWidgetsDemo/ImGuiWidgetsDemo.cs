@@ -46,8 +46,9 @@ internal class ImGuiWidgetsDemo
 	private ImGuiPopups.MessageOK MessageOK { get; } = new();
 
 	private List<string> GridStrings { get; } = [];
-	private static int InitialGridSize { get; } = 15;
-	private int GridItemsToShow { get; set; } = InitialGridSize;
+	private static int InitialGridItemCount { get; } = 32;
+	private int GridItemsToShow { get; set; } = InitialGridItemCount;
+	private float GridHeight { get; set; } = 500f;
 	private ImGuiWidgets.GridOrder GridOrder { get; set; } = ImGuiWidgets.GridOrder.RowMajor;
 	private ImGuiWidgets.IconAlignment GridIconAlignment { get; set; } = ImGuiWidgets.IconAlignment.Vertical;
 	private bool GridIconSizeBig { get; set; } = true;
@@ -65,7 +66,7 @@ internal class ImGuiWidgetsDemo
 		DividerContainer.Add(new("Left", 0.25f, ShowLeftPanel));
 		DividerContainer.Add(new("Right", 0.75f, ShowRightPanel));
 
-		for (int i = 0; i < InitialGridSize; i++)
+		for (int i = 0; i < InitialGridItemCount; i++)
 		{
 			string randomString = $"{i}:";
 			int randomAmount = new Random().Next(2, 32);
@@ -75,7 +76,6 @@ internal class ImGuiWidgetsDemo
 			}
 			GridStrings.Add(randomString);
 		}
-		//GridStrings.AddRange(["0:C~(Mc,QQ4f", "1:T1ly}0R\"yo%tfsln6Z", "2:{^$Tpux9.W{}+wmsWFuI", "3:Oa6|f\\){}4{WRW'p1.:E(4", "4:v1Bv{k'=\"4rNMM", "5:)\\Y\"^y9BC$]{VJG$)E$Q+W(r/t-=uB8"]);
 	}
 #pragma warning restore CA5394 //Do not use insecure randomness
 
@@ -199,6 +199,7 @@ internal class ImGuiWidgetsDemo
 				int gridItemsToShow = GridItemsToShow;
 				var gridOrder = GridOrder;
 				var gridIconAlignment = GridIconAlignment;
+				float gridHeight = GridHeight;
 
 				if (ImGui.Checkbox("Use Big Grid Icons", ref gridIconSizeBig))
 				{
@@ -220,18 +221,21 @@ internal class ImGuiWidgetsDemo
 				{
 					GridIconAlignment = gridIconAlignment;
 				}
+				if (ImGui.SliderFloat("Grid Height", ref gridHeight, 1f, 1000f))
+				{
+					GridHeight = gridHeight;
+				}
 			}
 		}
 
 		float iconSizePx = ImGuiApp.EmsToPx(2.5f);
 		float bigIconSizePx = iconSizePx * 2;
 		float gridIconSize = GridIconSizeBig ? bigIconSizePx : iconSizePx;
+		var gridSize = new Vector2(ImGui.GetContentRegionAvail().X, GridHeight);
 
 		ImGui.Separator();
 
-		var contentRegionAvail = ImGui.GetContentRegionAvail();
-		var gridSize = contentRegionAvail; //new Vector2(contentRegionAvail.X, 1000f);
-		ImGuiWidgets.Grid2(GridStrings.Take(GridItemsToShow), i => ImGuiWidgets.CalcIconSize(i, gridIconSize, GridIconAlignment), (item, cellSize, itemSize) =>
+		ImGuiWidgets.Grid(GridStrings.Take(GridItemsToShow), i => ImGuiWidgets.CalcIconSize(i, gridIconSize, GridIconAlignment), (item, cellSize, itemSize) =>
 		{
 			if (GridIconCenterWithinCell)
 			{

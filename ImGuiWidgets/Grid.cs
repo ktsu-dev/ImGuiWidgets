@@ -78,7 +78,7 @@ public static partial class ImGuiWidgets
 	/// <param name="drawDelegate">The delegate to draw each item.</param>
 	/// <param name="gridOrder">What ordering should grid items use</param>
 	/// <param name="size">Size of the grid</param>
-	public static void Grid2<T>(IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate, GridOrder gridOrder, Vector2 size)
+	public static void Grid<T>(IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate, GridOrder gridOrder, Vector2 size)
 	{
 		ArgumentNullException.ThrowIfNull(items);
 		ArgumentNullException.ThrowIfNull(measureDelegate);
@@ -109,26 +109,14 @@ public static partial class ImGuiWidgets
 			internal int ColumnIndex { get; set; }
 		}
 
-		internal static CellData CalculateCellData(int itemIndex, int columnCount, int rowCount, GridOrder gridOrder)
+		internal static CellData CalculateCellData(int itemIndex, int columnCount)
 		{
-			var cellData = new CellData();
-			switch (gridOrder)
+			var cellData = new CellData
 			{
-				case GridOrder.RowMajor:
-					cellData.ColumnIndex = itemIndex % columnCount;
-					cellData.RowIndex = itemIndex / columnCount;
-					cellData.ItemIndex = itemIndex;
-					break;
-
-				case GridOrder.ColumnMajor:
-					cellData.ColumnIndex = itemIndex / rowCount;
-					cellData.RowIndex = itemIndex % rowCount;
-					cellData.ItemIndex = (cellData.ColumnIndex * rowCount) + cellData.RowIndex;
-					break;
-
-				default:
-					throw new NotImplementedException();
-			}
+				ColumnIndex = itemIndex % columnCount,
+				RowIndex = itemIndex / columnCount,
+				ItemIndex = itemIndex
+			};
 			return cellData;
 		}
 
@@ -147,8 +135,7 @@ public static partial class ImGuiWidgets
 			var itemDimensions = itemList.Select(i => measureDelegate(i)).ToArray();
 			var itemDimensionsWithSpacing = itemDimensions.Select(d => d + itemSpacing).ToArray();
 			float gridWidth = size.X;
-			int numColumns = (int)size.X;
-			numColumns = 1;
+			int numColumns = 1;
 
 			Collection<float> columnWidths = [];
 			Collection<float> previousColumnWidths = [];
@@ -165,13 +152,7 @@ public static partial class ImGuiWidgets
 
 				for (int i = 0; i < itemList.Length; i++)
 				{
-					var cellData = new CellData
-					{
-						ColumnIndex = i % numColumns,
-						RowIndex = i / numColumns,
-						ItemIndex = i
-					};
-
+					var cellData = CalculateCellData(i, numColumns);
 					if (cellData.ItemIndex < itemList.Length)
 					{
 						var thisItemSizeWithSpacing = itemDimensionsWithSpacing[cellData.ItemIndex];
@@ -208,7 +189,7 @@ public static partial class ImGuiWidgets
 				previousRowHeights = rowHeights;
 			}
 
-			if (ImGui.BeginChild("grid", size, ImGuiChildFlags.Borders))
+			if (ImGui.BeginChild("grid", size, ImGuiChildFlags.Borders, ImGuiWindowFlags.HorizontalScrollbar))
 			{
 				var marginTopLeftCursor = ImGui.GetCursorScreenPos();
 				float gridHeight = rowHeights.Sum(h => h);
@@ -218,13 +199,7 @@ public static partial class ImGuiWidgets
 				{
 					var itemStartCursor = ImGui.GetCursorScreenPos();
 
-					var cellData = new CellData
-					{
-						ColumnIndex = i % numColumns,
-						RowIndex = i / numColumns,
-						ItemIndex = i
-					};
-
+					var cellData = CalculateCellData(i, numColumns);
 					int row = cellData.RowIndex;
 					int column = cellData.ColumnIndex;
 					int itemIndex = cellData.ItemIndex;
@@ -242,11 +217,11 @@ public static partial class ImGuiWidgets
 					if (itemIndex != lastItemIndex)
 					{
 						bool sameRow = column < numColumns - 1;
-						var newCursorPos = sameRow
+						var newCursorScreenPos = sameRow
 							? new Vector2(itemStartCursor.X + cellSize.X, itemStartCursor.Y)
 							: new Vector2(marginTopLeftCursor.X, itemStartCursor.Y + cellSize.Y);
 
-						ImGui.SetCursorScreenPos(newCursorPos);
+						ImGui.SetCursorScreenPos(newCursorScreenPos);
 					}
 				}
 			}
@@ -313,16 +288,16 @@ public static partial class ImGuiWidgets
 					if (itemIndex != lastItemIndex)
 					{
 						bool sameColumn = heightUsed + rowHeight <= heightAvailable;
-						if (sameColumn)
-						{
-							ImGui.SetCursorScreenPos(itemTopLeftCursor + new Vector2(0f, cellSize.Y));
-						}
-						else
+						if (!sameColumn)
 						{
 							columnIndex++;
 							heightUsed = 0f;
-							ImGui.SetCursorScreenPos(new Vector2(itemTopLeftCursor.X + cellSize.X, gridTopLeft.Y));
 						}
+
+						var newCursorScreenPos = sameColumn
+							? itemTopLeftCursor + new Vector2(0f, cellSize.Y)
+							: new Vector2(itemTopLeftCursor.X + cellSize.X, gridTopLeft.Y);
+						ImGui.SetCursorScreenPos(newCursorScreenPos);
 					}
 				}
 			}
