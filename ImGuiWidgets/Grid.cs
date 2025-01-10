@@ -264,26 +264,26 @@ public static partial class ImGuiWidgets
 		/// <param name="size"></param>
 		public static void ShowColumnMajor<T>(IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate, Vector2 size)
 		{
-			int maxHeight = (int)size.Y;
-
 			var itemSpacing = ImGui.GetStyle().ItemSpacing;
 			var itemList = items.ToArray();
 			var itemDimensions = itemList.Select(i => measureDelegate(i)).ToArray();
 			var itemDimensionsWithSpacing = itemDimensions.Select(d => d + itemSpacing).ToArray();
+			// Assumption: All items are roughly the same size and we can simply
+			// select the max height and use that for every item.
 			float rowHeight = itemDimensionsWithSpacing.Max(d => d.Y);
-			var contentRegionAvailable = ImGui.GetContentRegionAvail();
+			float heightAvailable = (int)size.Y;
 			int numColumns = 1;
 
 			int itemsToCount = itemDimensionsWithSpacing.Length;
 			var remainingItemList = itemDimensionsWithSpacing;
 			Collection<float> columnWidths = [];
+			int maxItemsPerColumn = Math.Max(1, (int)(heightAvailable / rowHeight));
 			while (itemsToCount > 0)
 			{
-				int itemCountInColumn = Math.Max(1, (int)(maxHeight / rowHeight));
-				var itemsInColumn = remainingItemList.Take(itemCountInColumn).ToArray();
+				var itemsInColumn = remainingItemList.Take(maxItemsPerColumn).ToArray();
 				columnWidths.Add(itemsInColumn.Max(d => d.X));
-				itemsToCount -= itemCountInColumn;
-				remainingItemList = remainingItemList.Skip(itemCountInColumn).ToArray();
+				itemsToCount -= itemsInColumn.Length;
+				remainingItemList = remainingItemList.Skip(maxItemsPerColumn).ToArray();
 				if (itemsToCount > 0)
 				{
 					numColumns++;
@@ -307,19 +307,21 @@ public static partial class ImGuiWidgets
 						var drawList = ImGui.GetWindowDrawList();
 						drawList.AddRect(itemTopLeftCursor, itemTopLeftCursor + cellSize, ImGui.GetColorU32(borderColor));
 					}
-					heightUsed += cellSize.Y;
 					drawDelegate(itemList[itemIndex], cellSize, itemDimensions[itemIndex]);
+					heightUsed += cellSize.Y;
+
 					if (itemIndex != lastItemIndex)
 					{
-						if (heightUsed + rowHeight > maxHeight)
+						bool sameColumn = heightUsed + rowHeight <= heightAvailable;
+						if (sameColumn)
+						{
+							ImGui.SetCursorScreenPos(itemTopLeftCursor + new Vector2(0f, cellSize.Y));
+						}
+						else
 						{
 							columnIndex++;
 							heightUsed = 0f;
 							ImGui.SetCursorScreenPos(new Vector2(itemTopLeftCursor.X + cellSize.X, gridTopLeft.Y));
-						}
-						else
-						{
-							ImGui.SetCursorScreenPos(itemTopLeftCursor + new Vector2(0f, cellSize.Y));
 						}
 					}
 				}
