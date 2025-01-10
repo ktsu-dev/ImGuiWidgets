@@ -197,10 +197,8 @@ internal class ImGuiWidgetsDemo
 				bool gridIconCenterWithinCell = GridIconCenterWithinCell;
 				bool gridIconSizeBig = GridIconSizeBig;
 				int gridItemsToShow = GridItemsToShow;
-				int gridOrder = (int)GridOrder;
-				string[] gridOrderComboNames = Enum.GetNames<ImGuiWidgets.GridOrder>();
-				int gridIconAlignment = (int)GridIconAlignment;
-				string[] gridIconAlignmentComboNames = Enum.GetNames<ImGuiWidgets.IconAlignment>();
+				var gridOrder = GridOrder;
+				var gridIconAlignment = GridIconAlignment;
 
 				if (ImGui.Checkbox("Use Big Grid Icons", ref gridIconSizeBig))
 				{
@@ -214,13 +212,13 @@ internal class ImGuiWidgetsDemo
 				{
 					GridItemsToShow = gridItemsToShow;
 				}
-				if (ImGui.Combo("Order", ref gridOrder, gridOrderComboNames, gridOrderComboNames.Length))
+				if (ImGuiWidgets.Combo("Order", ref gridOrder))
 				{
-					GridOrder = (ImGuiWidgets.GridOrder)gridOrder;
+					GridOrder = gridOrder;
 				}
-				if (ImGui.Combo("Icon Alignment", ref gridIconAlignment, gridIconAlignmentComboNames, gridIconAlignmentComboNames.Length))
+				if (ImGuiWidgets.Combo("Icon Alignment", ref gridIconAlignment))
 				{
-					GridIconAlignment = (ImGuiWidgets.IconAlignment)gridIconAlignment;
+					GridIconAlignment = gridIconAlignment;
 				}
 			}
 		}
