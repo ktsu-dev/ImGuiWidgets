@@ -151,7 +151,7 @@ public static partial class ImGuiWidgets
 			var itemSpacing = ImGui.GetStyle().ItemSpacing;
 			var itemList = items.ToArray();
 			var itemDimensions = itemList.Select(i => measureDelegate(i)).ToArray();
-			var itemDimensionsWithSpacing = itemList.Select(i => measureDelegate(i) + itemSpacing).ToArray();
+			var itemDimensionsWithSpacing = itemDimensions.Select(d => d + itemSpacing).ToArray();
 			var contentRegionAvailable = ImGui.GetContentRegionAvail();
 			int numColumns = 1;
 
