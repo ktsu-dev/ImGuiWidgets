@@ -176,8 +176,11 @@ public static partial class ImGuiWidgets
 						_ => throw new NotImplementedException()
 					};
 
-					var thisItemSizeWithSpacing = itemDimensionsWithSpacing[itemIndex];
-					columnWidths[column] = Math.Max(columnWidths[column], thisItemSizeWithSpacing.X);
+					if (itemIndex < itemList.Length)
+					{
+						var thisItemSizeWithSpacing = itemDimensionsWithSpacing[itemIndex];
+						columnWidths[column] = Math.Max(columnWidths[column], thisItemSizeWithSpacing.X);
+					}
 				}
 
 				totalContentWidth = columnWidths.Sum();
