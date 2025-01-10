@@ -49,7 +49,6 @@ internal class ImGuiWidgetsDemo
 	private static int InitialGridSize { get; } = 15;
 	private int GridItemsToShow { get; set; } = InitialGridSize;
 	private ImGuiWidgets.GridOrder GridOrder { get; set; } = ImGuiWidgets.GridOrder.RowMajor;
-	private ImGuiWidgets.GridRowAlignment GridRowAlignment { get; set; } = ImGuiWidgets.GridRowAlignment.Left;
 	private ImGuiWidgets.IconAlignment GridIconAlignment { get; set; } = ImGuiWidgets.IconAlignment.Vertical;
 	private bool GridIconSizeBig { get; set; } = true;
 	private bool GridIconCenterWithinCell { get; set; } = true;
@@ -144,140 +143,110 @@ internal class ImGuiWidgetsDemo
 	{
 		var ktsuIconPath = (AbsoluteDirectoryPath)Environment.CurrentDirectory / (FileName)"ktsu.png";
 		var ktsuTexture = ImGuiApp.GetOrLoadTexture(ktsuIconPath);
-		int mySize = ImGuiApp.EmsToPx(2.5f) * 2;
 
-		var columnMajorIconAlignment = ImGuiWidgets.IconAlignment.Horizontal;
-		var preGridCursor = ImGui.GetCursorScreenPos();
+		ImGui.Text("Right Divider Zone");
+
+		if (ImGuiWidgets.Image(ktsuTexture.TextureId, new(128, 128)))
+		{
+			MessageOK.Open("Click", "You chose the image");
+		}
+
+		float iconWidthEms = 7.5f;
+		float tilePaddingEms = 0.5f;
+		float iconWidthPx = ImGuiApp.EmsToPx(iconWidthEms);
+		float tilePaddingPx = ImGuiApp.EmsToPx(tilePaddingEms);
+
+		var iconSize = new Vector2(iconWidthPx, iconWidthPx);
+
+		ImGuiWidgets.Icon("Click Me", ktsuTexture.TextureId, iconWidthPx, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical, new ImGuiWidgets.IconDelegates()
+		{
+			OnClick = () => MessageOK.Open("Click", "You chose Tile1")
+		});
+		ImGui.SameLine();
+		ImGuiWidgets.Icon("Double Click Me", ktsuTexture.TextureId, iconWidthPx, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical, new ImGuiWidgets.IconDelegates()
+		{
+			OnDoubleClick = () => MessageOK.Open("Double Click", "Yippee!!!!!!!!")
+		});
+		ImGui.SameLine();
+		ImGuiWidgets.Icon("Right Click Me", ktsuTexture.TextureId, iconWidthPx, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical, new ImGuiWidgets.IconDelegates()
+		{
+			OnContextMenu = () =>
+			{
+				ImGui.MenuItem("Context Menu Item 1");
+				ImGui.MenuItem("Context Menu Item 2");
+				ImGui.MenuItem("Context Menu Item 3");
+			},
+		});
+
+		ImGui.NewLine();
+
+		if (ImGui.CollapsingHeader("Grid Settings"))
+		{
+			bool showGridDebug = ImGuiWidgets.EnableGridDebugDraw;
+			if (ImGui.Checkbox("Show Grid Debug", ref showGridDebug))
+			{
+				ImGuiWidgets.EnableGridDebugDraw = showGridDebug;
+			}
+			bool showIconDebug = ImGuiWidgets.EnableIconDebugDraw;
+			if (ImGui.Checkbox("Show Icon Debug", ref showIconDebug))
+			{
+				ImGuiWidgets.EnableIconDebugDraw = showIconDebug;
+			}
+
+			{
+				bool gridIconCenterWithinCell = GridIconCenterWithinCell;
+				bool gridIconSizeBig = GridIconSizeBig;
+				int gridItemsToShow = GridItemsToShow;
+				int gridOrder = (int)GridOrder;
+				string[] gridOrderComboNames = Enum.GetNames<ImGuiWidgets.GridOrder>();
+				int gridIconAlignment = (int)GridIconAlignment;
+				string[] gridIconAlignmentComboNames = Enum.GetNames<ImGuiWidgets.IconAlignment>();
+
+				if (ImGui.Checkbox("Use Big Grid Icons", ref gridIconSizeBig))
+				{
+					GridIconSizeBig = gridIconSizeBig;
+				}
+				if (ImGui.Checkbox("Center within cell", ref gridIconCenterWithinCell))
+				{
+					GridIconCenterWithinCell = gridIconCenterWithinCell;
+				}
+				if (ImGui.SliderInt("Items to show", ref gridItemsToShow, 1, GridStrings.Count))
+				{
+					GridItemsToShow = gridItemsToShow;
+				}
+				if (ImGui.Combo("Order", ref gridOrder, gridOrderComboNames, gridOrderComboNames.Length))
+				{
+					GridOrder = (ImGuiWidgets.GridOrder)gridOrder;
+				}
+				if (ImGui.Combo("Icon Alignment", ref gridIconAlignment, gridIconAlignmentComboNames, gridIconAlignmentComboNames.Length))
+				{
+					GridIconAlignment = (ImGuiWidgets.IconAlignment)gridIconAlignment;
+				}
+			}
+		}
+
+		float iconSizePx = ImGuiApp.EmsToPx(2.5f);
+		float bigIconSizePx = iconSizePx * 2;
+		float gridIconSize = GridIconSizeBig ? bigIconSizePx : iconSizePx;
+
+		ImGui.Separator();
+
 		var contentRegionAvail = ImGui.GetContentRegionAvail();
-		ImGui.Columns(2);
-		var gridSize = new Vector2(ImGui.GetContentRegionAvail().X, 1000f);
-		ImGuiWidgets.Grid2(GridStrings.Take(GridItemsToShow), i => ImGuiWidgets.CalcIconSize(i, mySize, columnMajorIconAlignment), (item, cellSize, itemSize) =>
+		var gridSize = contentRegionAvail; //new Vector2(contentRegionAvail.X, 1000f);
+		ImGuiWidgets.Grid2(GridStrings.Take(GridItemsToShow), i => ImGuiWidgets.CalcIconSize(i, gridIconSize, GridIconAlignment), (item, cellSize, itemSize) =>
 		{
-			ImGuiWidgets.Icon(item, ktsuTexture.TextureId, mySize, Color.White.Value, columnMajorIconAlignment);
-		}, ImGuiWidgets.GridOrder.ColumnMajor, gridSize);
-		ImGui.Columns(1);
-
-		//uint borderColor = ImGui.GetColorU32(ImGui.GetStyle().Colors[(int)ImGuiCol.Border]);
-		//var drawList = ImGui.GetWindowDrawList();
-		//drawList.AddRect(preGridCursor, gridSize, ImGui.GetColorU32(borderColor));
-
-
-
-
-
-
-
-		if (ImGui.CollapsingHeader("old"))
-		{
-			ImGui.Text("Right Divider Zone");
-
-			if (ImGuiWidgets.Image(ktsuTexture.TextureId, new(128, 128)))
+			if (GridIconCenterWithinCell)
 			{
-				MessageOK.Open("Click", "You chose the image");
-			}
-
-			float iconWidthEms = 7.5f;
-			float tilePaddingEms = 0.5f;
-			float iconWidthPx = ImGuiApp.EmsToPx(iconWidthEms);
-			float tilePaddingPx = ImGuiApp.EmsToPx(tilePaddingEms);
-
-			var iconSize = new Vector2(iconWidthPx, iconWidthPx);
-
-			ImGuiWidgets.Icon("Click Me", ktsuTexture.TextureId, iconWidthPx, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical, new ImGuiWidgets.IconDelegates()
-			{
-				OnClick = () => MessageOK.Open("Click", "You chose Tile1")
-			});
-			ImGui.SameLine();
-			ImGuiWidgets.Icon("Double Click Me", ktsuTexture.TextureId, iconWidthPx, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical, new ImGuiWidgets.IconDelegates()
-			{
-				OnDoubleClick = () => MessageOK.Open("Double Click", "Yippee!!!!!!!!")
-			});
-			ImGui.SameLine();
-			ImGuiWidgets.Icon("Right Click Me", ktsuTexture.TextureId, iconWidthPx, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical, new ImGuiWidgets.IconDelegates()
-			{
-				OnContextMenu = () =>
-				{
-					ImGui.MenuItem("Context Menu Item 1");
-					ImGui.MenuItem("Context Menu Item 2");
-					ImGui.MenuItem("Context Menu Item 3");
-				},
-			});
-
-			ImGui.NewLine();
-
-			if (ImGui.CollapsingHeader("Grid Settings"))
-			{
-				bool showGridDebug = ImGuiWidgets.EnableGridDebugDraw;
-				if (ImGui.Checkbox("Show Grid Debug", ref showGridDebug))
-				{
-					ImGuiWidgets.EnableGridDebugDraw = showGridDebug;
-				}
-				bool showIconDebug = ImGuiWidgets.EnableIconDebugDraw;
-				if (ImGui.Checkbox("Show Icon Debug", ref showIconDebug))
-				{
-					ImGuiWidgets.EnableIconDebugDraw = showIconDebug;
-				}
-
-				{
-					bool gridIconCenterWithinCell = GridIconCenterWithinCell;
-					bool gridIconSizeBig = GridIconSizeBig;
-					int gridItemsToShow = GridItemsToShow;
-					int gridOrder = (int)GridOrder;
-					string[] gridOrderComboNames = Enum.GetNames<ImGuiWidgets.GridOrder>();
-					int gridAlignment = (int)GridRowAlignment;
-					string[] gridAlignmentComboNames = Enum.GetNames<ImGuiWidgets.GridRowAlignment>();
-					int gridIconAlignment = (int)GridIconAlignment;
-					string[] gridIconAlignmentComboNames = Enum.GetNames<ImGuiWidgets.IconAlignment>();
-
-					if (ImGui.Checkbox("Use Big Grid Icons", ref gridIconSizeBig))
-					{
-						GridIconSizeBig = gridIconSizeBig;
-					}
-					if (ImGui.Checkbox("Center within cell", ref gridIconCenterWithinCell))
-					{
-						GridIconCenterWithinCell = gridIconCenterWithinCell;
-					}
-					if (ImGui.SliderInt("Items to show", ref gridItemsToShow, 1, GridStrings.Count))
-					{
-						GridItemsToShow = gridItemsToShow;
-					}
-					if (ImGui.Combo("Order", ref gridOrder, gridOrderComboNames, gridOrderComboNames.Length))
-					{
-						GridOrder = (ImGuiWidgets.GridOrder)gridOrder;
-					}
-					if (ImGui.Combo("Alignment", ref gridAlignment, gridAlignmentComboNames, gridAlignmentComboNames.Length))
-					{
-						GridRowAlignment = (ImGuiWidgets.GridRowAlignment)gridAlignment;
-					}
-					if (ImGui.Combo("Icon Alignment", ref gridIconAlignment, gridIconAlignmentComboNames, gridIconAlignmentComboNames.Length))
-					{
-						GridIconAlignment = (ImGuiWidgets.IconAlignment)gridIconAlignment;
-					}
-				}
-			}
-
-			float iconSizePx = ImGuiApp.EmsToPx(2.5f);
-			float bigIconSizePx = iconSizePx * 2;
-			float gridIconSize = GridIconSizeBig ? bigIconSizePx : iconSizePx;
-
-			ImGui.Separator();
-
-			ImGuiWidgets.Grid(GridStrings.Take(GridItemsToShow), i => ImGuiWidgets.CalcIconSize(i, gridIconSize, GridIconAlignment), (item, cellSize, itemSize) =>
-			{
-				// TODO: Make CenterWithin take an enabled arg to avoid this duplication 
-				if (GridIconCenterWithinCell)
-				{
-					using (new Alignment.CenterWithin(itemSize, cellSize))
-					{
-						ImGuiWidgets.Icon(item, ktsuTexture.TextureId, gridIconSize, Color.White.Value, GridIconAlignment);
-					}
-				}
-				else
+				using (new Alignment.CenterWithin(itemSize, cellSize))
 				{
 					ImGuiWidgets.Icon(item, ktsuTexture.TextureId, gridIconSize, Color.White.Value, GridIconAlignment);
 				}
-			}, GridOrder, GridRowAlignment);
-		}
+			}
+			else
+			{
+				ImGuiWidgets.Icon(item, ktsuTexture.TextureId, gridIconSize, Color.White.Value, GridIconAlignment);
+			}
+		}, GridOrder, gridSize);
 
 		MessageOK.ShowIfOpen();
 	}
