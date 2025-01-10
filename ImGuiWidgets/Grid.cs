@@ -1,7 +1,9 @@
 namespace ktsu.ImGuiWidgets;
 
+using System.Collections.ObjectModel;
 using System.Numerics;
 using ImGuiNET;
+using ktsu.Extensions;
 
 /// <summary>
 /// Provides custom ImGui widgets.
@@ -153,13 +155,13 @@ public static partial class ImGuiWidgets
 			var contentRegionAvailable = ImGui.GetContentRegionAvail();
 			int numColumns = 1;
 
-			List<float> previousColumnWidths = [];
-			List<float> columnWidths = [];
+			Collection<float> previousColumnWidths = [];
+			Collection<float> columnWidths = [];
 			float previousTotalContentWidth = 0f;
 			float totalContentWidth = 0f;
 			while (numColumns <= itemList.Length)
 			{
-				columnWidths = new List<float>(new float[numColumns]);
+				columnWidths = new float[numColumns].ToCollection();
 				int numRowsForColumns = (int)Math.Ceiling((float)itemList.Length / numColumns);
 
 				for (int i = 0; i < itemList.Length; i++)
