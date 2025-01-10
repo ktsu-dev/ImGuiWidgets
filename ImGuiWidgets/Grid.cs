@@ -226,7 +226,12 @@ public static partial class ImGuiWidgets
 
 					if (itemsPerRow.Any(c => c < minItemsPerRow))
 					{
-						numColumns--;
+						if (numColumns > 1)
+						{
+							numColumns--;
+							totalContentWidth = previousTotalContentWidth;
+							columnWidths = previousColumnWidths;
+						}
 						break;
 					}
 				}
