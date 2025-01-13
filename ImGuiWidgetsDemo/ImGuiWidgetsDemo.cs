@@ -235,7 +235,7 @@ internal class ImGuiWidgetsDemo
 
 		ImGui.Separator();
 
-		ImGuiWidgets.Grid(GridStrings.Take(GridItemsToShow), i => ImGuiWidgets.CalcIconSize(i, gridIconSize, GridIconAlignment), (item, cellSize, itemSize) =>
+		ImGuiWidgets.Grid("demoGrid", GridStrings.Take(GridItemsToShow), i => ImGuiWidgets.CalcIconSize(i, gridIconSize, GridIconAlignment), (item, cellSize, itemSize) =>
 		{
 			if (GridIconCenterWithinCell)
 			{
