@@ -68,7 +68,6 @@ public static partial class ImGuiWidgets
 	/// <param name="itemSize">The calculated size of the item.</param>
 	public delegate void DrawGridCell<T>(T item, Vector2 cellSize, Vector2 itemSize);
 
-
 	/// <summary>
 	/// Renders a grid with the specified items and delegates.
 	/// </summary>
@@ -265,10 +264,12 @@ public static partial class ImGuiWidgets
 			if (ImGui.BeginChild($"columnMajorGrid_{id}", size, ImGuiChildFlags.Borders, ImGuiWindowFlags.HorizontalScrollbar))
 			{
 				var gridTopLeft = ImGui.GetCursorScreenPos();
+				var previousColumnTopLeft = gridTopLeft;
+				float previousColumnWidth = 0f;
 				for (int columnIndex = 0; columnIndex < numColumns; columnIndex++)
 				{
-					float columnCursorX = gridTopLeft.X + columnWidths.Take(columnIndex).Sum();
-					float columnCursorY = gridTopLeft.Y;
+					float columnCursorX = previousColumnTopLeft.X + previousColumnWidth;
+					float columnCursorY = previousColumnTopLeft.Y;
 					var columnTopLeft = new Vector2(columnCursorX, columnCursorY);
 					ImGui.SetCursorScreenPos(columnTopLeft);
 
@@ -292,6 +293,9 @@ public static partial class ImGuiWidgets
 						}
 						drawDelegate(itemList[itemIndex], cellSize, itemDimensions[itemIndex]);
 					}
+
+					previousColumnTopLeft = columnTopLeft;
+					previousColumnWidth = columnWidths[columnIndex];
 				}
 			}
 			ImGui.EndChild();
