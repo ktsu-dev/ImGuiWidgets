@@ -53,6 +53,7 @@ internal class ImGuiWidgetsDemo
 	private ImGuiWidgets.IconAlignment GridIconAlignment { get; set; } = ImGuiWidgets.IconAlignment.Vertical;
 	private bool GridIconSizeBig { get; set; } = true;
 	private bool GridIconCenterWithinCell { get; set; } = true;
+	private bool GridFitToContents { get; set; }
 	private EnumValues selectedEnumValue = EnumValues.Value1;
 	private string selectedStringValue = "Hello";
 	private readonly Collection<string> possibleStringValues = ["Hello", "World", "Goodbye"];
@@ -196,6 +197,7 @@ internal class ImGuiWidgetsDemo
 			{
 				bool gridIconCenterWithinCell = GridIconCenterWithinCell;
 				bool gridIconSizeBig = GridIconSizeBig;
+				bool gridFitToContents = GridFitToContents;
 				int gridItemsToShow = GridItemsToShow;
 				var gridOrder = GridOrder;
 				var gridIconAlignment = GridIconAlignment;
@@ -208,6 +210,10 @@ internal class ImGuiWidgetsDemo
 				if (ImGui.Checkbox("Center within cell", ref gridIconCenterWithinCell))
 				{
 					GridIconCenterWithinCell = gridIconCenterWithinCell;
+				}
+				if (ImGui.Checkbox("Fit to contents", ref gridFitToContents))
+				{
+					GridFitToContents = gridFitToContents;
 				}
 				if (ImGui.SliderInt("Items to show", ref gridItemsToShow, 1, GridStrings.Count))
 				{
@@ -235,6 +241,10 @@ internal class ImGuiWidgetsDemo
 
 		ImGui.Separator();
 
+		var gridFlags = GridFitToContents
+			? ImGuiWidgets.GridOptions.FitToContents
+			: ImGuiWidgets.GridOptions.None;
+
 		ImGuiWidgets.Grid("demoGrid", GridStrings.Take(GridItemsToShow), i => ImGuiWidgets.CalcIconSize(i, gridIconSize, GridIconAlignment), (item, cellSize, itemSize) =>
 		{
 			if (GridIconCenterWithinCell)
@@ -248,7 +258,8 @@ internal class ImGuiWidgetsDemo
 			{
 				ImGuiWidgets.Icon(item, ktsuTexture.TextureId, gridIconSize, Color.White.Value, GridIconAlignment);
 			}
-		}, GridOrder, gridSize);
+		}, GridOrder, gridSize, gridFlags);
+		ImGui.Separator();
 
 		MessageOK.ShowIfOpen();
 	}
