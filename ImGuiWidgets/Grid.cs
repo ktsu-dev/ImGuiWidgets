@@ -171,8 +171,7 @@ public static partial class ImGuiWidgets
 					currentGridLayout.RowHeights[cellLocation.Y] = maxRowHeight;
 				}
 
-				float totalWidth = currentGridLayout.ColumnWidths.Sum();
-				if (totalWidth > containerWidth)
+				if (currentGridLayout.ColumnWidths.Sum() > containerWidth)
 				{
 					currentGridLayout = previousGridLayout;
 					break;
