@@ -121,11 +121,10 @@ public static partial class ImGuiWidgets
 		internal class GridLayout()
 		{
 			internal Point Dimensions { private get; init; }
-			internal int ColumnCount => Dimensions.X;
-			internal int RowCount => Dimensions.Y;
-
 			internal float[] ColumnWidths { get; init; } = [];
 			internal float[] RowHeights { get; init; } = [];
+			internal int ColumnCount => Dimensions.X;
+			internal int RowCount => Dimensions.Y;
 		}
 
 		private static Point CalculateColumnMajorCellLocation(int itemIndex, int rowCount)
