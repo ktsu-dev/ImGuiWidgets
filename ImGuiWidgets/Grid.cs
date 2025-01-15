@@ -132,7 +132,7 @@ public static partial class ImGuiWidgets
 		{
 			int columnIndex = itemIndex % columnCount;
 			int rowIndex = itemIndex / columnCount;
-			return new Point(columnIndex, rowIndex);
+			return new(columnIndex, rowIndex);
 		}
 
 		internal static GridLayout CalculateRowMajorGridLayout(IList<Vector2> itemSizes, float containerWidth)
@@ -204,7 +204,7 @@ public static partial class ImGuiWidgets
 			{
 				float width = gridLayout.ColumnWidths.Sum();
 				float height = gridLayout.RowHeights.Sum();
-				gridSize = new Vector2(width, height);
+				gridSize = new(width, height);
 			}
 
 			var drawList = ImGui.GetWindowDrawList();
@@ -263,7 +263,7 @@ public static partial class ImGuiWidgets
 		{
 			int columnIndex = itemIndex / rowCount;
 			int rowIndex = itemIndex % rowCount;
-			return new Point(columnIndex, rowIndex);
+			return new(columnIndex, rowIndex);
 		}
 
 		internal static GridLayout CalculateColumnMajorGridLayout(IList<Vector2> itemSizes, float containerHeight)
@@ -335,7 +335,7 @@ public static partial class ImGuiWidgets
 			{
 				float width = gridLayout.ColumnWidths.Sum();
 				float height = gridLayout.RowHeights.Sum();
-				gridSize = new Vector2(width, height);
+				gridSize = new(width, height);
 			}
 
 			var drawList = ImGui.GetWindowDrawList();
@@ -356,7 +356,7 @@ public static partial class ImGuiWidgets
 
 					float columnCursorX = columnTopLeft.X + previousColumnWidth;
 					float columnCursorY = columnTopLeft.Y;
-					columnTopLeft = new Vector2(columnCursorX, columnCursorY);
+					columnTopLeft = new(columnCursorX, columnCursorY);
 					ImGui.SetCursorScreenPos(columnTopLeft);
 
 					var cellTopLeft = ImGui.GetCursorScreenPos();
