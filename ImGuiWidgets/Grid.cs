@@ -1,6 +1,7 @@
 namespace ktsu.ImGuiWidgets;
 
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Numerics;
 using ImGuiNET;
 using ktsu.Extensions;
@@ -256,57 +257,68 @@ public static partial class ImGuiWidgets
 			ImGui.EndChild();
 		}
 
-		// ColumnMajor
-		internal record struct GridLayoutData(int ColumnCount, int RowCount, Collection<float> ColumnWidths, Collection<float> RowHeights);
-
-		internal static GridLayoutData CalculateColumnMajorGridLayoutData(Vector2[] itemSizes, float containerHeight)
+		internal class GridLayout()
 		{
-			var gridLayoutData = new GridLayoutData
+			internal Point Dimensions { private get; init; }
+			internal int ColumnCount => Dimensions.X;
+			internal int RowCount => Dimensions.Y;
+
+			internal float[] ColumnWidths { get; init; } = [];
+			internal float[] RowHeights { get; init; } = [];
+		}
+
+		private static Point CalculateColumnMajorCellLocation(int itemIndex, int rowCount)
+		{
+			int columnIndex = itemIndex / rowCount;
+			int rowIndex = itemIndex % rowCount;
+			return new Point(columnIndex, rowIndex);
+		}
+
+		internal static GridLayout CalculateColumnMajorGridLayout(IList<Vector2> itemSizes, float containerHeight)
+		{
+			float tallestElementHeight = itemSizes.Max(itemSize => itemSize.Y);
+			GridLayout currentGridLayout = new()
 			{
-				RowCount = 1,
-				ColumnCount = itemSizes.Length,
-				RowHeights = [itemSizes.Max(s => s.Y)],
-				ColumnWidths = itemSizes.Select(i => i.X).ToCollection()
+				Dimensions = new(itemSizes.Count, 1),
+				ColumnWidths = itemSizes.Select(itemSize => itemSize.X).ToArray(),
+				RowHeights = [tallestElementHeight],
 			};
 
-			var previousGridLayoutData = gridLayoutData;
-			while (gridLayoutData.RowCount < itemSizes.Length)
+			var previousGridLayout = currentGridLayout;
+			while (currentGridLayout.RowCount < itemSizes.Count)
 			{
-				int newRowCount = gridLayoutData.RowCount + 1;
-				int newColumnCount = (int)Math.Ceiling(itemSizes.Length / (float)newRowCount);
-				gridLayoutData = new GridLayoutData
+				int newRowCount = currentGridLayout.RowCount + 1;
+				int newColumnCount = (int)MathF.Ceiling(itemSizes.Count / (float)newRowCount);
+				currentGridLayout = new()
 				{
-					RowCount = newRowCount,
-					RowHeights = new float[newRowCount].ToCollection(),
-					ColumnCount = newColumnCount,
-					ColumnWidths = new float[newColumnCount].ToCollection()
+					Dimensions = new(newColumnCount, newRowCount),
+					ColumnWidths = new float[newColumnCount],
+					RowHeights = new float[newRowCount],
 				};
 
-				for (int columnIndex = 0; columnIndex < gridLayoutData.ColumnCount; columnIndex++)
+				for (int i = 0; i < itemSizes.Count; i++)
 				{
-					int itemBeginIndex = columnIndex * gridLayoutData.RowCount;
-					int itemEndIndex = Math.Min(itemBeginIndex + gridLayoutData.RowCount, itemSizes.Length);
-					for (int itemIndex = itemBeginIndex; itemIndex < itemEndIndex; itemIndex++)
-					{
-						int rowIndex = itemIndex - itemBeginIndex;
-						var itemSize = itemSizes[itemIndex];
-						gridLayoutData.RowHeights[rowIndex] = Math.Max(gridLayoutData.RowHeights[rowIndex], itemSize.Y);
-					}
+					var itemSize = itemSizes[i];
+					var cellLocation = CalculateColumnMajorCellLocation(i, newRowCount);
 
-					var itemsInColumn = itemSizes.Skip(itemBeginIndex).Take(gridLayoutData.RowCount);
-					float columnWidth = itemsInColumn.Max(i => i.X);
-					gridLayoutData.ColumnWidths[columnIndex] = columnWidth;
+					float maxColumnWidth = currentGridLayout.ColumnWidths[cellLocation.X];
+					maxColumnWidth = Math.Max(maxColumnWidth, itemSize.X);
+					currentGridLayout.ColumnWidths[cellLocation.X] = maxColumnWidth;
+
+					float maxRowHeight = currentGridLayout.RowHeights[cellLocation.Y];
+					maxRowHeight = Math.Max(maxRowHeight, itemSize.Y);
+					currentGridLayout.RowHeights[cellLocation.Y] = maxRowHeight;
 				}
 
-				if (gridLayoutData.RowHeights.Sum() > containerHeight)
+				if (currentGridLayout.RowHeights.Sum() > containerHeight)
 				{
-					gridLayoutData = previousGridLayoutData;
+					currentGridLayout = previousGridLayout;
 					break;
 				}
-				previousGridLayoutData = gridLayoutData;
+				previousGridLayout = currentGridLayout;
 			}
 
-			return gridLayoutData;
+			return currentGridLayout;
 		}
 
 
@@ -326,12 +338,12 @@ public static partial class ImGuiWidgets
 			int itemListCount = itemList.Length;
 			var itemDimensions = itemList.Select(i => measureDelegate(i)).ToArray();
 			var itemDimensionsWithSpacing = itemDimensions.Select(d => d + itemSpacing).ToArray();
-			var gridLayoutData = CalculateColumnMajorGridLayoutData(itemDimensionsWithSpacing, gridSize.Y);
+			var gridLayout = CalculateColumnMajorGridLayout(itemDimensionsWithSpacing, gridSize.Y);
 
 			if (gridOptions.HasFlag(GridOptions.FitToContents))
 			{
-				float width = gridLayoutData.ColumnWidths.Sum();
-				float height = gridLayoutData.RowHeights.Sum();
+				float width = gridLayout.ColumnWidths.Sum();
+				float height = gridLayout.RowHeights.Sum();
 				gridSize = new Vector2(width, height);
 			}
 
@@ -346,10 +358,10 @@ public static partial class ImGuiWidgets
 				}
 
 				var columnTopLeft = gridTopLeft;
-				for (int columnIndex = 0; columnIndex < gridLayoutData.ColumnCount; columnIndex++)
+				for (int columnIndex = 0; columnIndex < gridLayout.ColumnCount; columnIndex++)
 				{
 					bool isFirstColumn = columnIndex == 0;
-					float previousColumnWidth = isFirstColumn ? 0f : gridLayoutData.ColumnWidths[columnIndex - 1];
+					float previousColumnWidth = isFirstColumn ? 0f : gridLayout.ColumnWidths[columnIndex - 1];
 
 					float columnCursorX = columnTopLeft.X + previousColumnWidth;
 					float columnCursorY = columnTopLeft.Y;
@@ -357,8 +369,8 @@ public static partial class ImGuiWidgets
 					ImGui.SetCursorScreenPos(columnTopLeft);
 
 					var cellTopLeft = ImGui.GetCursorScreenPos();
-					int itemBeginIndex = columnIndex * gridLayoutData.RowCount;
-					int itemEndIndex = Math.Min(itemBeginIndex + gridLayoutData.RowCount, itemListCount);
+					int itemBeginIndex = columnIndex * gridLayout.RowCount;
+					int itemEndIndex = Math.Min(itemBeginIndex + gridLayout.RowCount, itemListCount);
 					for (int itemIndex = itemBeginIndex; itemIndex < itemEndIndex; itemIndex++)
 					{
 						bool isFirstRow = itemIndex == itemBeginIndex;
@@ -370,8 +382,8 @@ public static partial class ImGuiWidgets
 						ImGui.SetCursorScreenPos(cellTopLeft);
 
 						int rowIndex = itemIndex - itemBeginIndex;
-						float cellWidth = gridLayoutData.ColumnWidths[columnIndex];
-						float cellHeight = gridLayoutData.RowHeights[rowIndex];
+						float cellWidth = gridLayout.ColumnWidths[columnIndex];
+						float cellHeight = gridLayout.RowHeights[rowIndex];
 						var cellSize = new Vector2(cellWidth, cellHeight);
 
 						if (EnableGridDebugDraw)
