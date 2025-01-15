@@ -127,65 +127,12 @@ public static partial class ImGuiWidgets
 			internal int RowCount => Dimensions.Y;
 		}
 
-		private static Point CalculateColumnMajorCellLocation(int itemIndex, int rowCount)
-		{
-			int columnIndex = itemIndex / rowCount;
-			int rowIndex = itemIndex % rowCount;
-			return new Point(columnIndex, rowIndex);
-		}
-
+		#region RowMajor
 		private static Point CalculateRowMajorCellLocation(int itemIndex, int columnCount)
 		{
 			int columnIndex = itemIndex % columnCount;
 			int rowIndex = itemIndex / columnCount;
 			return new Point(columnIndex, rowIndex);
-		}
-
-		internal static GridLayout CalculateColumnMajorGridLayout(IList<Vector2> itemSizes, float containerHeight)
-		{
-			float tallestElementHeight = itemSizes.Max(itemSize => itemSize.Y);
-			GridLayout currentGridLayout = new()
-			{
-				Dimensions = new(itemSizes.Count, 1),
-				ColumnWidths = itemSizes.Select(itemSize => itemSize.X).ToArray(),
-				RowHeights = [tallestElementHeight],
-			};
-
-			var previousGridLayout = currentGridLayout;
-			while (currentGridLayout.RowCount < itemSizes.Count)
-			{
-				int newRowCount = currentGridLayout.RowCount + 1;
-				int newColumnCount = (int)MathF.Ceiling(itemSizes.Count / (float)newRowCount);
-				currentGridLayout = new()
-				{
-					Dimensions = new(newColumnCount, newRowCount),
-					ColumnWidths = new float[newColumnCount],
-					RowHeights = new float[newRowCount],
-				};
-
-				for (int i = 0; i < itemSizes.Count; i++)
-				{
-					var itemSize = itemSizes[i];
-					var cellLocation = CalculateColumnMajorCellLocation(i, newRowCount);
-
-					float maxColumnWidth = currentGridLayout.ColumnWidths[cellLocation.X];
-					maxColumnWidth = Math.Max(maxColumnWidth, itemSize.X);
-					currentGridLayout.ColumnWidths[cellLocation.X] = maxColumnWidth;
-
-					float maxRowHeight = currentGridLayout.RowHeights[cellLocation.Y];
-					maxRowHeight = Math.Max(maxRowHeight, itemSize.Y);
-					currentGridLayout.RowHeights[cellLocation.Y] = maxRowHeight;
-				}
-
-				if (currentGridLayout.RowHeights.Sum() > containerHeight)
-				{
-					currentGridLayout = previousGridLayout;
-					break;
-				}
-				previousGridLayout = currentGridLayout;
-			}
-
-			return currentGridLayout;
 		}
 
 		internal static GridLayout CalculateRowMajorGridLayout(IList<Vector2> itemSizes, float containerWidth)
@@ -310,7 +257,62 @@ public static partial class ImGuiWidgets
 			}
 			ImGui.EndChild();
 		}
+		#endregion
 
+		#region ColumnMajor
+		private static Point CalculateColumnMajorCellLocation(int itemIndex, int rowCount)
+		{
+			int columnIndex = itemIndex / rowCount;
+			int rowIndex = itemIndex % rowCount;
+			return new Point(columnIndex, rowIndex);
+		}
+
+		internal static GridLayout CalculateColumnMajorGridLayout(IList<Vector2> itemSizes, float containerHeight)
+		{
+			float tallestElementHeight = itemSizes.Max(itemSize => itemSize.Y);
+			GridLayout currentGridLayout = new()
+			{
+				Dimensions = new(itemSizes.Count, 1),
+				ColumnWidths = itemSizes.Select(itemSize => itemSize.X).ToArray(),
+				RowHeights = [tallestElementHeight],
+			};
+
+			var previousGridLayout = currentGridLayout;
+			while (currentGridLayout.RowCount < itemSizes.Count)
+			{
+				int newRowCount = currentGridLayout.RowCount + 1;
+				int newColumnCount = (int)MathF.Ceiling(itemSizes.Count / (float)newRowCount);
+				currentGridLayout = new()
+				{
+					Dimensions = new(newColumnCount, newRowCount),
+					ColumnWidths = new float[newColumnCount],
+					RowHeights = new float[newRowCount],
+				};
+
+				for (int i = 0; i < itemSizes.Count; i++)
+				{
+					var itemSize = itemSizes[i];
+					var cellLocation = CalculateColumnMajorCellLocation(i, newRowCount);
+
+					float maxColumnWidth = currentGridLayout.ColumnWidths[cellLocation.X];
+					maxColumnWidth = Math.Max(maxColumnWidth, itemSize.X);
+					currentGridLayout.ColumnWidths[cellLocation.X] = maxColumnWidth;
+
+					float maxRowHeight = currentGridLayout.RowHeights[cellLocation.Y];
+					maxRowHeight = Math.Max(maxRowHeight, itemSize.Y);
+					currentGridLayout.RowHeights[cellLocation.Y] = maxRowHeight;
+				}
+
+				if (currentGridLayout.RowHeights.Sum() > containerHeight)
+				{
+					currentGridLayout = previousGridLayout;
+					break;
+				}
+				previousGridLayout = currentGridLayout;
+			}
+
+			return currentGridLayout;
+		}
 
 		internal static void ShowColumnMajor<T>(string id, IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate, Vector2 gridSize, GridOptions gridOptions)
 		{
@@ -386,5 +388,6 @@ public static partial class ImGuiWidgets
 			}
 			ImGui.EndChild();
 		}
+		#endregion
 	}
 }
