@@ -378,13 +378,13 @@ public static partial class ImGuiWidgets
 
 						float cellCursorX = cellTopLeft.X;
 						float cellCursorY = cellTopLeft.Y + previousCellHeight;
-						cellTopLeft = new Vector2(cellCursorX, cellCursorY);
+						cellTopLeft = new(cellCursorX, cellCursorY);
 						ImGui.SetCursorScreenPos(cellTopLeft);
 
 						int rowIndex = itemIndex - itemBeginIndex;
 						float cellWidth = gridLayout.ColumnWidths[columnIndex];
 						float cellHeight = gridLayout.RowHeights[rowIndex];
-						var cellSize = new Vector2(cellWidth, cellHeight);
+						Vector2 cellSize = new(cellWidth, cellHeight);
 
 						if (EnableGridDebugDraw)
 						{
