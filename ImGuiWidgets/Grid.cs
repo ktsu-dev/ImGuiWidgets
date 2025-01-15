@@ -93,9 +93,9 @@ public static partial class ImGuiWidgets
 	/// <param name="measureDelegate">The delegate to measure the size of each item.</param>
 	/// <param name="drawDelegate">The delegate to draw each item.</param>
 	/// <param name="gridOrder">What ordering should grid items use.</param>
-	/// <param name="size">Size of the grid. Will not change the size of the grid cells.</param>
+	/// <param name="gridSize">Size of the grid. This will not change the size of the grid cells. Setting any axis to 0 will use the available space.</param>
 	/// <param name="gridOptions">Options for changing how the grid is laid out.</param>
-	public static void Grid<T>(string id, IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate, GridOrder gridOrder, Vector2 size, GridOptions gridOptions)
+	public static void Grid<T>(string id, IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate, GridOrder gridOrder, Vector2 gridSize, GridOptions gridOptions)
 	{
 		ArgumentNullException.ThrowIfNull(items);
 		ArgumentNullException.ThrowIfNull(measureDelegate);
@@ -104,13 +104,13 @@ public static partial class ImGuiWidgets
 		switch (gridOrder)
 		{
 			case GridOrder.RowMajor:
-				GridImpl.ShowRowMajor(id, items, measureDelegate, drawDelegate, size, gridOptions);
+				GridImpl.ShowRowMajor(id, items, measureDelegate, drawDelegate, gridSize, gridOptions);
 				break;
 			case GridOrder.ColumnMajor:
-				GridImpl.ShowColumnMajor(id, items, measureDelegate, drawDelegate, size, gridOptions);
+				GridImpl.ShowColumnMajor(id, items, measureDelegate, drawDelegate, gridSize, gridOptions);
 				break;
 			default:
-				throw new NotImplementedException();
+				throw new NotImplementedException($"Unable to draw grid as {gridOrder} is not implemented");
 		}
 	}
 
@@ -137,17 +137,7 @@ public static partial class ImGuiWidgets
 			return cellData;
 		}
 
-		/// <summary>
-		/// Shows the grid with the specified items and delegates and renders the items RowMajor.
-		/// </summary>
-		/// <typeparam name="T">The type of the items.</typeparam>
-		/// <param name="id">Id for the grid.</param>
-		/// <param name="items">The items to be displayed in the grid.</param>
-		/// <param name="measureDelegate">The delegate to measure the size of each item.</param>
-		/// <param name="drawDelegate">The delegate to draw each item.</param>
-		/// <param name="gridSize">Size of the grid. Will not change the size of the grid cells.</param>
-		/// <param name="gridOptions">Options for changing how the grid is laid out.</param>
-		public static void ShowRowMajor<T>(string id, IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate, Vector2 gridSize, GridOptions gridOptions)
+		internal static void ShowRowMajor<T>(string id, IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate, Vector2 gridSize, GridOptions gridOptions)
 		{
 			if (gridSize.X <= 0)
 			{
@@ -266,22 +256,8 @@ public static partial class ImGuiWidgets
 			ImGui.EndChild();
 		}
 
-		internal class GridLayoutData
-		{
-			internal GridLayoutData() { }
-			internal GridLayoutData(GridLayoutData other)
-			{
-				ColumnCount = other.ColumnCount;
-				RowCount = other.RowCount;
-				ColumnWidths = new Collection<float>(other.ColumnWidths);
-				RowHeights = new Collection<float>(other.RowHeights);
-			}
-
-			internal int ColumnCount { get; set; }
-			internal int RowCount { get; set; }
-			internal Collection<float> ColumnWidths { get; set; } = [];
-			internal Collection<float> RowHeights { get; set; } = [];
-		}
+		// ColumnMajor
+		internal record struct GridLayoutData(int ColumnCount, int RowCount, Collection<float> ColumnWidths, Collection<float> RowHeights);
 
 		internal static GridLayoutData CalculateColumnMajorGridLayoutData(Vector2[] itemSizes, float containerHeight)
 		{
@@ -293,7 +269,7 @@ public static partial class ImGuiWidgets
 				ColumnWidths = itemSizes.Select(i => i.X).ToCollection()
 			};
 
-			var previousGridLayoutData = new GridLayoutData(gridLayoutData);
+			var previousGridLayoutData = gridLayoutData;
 			while (gridLayoutData.RowCount < itemSizes.Length)
 			{
 				int newRowCount = gridLayoutData.RowCount + 1;
@@ -327,24 +303,14 @@ public static partial class ImGuiWidgets
 					gridLayoutData = previousGridLayoutData;
 					break;
 				}
-				previousGridLayoutData = new GridLayoutData(gridLayoutData);
+				previousGridLayoutData = gridLayoutData;
 			}
 
 			return gridLayoutData;
 		}
 
 
-		/// <summary>
-		/// Shows the grid with the specified items and delegates and renders the items ColumnMajor
-		/// </summary>
-		/// <typeparam name="T">The type of the items.</typeparam>
-		/// <param name="id">Id for the grid.</param>
-		/// <param name="items">The items to be displayed in the grid.</param>
-		/// <param name="measureDelegate">The delegate to measure the size of each item.</param>
-		/// <param name="drawDelegate">The delegate to draw each item.</param>
-		/// <param name="gridSize">Size of the grid. Will not change the size of the grid cells.</param>
-		/// <param name="gridOptions">Options for changing how the grid is laid out.</param>
-		public static void ShowColumnMajor<T>(string id, IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate, Vector2 gridSize, GridOptions gridOptions)
+		internal static void ShowColumnMajor<T>(string id, IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate, Vector2 gridSize, GridOptions gridOptions)
 		{
 			if (gridSize.X <= 0)
 			{
