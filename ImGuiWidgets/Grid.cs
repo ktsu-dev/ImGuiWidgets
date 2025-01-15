@@ -93,6 +93,35 @@ public static partial class ImGuiWidgets
 	/// <param name="drawDelegate">The delegate to draw each item.</param>
 	/// <param name="gridOrder">What ordering should grid items use.</param>
 	/// <param name="gridSize">Size of the grid. This will not change the size of the grid cells. Setting any axis to 0 will use the available space.</param>
+	public static void Grid<T>(string id, IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate, GridOrder gridOrder, Vector2 gridSize)
+	{
+		ArgumentNullException.ThrowIfNull(items);
+		ArgumentNullException.ThrowIfNull(measureDelegate);
+		ArgumentNullException.ThrowIfNull(drawDelegate);
+
+		switch (gridOrder)
+		{
+			case GridOrder.RowMajor:
+				GridImpl.ShowRowMajor(id, items, measureDelegate, drawDelegate, gridSize, GridOptions.None);
+				break;
+			case GridOrder.ColumnMajor:
+				GridImpl.ShowColumnMajor(id, items, measureDelegate, drawDelegate, gridSize, GridOptions.None);
+				break;
+			default:
+				throw new NotImplementedException($"Unable to draw grid as {gridOrder} is not implemented");
+		}
+	}
+
+	/// <summary>
+	/// Renders a grid with the specified items and delegates.
+	/// </summary>
+	/// <typeparam name="T">The type of the items.</typeparam>
+	/// <param name="id">Id for the grid.</param>
+	/// <param name="items">The items to be displayed in the grid.</param>
+	/// <param name="measureDelegate">The delegate to measure the size of each item.</param>
+	/// <param name="drawDelegate">The delegate to draw each item.</param>
+	/// <param name="gridOrder">What ordering should grid items use.</param>
+	/// <param name="gridSize">Size of the grid. This will not change the size of the grid cells. Setting any axis to 0 will use the available space.</param>
 	/// <param name="gridOptions">Options for changing how the grid is laid out.</param>
 	public static void Grid<T>(string id, IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate, GridOrder gridOrder, Vector2 gridSize, GridOptions gridOptions)
 	{
