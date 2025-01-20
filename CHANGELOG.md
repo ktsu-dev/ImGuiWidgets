@@ -1,37 +1,4 @@
-## v1.1.1-pre.1 (patch)
-
-Changes since v1.1.0:
-
-- Add a new Combo widget that works with the enum type ([@Damon3000s](https://github.com/Damon3000s))
-- Add an IString and string combo implementation ([@Damon3000s](https://github.com/Damon3000s))
-- Add the new combo to the ImGuiWidgets demo project ([@Damon3000s](https://github.com/Damon3000s))
-- Changed formatting of collection member variable ([@Damon3000s](https://github.com/Damon3000s))
-- Review feedback ([@Damon3000s](https://github.com/Damon3000s))
-- Update the demo project with the new combos ([@Damon3000s](https://github.com/Damon3000s))
-- Updated all packages and fixed errors ([@Damon3000s](https://github.com/Damon3000s))
-
-## v1.1.0 (minor)
-
-Changes since v1.0.0:
-
-- Add API documentation ([@matt-edmondson](https://github.com/matt-edmondson))
-- Add automation scripts for metadata management and versioning ([@matt-edmondson](https://github.com/matt-edmondson))
-- Renamed metadata files ([@matt-edmondson](https://github.com/matt-edmondson))
-- Replace LICENSE file with LICENSE.md and update copyright information ([@matt-edmondson](https://github.com/matt-edmondson))
-
-## v1.0.14-pre.1 (patch)
-
-Changes since v1.0.13:
-
-- Renamed metadata files ([@matt-edmondson](https://github.com/matt-edmondson))
-
-## v1.0.12 (patch)
-
-Changes since v1.0.11:
-
-- Replace LICENSE file with LICENSE.md and update copyright information ([@matt-edmondson](https://github.com/matt-edmondson))
-
-## v1.0.0 (major)
+## v1.0.0-pre.1 (major)
 
 Changes since 0.0.0.0:
 
@@ -39,7 +6,11 @@ Changes since 0.0.0.0:
 - Add a common interface to facilitate scaling of all widgets by a common scale value ([@matt-edmondson](https://github.com/matt-edmondson))
 - Add a delegate to get the string to show in the list for each item ([@matt-edmondson](https://github.com/matt-edmondson))
 - Add a more general Tile class ([@matt-edmondson](https://github.com/matt-edmondson))
+- Add a new Combo widget that works with the enum type ([@Damon3000s](https://github.com/Damon3000s))
 - Add a ScopedId class for convenience ([@Damon3000s](https://github.com/Damon3000s))
+- Add an IString and string combo implementation ([@Damon3000s](https://github.com/Damon3000s))
+- Add API documentation ([@matt-edmondson](https://github.com/matt-edmondson))
+- Add automation scripts for metadata management and versioning ([@matt-edmondson](https://github.com/matt-edmondson))
 - Add basic visual debug options ([@Damon3000s](https://github.com/Damon3000s))
 - Add color tinting to images ([@matt-edmondson](https://github.com/matt-edmondson))
 - Add ColorIndicator widget ([@matt-edmondson](https://github.com/matt-edmondson))
@@ -53,6 +24,7 @@ Changes since 0.0.0.0:
 - Add globbing support #11 ([@matt-edmondson](https://github.com/matt-edmondson))
 - Add Grid layout and Icon widget to replace the Tile widget ([@matt-edmondson](https://github.com/matt-edmondson))
 - Add GridOrder and fix ColumnMajor layout bug ([@Damon3000s](https://github.com/Damon3000s))
+- Add icon back hopefully to LFS ([@matt-edmondson](https://github.com/matt-edmondson))
 - Add IsPackable=false to the demo project ([@matt-edmondson](https://github.com/matt-edmondson))
 - Add modal input popups for strings, ints, and floats ([@matt-edmondson](https://github.com/matt-edmondson))
 - Add new Image and IconTile widgets ([@matt-edmondson](https://github.com/matt-edmondson))
@@ -62,6 +34,7 @@ Changes since 0.0.0.0:
 - Add PopupPrompt to display a simple prompt window with configurable buttons ([@matt-edmondson](https://github.com/matt-edmondson))
 - Add searchable list popup ([@matt-edmondson](https://github.com/matt-edmondson))
 - Add text input to specify a new filename when saving ([@matt-edmondson](https://github.com/matt-edmondson))
+- Add the new combo to the ImGuiWidgets demo project ([@Damon3000s](https://github.com/Damon3000s))
 - Add trees ([@matt-edmondson](https://github.com/matt-edmondson))
 - Add wrapping to knob titles and ability to put them below the knob ([@matt-edmondson](https://github.com/matt-edmondson))
 - Addressing review feedback ([@Damon3000s](https://github.com/Damon3000s))
@@ -70,9 +43,12 @@ Changes since 0.0.0.0:
 - Avoid double upload of symbols package ([@matt-edmondson](https://github.com/matt-edmondson))
 - Bump ImGuiStyler ([@matt-edmondson](https://github.com/matt-edmondson))
 - Change icon strings ([@Damon3000s](https://github.com/Damon3000s))
+- Change the ColorIndicator implementation based on review feedback ([@Damon3000s](https://github.com/Damon3000s))
+- Changed formatting of collection member variable ([@Damon3000s](https://github.com/Damon3000s))
 - Create dependabot-merge.yml ([@matt-edmondson](https://github.com/matt-edmondson))
 - Create dependabot.yml ([@matt-edmondson](https://github.com/matt-edmondson))
 - Create VERSION ([@matt-edmondson](https://github.com/matt-edmondson))
+- Delete icon to try fix lfs ([@matt-edmondson](https://github.com/matt-edmondson))
 - Disable grid debugging by default ([@Damon3000s](https://github.com/Damon3000s))
 - Dont try to push packages when building pull requests ([@matt-edmondson](https://github.com/matt-edmondson))
 - dotnet 8 ([@matt-edmondson](https://github.com/matt-edmondson))
@@ -84,6 +60,7 @@ Changes since 0.0.0.0:
 - Fix a type in a comment ([@matt-edmondson](https://github.com/matt-edmondson))
 - Fix broken formatting ([@Damon3000s](https://github.com/Damon3000s))
 - Fix end cursor position in nested trees ([@matt-edmondson](https://github.com/matt-edmondson))
+- Fix for SetPos ImGui assert ([@Damon3000s](https://github.com/Damon3000s))
 - Fix grid layout ([@Damon3000s](https://github.com/Damon3000s))
 - Fix ID stack issues in popups and add escape key to cancel popup ([@matt-edmondson](https://github.com/matt-edmondson))
 - Fix incorrect icon calculation for 1 item grid ([@Damon3000s](https://github.com/Damon3000s))
@@ -95,6 +72,7 @@ Changes since 0.0.0.0:
 - Hoist popup functionality out into its own base class so that it can be used by other projects wanting modal popups ([@matt-edmondson](https://github.com/matt-edmondson))
 - Initial commit ([@matt-edmondson](https://github.com/matt-edmondson))
 - Migrate ktsu.io to ktsu namespace ([@matt-edmondson](https://github.com/matt-edmondson))
+- Minor formatting fix. ([@Damon3000s](https://github.com/Damon3000s))
 - Missing changes from previous commit ([@Damon3000s](https://github.com/Damon3000s))
 - Move popups into their own library ([@matt-edmondson](https://github.com/matt-edmondson))
 - Provide the item dimensions to the draw delegate ([@matt-edmondson](https://github.com/matt-edmondson))
@@ -103,10 +81,15 @@ Changes since 0.0.0.0:
 - Read from VERSION when building ([@matt-edmondson](https://github.com/matt-edmondson))
 - Read PackageDescription from DESCRIPTION file ([@matt-edmondson](https://github.com/matt-edmondson))
 - Refactor and enhance class constructors ([@matt-edmondson](https://github.com/matt-edmondson))
+- Refactor ColorIndicator ([@Damon3000s](https://github.com/Damon3000s))
 - Release v1.0.0 with extensive documentation updates ([@matt-edmondson](https://github.com/matt-edmondson))
 - Remove a debug print ([@matt-edmondson](https://github.com/matt-edmondson))
 - Remove intrusive scaling ([@matt-edmondson](https://github.com/matt-edmondson))
+- Renamed metadata files ([@matt-edmondson](https://github.com/matt-edmondson))
+- Replace LICENSE file with LICENSE.md and update copyright information ([@matt-edmondson](https://github.com/matt-edmondson))
+- Review feedback ([@Damon3000s](https://github.com/Damon3000s))
 - Rollback to ImGui.NET 1.89.5 ([@matt-edmondson](https://github.com/matt-edmondson))
+- Simplify the assert fix ([@Damon3000s](https://github.com/Damon3000s))
 - Update build config ([@matt-edmondson](https://github.com/matt-edmondson))
 - Update demo to include single item grid ([@Damon3000s](https://github.com/Damon3000s))
 - Update Directory.Build.props ([@matt-edmondson](https://github.com/matt-edmondson))
@@ -120,9 +103,11 @@ Changes since 0.0.0.0:
 - Update package references to latest versions ([@matt-edmondson](https://github.com/matt-edmondson))
 - Update README.md ([@matt-edmondson](https://github.com/matt-edmondson))
 - Update SetSizesFromList to take an ICollection ([@matt-edmondson](https://github.com/matt-edmondson))
+- Update the demo project with the new combos ([@Damon3000s](https://github.com/Damon3000s))
 - Update to the latest ktsu.Styler version ([@Damon3000s](https://github.com/Damon3000s))
 - Update url in gitignore ([@matt-edmondson](https://github.com/matt-edmondson))
 - Update VERSION ([@matt-edmondson](https://github.com/matt-edmondson))
+- Updated all packages and fixed errors ([@Damon3000s](https://github.com/Damon3000s))
 - Use the new ImGuiApp.Start signature ([@matt-edmondson](https://github.com/matt-edmondson))
 - v1.0.0-alpha.8 ([@matt-edmondson](https://github.com/matt-edmondson))
 - Vertically center the horizontal label correctly ([@matt-edmondson](https://github.com/matt-edmondson))
