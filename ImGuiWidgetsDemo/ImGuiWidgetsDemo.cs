@@ -172,6 +172,11 @@ internal class ImGuiWidgetsDemo
 				ImGui.MenuItem("Context Menu Item 3");
 			},
 		});
+		ImGui.SameLine();
+		ImGuiWidgets.Icon("Hover Me", ktsuTexture.TextureId, iconWidthPx, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical, new ImGuiWidgets.IconDelegates()
+		{
+			OnGetTooltip = () => "You hovered over me"
+		});
 
 		float iconSizePx = ImGuiApp.EmsToPx(2.5f);
 

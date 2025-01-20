@@ -54,6 +54,11 @@ public static partial class ImGuiWidgets
 		/// Gets or sets the action to be performed on context menu.
 		/// </summary>
 		public Action? OnContextMenu { get; init; }
+
+		/// <summary>
+		/// Returns the tooltip for the Icon
+		/// </summary>
+		public Func<string>? OnGetTooltip { get; init; }
 	}
 
 	/// <summary>
@@ -250,6 +255,10 @@ public static partial class ImGuiWidgets
 			ImGui.SetCursorScreenPos(cursorStartPos);
 			ImGui.Dummy(boundingBoxSize);
 			bool isHovered = ImGui.IsItemHovered();
+			if (iconDelegates.OnGetTooltip is not null)
+			{
+				ImGui.SetItemTooltip(iconDelegates.OnGetTooltip());
+			}
 			if (isHovered || EnableIconDebugDraw)
 			{
 				uint borderColor = ImGui.GetColorU32(ImGui.GetStyle().Colors[(int)ImGuiCol.Border]);
