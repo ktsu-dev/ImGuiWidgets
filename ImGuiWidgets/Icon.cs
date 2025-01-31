@@ -31,10 +31,25 @@ public static partial class ImGuiWidgets
 	}
 
 	/// <summary>
-	/// Contains delegate actions for icon events.
+	/// Additional options to modify Icon behavior.
 	/// </summary>
-	public class IconDelegates
+	public class IconOptions
 	{
+		/// <summary>
+		/// The color of the icon.
+		/// </summary>
+		public Vector4 Color { get; set; } = ktsu.ImGuiStyler.Color.White.Value;
+
+		/// <summary>
+		/// The tooltip to display.
+		/// </summary>
+		public string Tooltip { get; set; } = string.Empty;
+
+		/// <summary>
+		/// The alignment of the icon.
+		/// </summary>
+		public IconAlignment IconAlignment { get; set; } = IconAlignment.Horizontal;
+
 		/// <summary>
 		/// Gets or sets the action to be performed on click.
 		/// </summary>
@@ -54,29 +69,6 @@ public static partial class ImGuiWidgets
 		/// Gets or sets the action to be performed on context menu.
 		/// </summary>
 		public Action? OnContextMenu { get; init; }
-	}
-
-	/// <summary>
-	/// Additional options to modify Icon behavior.
-	/// </summary>
-	public class IconOptions
-	{
-		/// <summary>
-		/// The color of the icon.
-		/// </summary>
-		public Vector4 Color { get; set; } = ktsu.ImGuiStyler.Color.White.Value;
-		/// <summary>
-		/// The tooltip to display.
-		/// </summary>
-		public string Tooltip { get; set; } = string.Empty;
-		/// <summary>
-		/// The alignment of the icon.
-		/// </summary>
-		public IconAlignment IconAlignment { get; set; } = IconAlignment.Horizontal;
-		/// <summary>
-		/// Actions to be performed.
-		/// </summary>
-		public IconDelegates IconDelegates { get; set; } = new();
 	}
 
 	/// <summary>
@@ -237,18 +229,18 @@ public static partial class ImGuiWidgets
 			{
 				if (isMouseClicked)
 				{
-					options.IconDelegates.OnClick?.Invoke();
+					options.OnClick?.Invoke();
 					wasClicked = true;
 				}
 				if (isMouseDoubleClicked)
 				{
-					options.IconDelegates.OnDoubleClick?.Invoke();
+					options.OnDoubleClick?.Invoke();
 				}
 				if (isRightMouseClicked)
 				{
-					options.IconDelegates.OnRightClick?.Invoke();
+					options.OnRightClick?.Invoke();
 				}
-				if (isRightMouseReleased && options.IconDelegates.OnContextMenu is not null)
+				if (isRightMouseReleased && options.OnContextMenu is not null)
 				{
 					ImGui.OpenPopup($"{label}_Context");
 				}
@@ -256,7 +248,7 @@ public static partial class ImGuiWidgets
 
 			if (ImGui.BeginPopup($"{label}_Context"))
 			{
-				options.IconDelegates.OnContextMenu?.Invoke();
+				options.OnContextMenu?.Invoke();
 				ImGui.EndPopup();
 			}
 

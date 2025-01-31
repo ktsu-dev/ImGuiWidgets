@@ -157,10 +157,7 @@ internal class ImGuiWidgetsDemo
 			new()
 			{
 				IconAlignment = ImGuiWidgets.IconAlignment.Vertical,
-				IconDelegates = new()
-				{
-					OnClick = () => MessageOK.Open("Click", "You chose Tile1")
-				}
+				OnClick = () => MessageOK.Open("Click", "You chose Tile1")
 			});
 
 		ImGui.SameLine();
@@ -168,25 +165,19 @@ internal class ImGuiWidgetsDemo
 			new()
 			{
 				IconAlignment = ImGuiWidgets.IconAlignment.Vertical,
-				IconDelegates = new()
-				{
-					OnDoubleClick = () => MessageOK.Open("Double Click", "Yippee!!!!!!!!")
-				}
+				OnDoubleClick = () => MessageOK.Open("Double Click", "Yippee!!!!!!!!")
 			});
 		ImGui.SameLine();
 		ImGuiWidgets.Icon("Right Click Me", ktsuTexture.TextureId, iconWidthPx,
 			new()
 			{
 				IconAlignment = ImGuiWidgets.IconAlignment.Vertical,
-				IconDelegates = new()
+				OnContextMenu = () =>
 				{
-					OnContextMenu = () =>
-					{
-						ImGui.MenuItem("Context Menu Item 1");
-						ImGui.MenuItem("Context Menu Item 2");
-						ImGui.MenuItem("Context Menu Item 3");
-					},
-				}
+					ImGui.MenuItem("Context Menu Item 1");
+					ImGui.MenuItem("Context Menu Item 2");
+					ImGui.MenuItem("Context Menu Item 3");
+				},
 			});
 		ImGui.SameLine();
 		ImGuiWidgets.Icon("Hover Me", ktsuTexture.TextureId, iconWidthPx,
