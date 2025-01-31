@@ -54,11 +54,29 @@ public static partial class ImGuiWidgets
 		/// Gets or sets the action to be performed on context menu.
 		/// </summary>
 		public Action? OnContextMenu { get; init; }
+	}
 
+	/// <summary>
+	/// Additional options to modify Icon behavior.
+	/// </summary>
+	public class IconOptions
+	{
 		/// <summary>
-		/// Returns the tooltip for the Icon
+		/// The color of the icon.
 		/// </summary>
-		public Func<string>? OnGetTooltip { get; init; }
+		public Vector4 Color { get; set; } = ktsu.ImGuiStyler.Color.White.Value;
+		/// <summary>
+		/// The tooltip to display.
+		/// </summary>
+		public string Tooltip { get; set; } = string.Empty;
+		/// <summary>
+		/// The alignment of the icon.
+		/// </summary>
+		public IconAlignment IconAlignment { get; set; } = IconAlignment.Horizontal;
+		/// <summary>
+		/// Actions to be performed.
+		/// </summary>
+		public IconDelegates IconDelegates { get; set; } = new();
 	}
 
 	/// <summary>
@@ -67,9 +85,8 @@ public static partial class ImGuiWidgets
 	/// <param name="label">The label of the icon.</param>
 	/// <param name="textureId">The texture ID of the icon.</param>
 	/// <param name="imageSize">The size of the image.</param>
-	/// <param name="color">The color of the icon.</param>
-	/// <returns>True if the icon was clicked; otherwise, false.</returns>
-	public static bool Icon(string label, uint textureId, float imageSize, Vector4 color) => Icon(label, textureId, new Vector2(imageSize), color, IconAlignment.Horizontal, new());
+	/// <returns>Was the icon bounds clicked</returns>
+	public static bool Icon(string label, uint textureId, float imageSize) => IconImpl.Show(label, textureId, new(imageSize, imageSize), new());
 
 	/// <summary>
 	/// Renders an icon with the specified parameters.
@@ -77,10 +94,8 @@ public static partial class ImGuiWidgets
 	/// <param name="label">The label of the icon.</param>
 	/// <param name="textureId">The texture ID of the icon.</param>
 	/// <param name="imageSize">The size of the image.</param>
-	/// <param name="color">The color of the icon.</param>
-	/// <param name="iconAlignment">The alignment of the icon.</param>
-	/// <returns>True if the icon was clicked; otherwise, false.</returns>
-	public static bool Icon(string label, uint textureId, float imageSize, Vector4 color, IconAlignment iconAlignment) => Icon(label, textureId, new Vector2(imageSize), color, iconAlignment, new());
+	/// <returns>Was the icon bounds clicked</returns>
+	public static bool Icon(string label, uint textureId, Vector2 imageSize) => IconImpl.Show(label, textureId, imageSize, new());
 
 	/// <summary>
 	/// Renders an icon with the specified parameters.
@@ -88,71 +103,26 @@ public static partial class ImGuiWidgets
 	/// <param name="label">The label of the icon.</param>
 	/// <param name="textureId">The texture ID of the icon.</param>
 	/// <param name="imageSize">The size of the image.</param>
-	/// <param name="color">The color of the icon.</param>
-	/// <param name="iconDelegates">The delegates for icon events.</param>
-	/// <returns>True if the icon was clicked; otherwise, false.</returns>
-	public static bool Icon(string label, uint textureId, float imageSize, Vector4 color, IconDelegates iconDelegates) => Icon(label, textureId, new Vector2(imageSize), color, IconAlignment.Horizontal, iconDelegates);
-
-	/// <summary>
-	/// Renders an icon with the specified parameters.
-	/// </summary>
-	/// <param name="label">The label of the icon.</param>
-	/// <param name="textureId">The texture ID of the icon.</param>
-	/// <param name="imageSize">The size of the image.</param>
-	/// <param name="color">The color of the icon.</param>
-	/// <param name="iconAlignment">The alignment of the icon.</param>
-	/// <param name="iconDelegates">The delegates for icon events.</param>
-	/// <returns>True if the icon was clicked; otherwise, false.</returns>
-	public static bool Icon(string label, uint textureId, float imageSize, Vector4 color, IconAlignment iconAlignment, IconDelegates iconDelegates) => Icon(label, textureId, new Vector2(imageSize), color, iconAlignment, iconDelegates);
-
-	/// <summary>
-	/// Renders an icon with the specified parameters.
-	/// </summary>
-	/// <param name="label">The label of the icon.</param>
-	/// <param name="textureId">The texture ID of the icon.</param>
-	/// <param name="imageSize">The size of the image.</param>
-	/// <param name="color">The color of the icon.</param>
-	/// <returns>True if the icon was clicked; otherwise, false.</returns>
-	public static bool Icon(string label, uint textureId, Vector2 imageSize, Vector4 color) => Icon(label, textureId, imageSize, color, IconAlignment.Horizontal, new());
-
-	/// <summary>
-	/// Renders an icon with the specified parameters.
-	/// </summary>
-	/// <param name="label">The label of the icon.</param>
-	/// <param name="textureId">The texture ID of the icon.</param>
-	/// <param name="imageSize">The size of the image.</param>
-	/// <param name="color">The color of the icon.</param>
-	/// <param name="iconAlignment">The alignment of the icon.</param>
-	/// <returns>True if the icon was clicked; otherwise, false.</returns>
-	public static bool Icon(string label, uint textureId, Vector2 imageSize, Vector4 color, IconAlignment iconAlignment) => Icon(label, textureId, imageSize, color, iconAlignment, new());
-
-	/// <summary>
-	/// Renders an icon with the specified parameters.
-	/// </summary>
-	/// <param name="label">The label of the icon.</param>
-	/// <param name="textureId">The texture ID of the icon.</param>
-	/// <param name="imageSize">The size of the image.</param>
-	/// <param name="color">The color of the icon.</param>
-	/// <param name="iconDelegates">The delegates for icon events.</param>
-	/// <returns>True if the icon was clicked; otherwise, false.</returns>
-	public static bool Icon(string label, uint textureId, Vector2 imageSize, Vector4 color, IconDelegates iconDelegates) => Icon(label, textureId, imageSize, color, IconAlignment.Horizontal, iconDelegates);
-
-	/// <summary>
-	/// Renders an icon with the specified parameters.
-	/// </summary>
-	/// <param name="label">The label of the icon.</param>
-	/// <param name="textureId">The texture ID of the icon.</param>
-	/// <param name="imageSize">The size of the image.</param>
-	/// <param name="color">The color of the icon.</param>
-	/// <param name="iconAlignment">The alignment of the icon.</param>
-	/// <param name="iconDelegates">The delegates for icon events.</param>
-	/// <returns>True if the icon was clicked; otherwise, false.</returns>
-	public static bool Icon(string label, uint textureId, Vector2 imageSize, Vector4 color, IconAlignment iconAlignment, IconDelegates iconDelegates)
+	/// <param name="options">Additional options</param>
+	/// <returns>Was the icon bounds clicked</returns>
+	public static bool Icon(string label, uint textureId, float imageSize, IconOptions options)
 	{
-		ArgumentNullException.ThrowIfNull(label);
-		ArgumentNullException.ThrowIfNull(iconDelegates);
+		ArgumentNullException.ThrowIfNull(options);
+		return IconImpl.Show(label, textureId, new(imageSize, imageSize), options);
+	}
 
-		return IconImpl.Show(label, textureId, imageSize, color, iconAlignment, iconDelegates);
+	/// <summary>
+	/// Renders an icon with the specified parameters.
+	/// </summary>
+	/// <param name="label">The label of the icon.</param>
+	/// <param name="textureId">The texture ID of the icon.</param>
+	/// <param name="imageSize">The size of the image.</param>
+	/// <param name="options">Additional options</param>
+	/// <returns>Was the icon bounds clicked</returns>
+	public static bool Icon(string label, uint textureId, Vector2 imageSize, IconOptions options)
+	{
+		ArgumentNullException.ThrowIfNull(options);
+		return IconImpl.Show(label, textureId, imageSize, options);
 	}
 
 	/// <summary>
@@ -214,18 +184,10 @@ public static partial class ImGuiWidgets
 	/// </summary>
 	internal static class IconImpl
 	{
-		/// <summary>
-		/// Shows the icon with the specified parameters.
-		/// </summary>
-		/// <param name="label">The label of the icon.</param>
-		/// <param name="textureId">The texture ID of the icon.</param>
-		/// <param name="imageSize">The size of the image.</param>
-		/// <param name="color">The color of the icon.</param>
-		/// <param name="iconAlignment">The alignment of the icon.</param>
-		/// <param name="iconDelegates">The delegates for icon events.</param>
-		/// <returns>True if the icon was clicked; otherwise, false.</returns>
-		public static bool Show(string label, uint textureId, Vector2 imageSize, Vector4 color, IconAlignment iconAlignment, IconDelegates iconDelegates)
+		internal static bool Show(string label, uint textureId, Vector2 imageSize, IconOptions options)
 		{
+			ArgumentException.ThrowIfNullOrEmpty(label);
+
 			bool wasClicked = false;
 
 			var style = ImGui.GetStyle();
@@ -236,17 +198,17 @@ public static partial class ImGuiWidgets
 
 			var cursorStartPos = ImGui.GetCursorScreenPos();
 			var labelSize = ImGui.CalcTextSize(label);// TODO, maybe pass this to an internal overload of CalcIconSize to save recalculating
-			var boundingBoxSize = CalcIconSize(label, imageSize, iconAlignment);
+			var boundingBoxSize = CalcIconSize(label, imageSize, options.IconAlignment);
 
 			ImGui.SetCursorScreenPos(cursorStartPos + framePadding);
 
-			switch (iconAlignment)
+			switch (options.IconAlignment)
 			{
 				case IconAlignment.Horizontal:
-					HorizontalLayout(label, textureId, imageSize, labelSize, boundingBoxSize, itemSpacing, color, cursorStartPos);
+					HorizontalLayout(label, textureId, imageSize, labelSize, boundingBoxSize, itemSpacing, options.Color, cursorStartPos);
 					break;
 				case IconAlignment.Vertical:
-					VerticalLayout(label, textureId, imageSize, labelSize, boundingBoxSize, itemSpacing, color, cursorStartPos);
+					VerticalLayout(label, textureId, imageSize, labelSize, boundingBoxSize, itemSpacing, options.Color, cursorStartPos);
 					break;
 				default:
 					throw new NotImplementedException();
@@ -255,9 +217,14 @@ public static partial class ImGuiWidgets
 			ImGui.SetCursorScreenPos(cursorStartPos);
 			ImGui.Dummy(boundingBoxSize);
 			bool isHovered = ImGui.IsItemHovered();
-			if (iconDelegates.OnGetTooltip is not null)
+			bool isMouseClicked = ImGui.IsMouseClicked(ImGuiMouseButton.Left);
+			bool isMouseDoubleClicked = ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left);
+			bool isRightMouseClicked = ImGui.IsMouseClicked(ImGuiMouseButton.Right);
+			bool isRightMouseReleased = ImGui.IsMouseReleased(ImGuiMouseButton.Right);
+
+			if (!string.IsNullOrEmpty(options.Tooltip))
 			{
-				ImGui.SetItemTooltip(iconDelegates.OnGetTooltip());
+				ImGui.SetItemTooltip(options.Tooltip);
 			}
 			if (isHovered || EnableIconDebugDraw)
 			{
@@ -268,20 +235,20 @@ public static partial class ImGuiWidgets
 
 			if (isHovered)
 			{
-				if (ImGui.IsMouseClicked(ImGuiMouseButton.Left))
+				if (isMouseClicked)
 				{
-					iconDelegates.OnClick?.Invoke();
+					options.IconDelegates.OnClick?.Invoke();
 					wasClicked = true;
 				}
-				if (ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
+				if (isMouseDoubleClicked)
 				{
-					iconDelegates.OnDoubleClick?.Invoke();
+					options.IconDelegates.OnDoubleClick?.Invoke();
 				}
-				if (ImGui.IsMouseClicked(ImGuiMouseButton.Right))
+				if (isRightMouseClicked)
 				{
-					iconDelegates.OnRightClick?.Invoke();
+					options.IconDelegates.OnRightClick?.Invoke();
 				}
-				if (ImGui.IsMouseReleased(ImGuiMouseButton.Right) && iconDelegates.OnContextMenu is not null)
+				if (isRightMouseReleased && options.IconDelegates.OnContextMenu is not null)
 				{
 					ImGui.OpenPopup($"{label}_Context");
 				}
@@ -289,7 +256,7 @@ public static partial class ImGuiWidgets
 
 			if (ImGui.BeginPopup($"{label}_Context"))
 			{
-				iconDelegates.OnContextMenu?.Invoke();
+				options.IconDelegates.OnContextMenu?.Invoke();
 				ImGui.EndPopup();
 			}
 

@@ -153,33 +153,50 @@ internal class ImGuiWidgetsDemo
 
 		var iconSize = new Vector2(iconWidthPx, iconWidthPx);
 
-		ImGuiWidgets.Icon("Click Me", ktsuTexture.TextureId, iconWidthPx, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical, new ImGuiWidgets.IconDelegates()
-		{
-			OnClick = () => MessageOK.Open("Click", "You chose Tile1")
-		});
-		ImGui.SameLine();
-		ImGuiWidgets.Icon("Double Click Me", ktsuTexture.TextureId, iconWidthPx, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical, new ImGuiWidgets.IconDelegates()
-		{
-			OnDoubleClick = () => MessageOK.Open("Double Click", "Yippee!!!!!!!!")
-		});
-		ImGui.SameLine();
-		ImGuiWidgets.Icon("Right Click Me", ktsuTexture.TextureId, iconWidthPx, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical, new ImGuiWidgets.IconDelegates()
-		{
-			OnContextMenu = () =>
+		ImGuiWidgets.Icon("Click Me", ktsuTexture.TextureId, iconWidthPx,
+			new()
 			{
-				ImGui.MenuItem("Context Menu Item 1");
-				ImGui.MenuItem("Context Menu Item 2");
-				ImGui.MenuItem("Context Menu Item 3");
-			},
-		});
+				IconAlignment = ImGuiWidgets.IconAlignment.Vertical,
+				IconDelegates = new()
+				{
+					OnClick = () => MessageOK.Open("Click", "You chose Tile1")
+				}
+			});
+
 		ImGui.SameLine();
-		ImGuiWidgets.Icon("Hover Me", ktsuTexture.TextureId, iconWidthPx, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical, new ImGuiWidgets.IconDelegates()
-		{
-			OnGetTooltip = () => "You hovered over me"
-		});
+		ImGuiWidgets.Icon("Double Click Me", ktsuTexture.TextureId, iconWidthPx,
+			new()
+			{
+				IconAlignment = ImGuiWidgets.IconAlignment.Vertical,
+				IconDelegates = new()
+				{
+					OnDoubleClick = () => MessageOK.Open("Double Click", "Yippee!!!!!!!!")
+				}
+			});
+		ImGui.SameLine();
+		ImGuiWidgets.Icon("Right Click Me", ktsuTexture.TextureId, iconWidthPx,
+			new()
+			{
+				IconAlignment = ImGuiWidgets.IconAlignment.Vertical,
+				IconDelegates = new()
+				{
+					OnContextMenu = () =>
+					{
+						ImGui.MenuItem("Context Menu Item 1");
+						ImGui.MenuItem("Context Menu Item 2");
+						ImGui.MenuItem("Context Menu Item 3");
+					},
+				}
+			});
+		ImGui.SameLine();
+		ImGuiWidgets.Icon("Hover Me", ktsuTexture.TextureId, iconWidthPx,
+			new()
+			{
+				IconAlignment = ImGuiWidgets.IconAlignment.Vertical,
+				Tooltip = "You hovered over me"
+			});
 
 		float iconSizePx = ImGuiApp.EmsToPx(2.5f);
-
 		ImGui.NewLine();
 
 		bool showGridDebug = ImGuiWidgets.EnableGridDebugDraw;
@@ -197,7 +214,7 @@ internal class ImGuiWidgetsDemo
 		ImGui.SeparatorText("Grid (Column Major) Icon Alignment Horizontal");
 		ImGuiWidgets.Grid(GridStrings.Take(gridItemsToShow), i => ImGuiWidgets.CalcIconSize(i, iconSizePx), (item, cellSize, itemSize) =>
 		{
-			ImGuiWidgets.Icon(item, ktsuTexture.TextureId, iconSizePx, Color.White.Value);
+			ImGuiWidgets.Icon(item, ktsuTexture.TextureId, iconSizePx);
 		}, ImGuiWidgets.GridOrder.ColumnMajor);
 
 		ImGui.NewLine();
@@ -207,7 +224,11 @@ internal class ImGuiWidgetsDemo
 		{
 			using (new Alignment.CenterWithin(itemSize, cellSize))
 			{
-				ImGuiWidgets.Icon(item, ktsuTexture.TextureId, bigIconSize, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical);
+				ImGuiWidgets.Icon(item, ktsuTexture.TextureId, bigIconSize,
+					new()
+					{
+						IconAlignment = ImGuiWidgets.IconAlignment.Vertical
+					});
 			}
 		}, ImGuiWidgets.GridOrder.RowMajor);
 
