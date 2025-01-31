@@ -114,6 +114,19 @@ internal class ImGuiWidgetsDemo
 		ImGuiWidgets.Combo("String Combo", ref selectedStringValue, possibleStringValues);
 		ImGuiWidgets.Combo("Strong String Combo", ref selectedStrongString, possibleStrongStringValues);
 
+
+		using (new ScopedDisabled(true))
+		{
+			ImGui.SeparatorText("Disabled");
+
+			bool value = true;
+			int currentItem = 0;
+			string[] items = ["Item 1", "Item 2", "Item 3"];
+
+			ImGui.Checkbox("Disabled Checkbox", ref value);
+			ImGui.Combo("Disabled Combo", ref currentItem, items, items.Length);
+		}
+
 		ImGui.SeparatorText("Tree");
 		using (var tree = new ImGuiWidgets.Tree())
 		{
