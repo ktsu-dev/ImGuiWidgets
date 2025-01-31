@@ -1,7 +1,7 @@
 namespace ktsu.ImGuiWidgets;
 
 using ImGuiNET;
-using ktsu.ScopedAction;
+using ScopedAction;
 
 /// <summary>
 /// Represents a scoped disabled action which will set Dear ImGui elements as functionally and visually disabled until
@@ -10,7 +10,7 @@ using ktsu.ScopedAction;
 public class ScopedDisabled : ScopedAction
 {
 	/// <summary>
-	/// Note as per the Dear ImGui documentation: "Those can be nested but it cannot
+	/// Note as per the Dear ImGui documentation: "Those can be nested, but it cannot
 	/// be used to enable an already disabled section (a single BeginDisabled(true)
 	/// in the stack is enough to keep everything disabled)"
 	/// </summary>
