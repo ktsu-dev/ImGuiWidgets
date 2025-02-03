@@ -47,7 +47,7 @@ internal class ImGuiWidgetsDemo
 
 	private List<string> GridStrings { get; } = [];
 	private static int InitialGridItemCount { get; } = 32;
-	private int GridItemsToShow { get; set; } = 1;
+	private int GridItemsToShow { get; set; } = InitialGridItemCount;
 	private float GridHeight { get; set; } = 500f;
 	private ImGuiWidgets.GridOrder GridOrder { get; set; } = ImGuiWidgets.GridOrder.RowMajor;
 	private ImGuiWidgets.IconAlignment GridIconAlignment { get; set; } = ImGuiWidgets.IconAlignment.Vertical;
