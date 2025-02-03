@@ -1,1 +1,1 @@
-Copyright (c) 2023-2025 Damon3000s contributors
+Copyright (c) 2023-2025 ktsu.dev contributors

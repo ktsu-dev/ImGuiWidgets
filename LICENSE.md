@@ -1,8 +1,8 @@
 MIT License
 
-https://github.com/Damon3000s/ImGuiWidgets
+https://github.com/ktsu-dev/ImGuiWidgets
 
-Copyright (c) 2023-2025 Damon3000s contributors
+Copyright (c) 2023-2025 ktsu.dev contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
