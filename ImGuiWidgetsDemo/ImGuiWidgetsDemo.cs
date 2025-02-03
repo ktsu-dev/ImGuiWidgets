@@ -259,7 +259,7 @@ internal class ImGuiWidgetsDemo
 
 		ImGuiWidgets.GridOptions gridOptions = new()
 		{
-			//GridSize = new(ImGui.GetContentRegionAvail().X, GridHeight),
+			GridSize = new(ImGui.GetContentRegionAvail().X, GridHeight),
 			FitToContents = GridFitToContents,
 		};
 		switch (GridOrder)
@@ -271,6 +271,7 @@ internal class ImGuiWidgetsDemo
 			case ImGuiWidgets.GridOrder.ColumnMajor:
 				ImGuiWidgets.ColumnMajorGrid("demoColumnMajorGrid", GridStrings.Take(GridItemsToShow), MeasureGridSize, DrawGridCell, gridOptions);
 				break;
+
 			default:
 				throw new NotImplementedException();
 		}

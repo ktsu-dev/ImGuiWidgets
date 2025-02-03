@@ -58,7 +58,7 @@ public static partial class ImGuiWidgets
 		/// <summary>
 		/// Size of the grid. Setting any axis to 0 will use the available space.
 		/// </summary>
-		public Vector2 GridSize { get; internal set; } = new(0, 0);
+		public Vector2 GridSize { get; set; } = new(0, 0);
 
 		/// <summary>
 		/// Size the content region to cover all the items.
