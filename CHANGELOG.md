@@ -1,3 +1,23 @@
+## v1.1.1 (patch)
+
+Changes since v1.1.0:
+
+- Add a new Combo widget that works with the enum type ([@Damon3000s](https://github.com/Damon3000s))
+- Add an IString and string combo implementation ([@Damon3000s](https://github.com/Damon3000s))
+- Add conditional checks for release tasks in CI workflow ([@matt-edmondson](https://github.com/matt-edmondson))
+- Add icon back hopefully to LFS ([@matt-edmondson](https://github.com/matt-edmondson))
+- Add the new combo to the ImGuiWidgets demo project ([@Damon3000s](https://github.com/Damon3000s))
+- Change the ColorIndicator implementation based on review feedback ([@Damon3000s](https://github.com/Damon3000s))
+- Changed formatting of collection member variable ([@Damon3000s](https://github.com/Damon3000s))
+- Delete icon to try fix lfs ([@matt-edmondson](https://github.com/matt-edmondson))
+- Fix for SetPos ImGui assert ([@Damon3000s](https://github.com/Damon3000s))
+- Minor formatting fix. ([@Damon3000s](https://github.com/Damon3000s))
+- Refactor ColorIndicator ([@Damon3000s](https://github.com/Damon3000s))
+- Review feedback ([@Damon3000s](https://github.com/Damon3000s))
+- Simplify the assert fix ([@Damon3000s](https://github.com/Damon3000s))
+- Update the demo project with the new combos ([@Damon3000s](https://github.com/Damon3000s))
+- Updated all packages and fixed errors ([@Damon3000s](https://github.com/Damon3000s))
+
 ## v1.1.1-pre.1 (patch)
 
 Changes since v1.1.0:
