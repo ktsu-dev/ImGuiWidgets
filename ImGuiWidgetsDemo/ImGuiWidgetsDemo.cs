@@ -241,11 +241,8 @@ internal class ImGuiWidgetsDemo
 
 		ImGui.Separator();
 
-		var gridFlags = GridFitToContents
-			? ImGuiWidgets.GridOptions.FitToContents
-			: ImGuiWidgets.GridOptions.None;
-
-		ImGuiWidgets.Grid("demoGrid", GridStrings.Take(GridItemsToShow), i => ImGuiWidgets.CalcIconSize(i, gridIconSize, GridIconAlignment), (item, cellSize, itemSize) =>
+		Vector2 MeasureGridSize(string item) => ImGuiWidgets.CalcIconSize(item, gridIconSize, GridIconAlignment);
+		void DrawGridCell(string item, Vector2 cellSize, Vector2 itemSize)
 		{
 			if (GridIconCenterWithinCell)
 			{
@@ -258,7 +255,26 @@ internal class ImGuiWidgetsDemo
 			{
 				ImGuiWidgets.Icon(item, ktsuTexture.TextureId, gridIconSize, Color.White.Value, GridIconAlignment);
 			}
-		}, GridOrder, gridSize, gridFlags);
+		}
+
+		ImGuiWidgets.GridOptions gridOptions = new()
+		{
+			//GridSize = new(ImGui.GetContentRegionAvail().X, GridHeight),
+			FitToContents = GridFitToContents,
+		};
+		switch (GridOrder)
+		{
+			case ImGuiWidgets.GridOrder.RowMajor:
+				ImGuiWidgets.RowMajorGrid("demoRowMajorGrid", GridStrings.Take(GridItemsToShow), MeasureGridSize, DrawGridCell, gridOptions);
+				break;
+
+			case ImGuiWidgets.GridOrder.ColumnMajor:
+				ImGuiWidgets.ColumnMajorGrid("demoColumnMajorGrid", GridStrings.Take(GridItemsToShow), MeasureGridSize, DrawGridCell, gridOptions);
+				break;
+			default:
+				throw new NotImplementedException();
+		}
+
 		ImGui.Separator();
 
 		MessageOK.ShowIfOpen();

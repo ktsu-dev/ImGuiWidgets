@@ -53,17 +53,17 @@ public static partial class ImGuiWidgets
 	/// <summary>
 	/// Options for changing how the grid is laid out.
 	/// </summary>
-	public enum GridOptions
+	public class GridOptions
 	{
 		/// <summary>
-		/// None
+		/// Size of the grid. Setting any axis to 0 will use the available space.
 		/// </summary>
-		None = 0,
+		public Vector2 GridSize { get; internal set; } = new(0, 0);
+
 		/// <summary>
-		/// Size the content region to cover all of the items.
-		/// This will result in no scrolling area.
+		/// Size the content region to cover all the items.
 		/// </summary>
-		FitToContents = 1,
+		public bool FitToContents { get; init; }
 	}
 
 	/// <summary>
@@ -91,25 +91,13 @@ public static partial class ImGuiWidgets
 	/// <param name="items">The items to be displayed in the grid.</param>
 	/// <param name="measureDelegate">The delegate to measure the size of each item.</param>
 	/// <param name="drawDelegate">The delegate to draw each item.</param>
-	/// <param name="gridOrder">What ordering should grid items use.</param>
-	/// <param name="gridSize">Size of the grid. This will not change the size of the grid cells. Setting any axis to 0 will use the available space.</param>
-	public static void Grid<T>(string id, IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate, GridOrder gridOrder, Vector2 gridSize)
+	public static void RowMajorGrid<T>(string id, IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate)
 	{
 		ArgumentNullException.ThrowIfNull(items);
 		ArgumentNullException.ThrowIfNull(measureDelegate);
 		ArgumentNullException.ThrowIfNull(drawDelegate);
 
-		switch (gridOrder)
-		{
-			case GridOrder.RowMajor:
-				GridImpl.ShowRowMajor(id, items, measureDelegate, drawDelegate, gridSize, GridOptions.None);
-				break;
-			case GridOrder.ColumnMajor:
-				GridImpl.ShowColumnMajor(id, items, measureDelegate, drawDelegate, gridSize, GridOptions.None);
-				break;
-			default:
-				throw new NotImplementedException($"Unable to draw grid as {gridOrder} is not implemented");
-		}
+		GridImpl.ShowRowMajor(id, items, measureDelegate, drawDelegate, new());
 	}
 
 	/// <summary>
@@ -120,26 +108,51 @@ public static partial class ImGuiWidgets
 	/// <param name="items">The items to be displayed in the grid.</param>
 	/// <param name="measureDelegate">The delegate to measure the size of each item.</param>
 	/// <param name="drawDelegate">The delegate to draw each item.</param>
-	/// <param name="gridOrder">What ordering should grid items use.</param>
-	/// <param name="gridSize">Size of the grid. This will not change the size of the grid cells. Setting any axis to 0 will use the available space.</param>
-	/// <param name="gridOptions">Options for changing how the grid is laid out.</param>
-	public static void Grid<T>(string id, IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate, GridOrder gridOrder, Vector2 gridSize, GridOptions gridOptions)
+	/// <param name="gridOptions">Additional options to modify the grid behaviour</param>
+	public static void RowMajorGrid<T>(string id, IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate, GridOptions gridOptions)
+	{
+		ArgumentNullException.ThrowIfNull(items);
+		ArgumentNullException.ThrowIfNull(measureDelegate);
+		ArgumentNullException.ThrowIfNull(drawDelegate);
+		ArgumentNullException.ThrowIfNull(gridOptions);
+
+		GridImpl.ShowRowMajor(id, items, measureDelegate, drawDelegate, gridOptions);
+	}
+
+	/// <summary>
+	/// Renders a grid with the specified items and delegates.
+	/// </summary>
+	/// <typeparam name="T">The type of the items.</typeparam>
+	/// <param name="id">Id for the grid.</param>
+	/// <param name="items">The items to be displayed in the grid.</param>
+	/// <param name="measureDelegate">The delegate to measure the size of each item.</param>
+	/// <param name="drawDelegate">The delegate to draw each item.</param>
+	public static void ColumnMajorGrid<T>(string id, IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate)
 	{
 		ArgumentNullException.ThrowIfNull(items);
 		ArgumentNullException.ThrowIfNull(measureDelegate);
 		ArgumentNullException.ThrowIfNull(drawDelegate);
 
-		switch (gridOrder)
-		{
-			case GridOrder.RowMajor:
-				GridImpl.ShowRowMajor(id, items, measureDelegate, drawDelegate, gridSize, gridOptions);
-				break;
-			case GridOrder.ColumnMajor:
-				GridImpl.ShowColumnMajor(id, items, measureDelegate, drawDelegate, gridSize, gridOptions);
-				break;
-			default:
-				throw new NotImplementedException($"Unable to draw grid as {gridOrder} is not implemented");
-		}
+		GridImpl.ShowColumnMajor(id, items, measureDelegate, drawDelegate, new());
+	}
+
+	/// <summary>
+	/// Renders a grid with the specified items and delegates.
+	/// </summary>
+	/// <typeparam name="T">The type of the items.</typeparam>
+	/// <param name="id">Id for the grid.</param>
+	/// <param name="items">The items to be displayed in the grid.</param>
+	/// <param name="measureDelegate">The delegate to measure the size of each item.</param>
+	/// <param name="drawDelegate">The delegate to draw each item.</param>
+	/// <param name="gridOptions">Additional options to modify the grid behaviour</param>
+	public static void ColumnMajorGrid<T>(string id, IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate, GridOptions gridOptions)
+	{
+		ArgumentNullException.ThrowIfNull(items);
+		ArgumentNullException.ThrowIfNull(measureDelegate);
+		ArgumentNullException.ThrowIfNull(drawDelegate);
+		ArgumentNullException.ThrowIfNull(gridOptions);
+
+		GridImpl.ShowColumnMajor(id, items, measureDelegate, drawDelegate, gridOptions);
 	}
 
 	/// <summary>
@@ -164,21 +177,21 @@ public static partial class ImGuiWidgets
 			return new(columnIndex, rowIndex);
 		}
 
-		internal static GridLayout CalculateRowMajorGridLayout(IList<Vector2> itemSizes, float containerWidth)
+		private static GridLayout CalculateRowMajorGridLayout(Vector2[] itemSizes, float containerWidth)
 		{
 			float widestElementHeight = itemSizes.Max(itemSize => itemSize.X);
 			GridLayout currentGridLayout = new()
 			{
-				Dimensions = new(1, itemSizes.Count),
+				Dimensions = new(1, itemSizes.Length),
 				ColumnWidths = [widestElementHeight],
 				RowHeights = itemSizes.Select(itemSize => itemSize.Y).ToArray()
 			};
 
 			var previousGridLayout = currentGridLayout;
-			while (currentGridLayout.ColumnCount < itemSizes.Count)
+			while (currentGridLayout.ColumnCount < itemSizes.Length)
 			{
 				int newColumnCount = currentGridLayout.ColumnCount + 1;
-				int newRowCount = (int)MathF.Ceiling(itemSizes.Count / (float)newColumnCount);
+				int newRowCount = (int)MathF.Ceiling(itemSizes.Length / (float)newColumnCount);
 				currentGridLayout = new()
 				{
 					Dimensions = new(newColumnCount, newRowCount),
@@ -186,7 +199,7 @@ public static partial class ImGuiWidgets
 					RowHeights = new float[newRowCount],
 				};
 
-				for (int i = 0; i < itemSizes.Count; i++)
+				for (int i = 0; i < itemSizes.Length; i++)
 				{
 					var itemSize = itemSizes[i];
 					var cellLocation = CalculateRowMajorCellLocation(i, newColumnCount);
@@ -211,15 +224,15 @@ public static partial class ImGuiWidgets
 			return currentGridLayout;
 		}
 
-		internal static void ShowRowMajor<T>(string id, IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate, Vector2 gridSize, GridOptions gridOptions)
+		internal static void ShowRowMajor<T>(string id, IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate, GridOptions gridOptions)
 		{
-			if (gridSize.X <= 0)
+			if (gridOptions.GridSize.X <= 0)
 			{
-				gridSize.X = ImGui.GetContentRegionAvail().X;
+				gridOptions.GridSize = new(ImGui.GetContentRegionAvail().X, gridOptions.GridSize.Y);
 			}
-			if (gridSize.Y <= 0)
+			if (gridOptions.GridSize.Y <= 0)
 			{
-				gridSize.Y = ImGui.GetContentRegionAvail().Y;
+				gridOptions.GridSize = new(gridOptions.GridSize.X, ImGui.GetContentRegionAvail().Y);
 			}
 
 			var itemSpacing = ImGui.GetStyle().ItemSpacing;
@@ -227,23 +240,23 @@ public static partial class ImGuiWidgets
 			int itemListCount = itemList.Length;
 			var itemDimensions = itemList.Select(i => measureDelegate(i)).ToArray();
 			var itemDimensionsWithSpacing = itemDimensions.Select(d => d + itemSpacing).ToArray();
-			var gridLayout = CalculateRowMajorGridLayout(itemDimensionsWithSpacing, gridSize.X);
+			var gridLayout = CalculateRowMajorGridLayout(itemDimensionsWithSpacing, gridOptions.GridSize.X);
 
-			if (gridOptions.HasFlag(GridOptions.FitToContents))
+			if (gridOptions.FitToContents)
 			{
 				float width = gridLayout.ColumnWidths.Sum();
 				float height = gridLayout.RowHeights.Sum();
-				gridSize = new(width, height);
+				gridOptions.GridSize = new(width, height);
 			}
 
 			var drawList = ImGui.GetWindowDrawList();
 			uint borderColor = ImGui.GetColorU32(ImGui.GetStyle().Colors[(int)ImGuiCol.Border]);
-			if (ImGui.BeginChild($"rowMajorGrid_{id}", gridSize, ImGuiChildFlags.None))
+			if (ImGui.BeginChild($"rowMajorGrid_{id}", gridOptions.GridSize, ImGuiChildFlags.None))
 			{
 				var gridTopLeft = ImGui.GetCursorScreenPos();
 				if (EnableGridDebugDraw)
 				{
-					drawList.AddRect(gridTopLeft, gridTopLeft + gridSize, borderColor);
+					drawList.AddRect(gridTopLeft, gridTopLeft + gridOptions.GridSize, borderColor);
 				}
 
 				var rowTopleft = gridTopLeft;
@@ -295,21 +308,21 @@ public static partial class ImGuiWidgets
 			return new(columnIndex, rowIndex);
 		}
 
-		internal static GridLayout CalculateColumnMajorGridLayout(IList<Vector2> itemSizes, float containerHeight)
+		private static GridLayout CalculateColumnMajorGridLayout(Vector2[] itemSizes, float containerHeight)
 		{
 			float tallestElementHeight = itemSizes.Max(itemSize => itemSize.Y);
 			GridLayout currentGridLayout = new()
 			{
-				Dimensions = new(itemSizes.Count, 1),
+				Dimensions = new(itemSizes.Length, 1),
 				ColumnWidths = itemSizes.Select(itemSize => itemSize.X).ToArray(),
 				RowHeights = [tallestElementHeight],
 			};
 
 			var previousGridLayout = currentGridLayout;
-			while (currentGridLayout.RowCount < itemSizes.Count)
+			while (currentGridLayout.RowCount < itemSizes.Length)
 			{
 				int newRowCount = currentGridLayout.RowCount + 1;
-				int newColumnCount = (int)MathF.Ceiling(itemSizes.Count / (float)newRowCount);
+				int newColumnCount = (int)MathF.Ceiling(itemSizes.Length / (float)newRowCount);
 				currentGridLayout = new()
 				{
 					Dimensions = new(newColumnCount, newRowCount),
@@ -317,7 +330,7 @@ public static partial class ImGuiWidgets
 					RowHeights = new float[newRowCount],
 				};
 
-				for (int i = 0; i < itemSizes.Count; i++)
+				for (int i = 0; i < itemSizes.Length; i++)
 				{
 					var itemSize = itemSizes[i];
 					var cellLocation = CalculateColumnMajorCellLocation(i, newRowCount);
@@ -342,15 +355,15 @@ public static partial class ImGuiWidgets
 			return currentGridLayout;
 		}
 
-		internal static void ShowColumnMajor<T>(string id, IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate, Vector2 gridSize, GridOptions gridOptions)
+		internal static void ShowColumnMajor<T>(string id, IEnumerable<T> items, MeasureGridCell<T> measureDelegate, DrawGridCell<T> drawDelegate, GridOptions gridOptions)
 		{
-			if (gridSize.X <= 0)
+			if (gridOptions.GridSize.X <= 0)
 			{
-				gridSize.X = ImGui.GetContentRegionAvail().X;
+				gridOptions.GridSize = new(ImGui.GetContentRegionAvail().X, gridOptions.GridSize.Y);
 			}
-			if (gridSize.Y <= 0)
+			if (gridOptions.GridSize.Y <= 0)
 			{
-				gridSize.Y = ImGui.GetContentRegionAvail().Y;
+				gridOptions.GridSize = new(gridOptions.GridSize.X, ImGui.GetContentRegionAvail().Y);
 			}
 
 			var itemSpacing = ImGui.GetStyle().ItemSpacing;
@@ -358,23 +371,23 @@ public static partial class ImGuiWidgets
 			int itemListCount = itemList.Length;
 			var itemDimensions = itemList.Select(i => measureDelegate(i)).ToArray();
 			var itemDimensionsWithSpacing = itemDimensions.Select(d => d + itemSpacing).ToArray();
-			var gridLayout = CalculateColumnMajorGridLayout(itemDimensionsWithSpacing, gridSize.Y);
+			var gridLayout = CalculateColumnMajorGridLayout(itemDimensionsWithSpacing, gridOptions.GridSize.Y);
 
-			if (gridOptions.HasFlag(GridOptions.FitToContents))
+			if (gridOptions.FitToContents)
 			{
 				float width = gridLayout.ColumnWidths.Sum();
 				float height = gridLayout.RowHeights.Sum();
-				gridSize = new(width, height);
+				gridOptions.GridSize = new(width, height);
 			}
 
 			var drawList = ImGui.GetWindowDrawList();
 			uint borderColor = ImGui.GetColorU32(ImGui.GetStyle().Colors[(int)ImGuiCol.Border]);
-			if (ImGui.BeginChild($"columnMajorGrid_{id}", gridSize, ImGuiChildFlags.None, ImGuiWindowFlags.HorizontalScrollbar))
+			if (ImGui.BeginChild($"columnMajorGrid_{id}", gridOptions.GridSize, ImGuiChildFlags.None, ImGuiWindowFlags.HorizontalScrollbar))
 			{
 				var gridTopLeft = ImGui.GetCursorScreenPos();
 				if (EnableGridDebugDraw)
 				{
-					drawList.AddRect(gridTopLeft, gridTopLeft + gridSize, borderColor);
+					drawList.AddRect(gridTopLeft, gridTopLeft + gridOptions.GridSize, borderColor);
 				}
 
 				var columnTopLeft = gridTopLeft;
