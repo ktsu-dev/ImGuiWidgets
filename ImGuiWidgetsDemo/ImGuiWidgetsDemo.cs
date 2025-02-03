@@ -153,25 +153,22 @@ internal class ImGuiWidgetsDemo
 
 		var iconSize = new Vector2(iconWidthPx, iconWidthPx);
 
-		ImGuiWidgets.Icon("Click Me", ktsuTexture.TextureId, iconWidthPx,
+		ImGuiWidgets.Icon("Click Me", ktsuTexture.TextureId, iconWidthPx, ImGuiWidgets.IconAlignment.Vertical,
 			new()
 			{
-				IconAlignment = ImGuiWidgets.IconAlignment.Vertical,
 				OnClick = () => MessageOK.Open("Click", "You chose Tile1")
 			});
 
 		ImGui.SameLine();
-		ImGuiWidgets.Icon("Double Click Me", ktsuTexture.TextureId, iconWidthPx,
+		ImGuiWidgets.Icon("Double Click Me", ktsuTexture.TextureId, iconWidthPx, ImGuiWidgets.IconAlignment.Vertical,
 			new()
 			{
-				IconAlignment = ImGuiWidgets.IconAlignment.Vertical,
 				OnDoubleClick = () => MessageOK.Open("Double Click", "Yippee!!!!!!!!")
 			});
 		ImGui.SameLine();
-		ImGuiWidgets.Icon("Right Click Me", ktsuTexture.TextureId, iconWidthPx,
+		ImGuiWidgets.Icon("Right Click Me", ktsuTexture.TextureId, iconWidthPx, ImGuiWidgets.IconAlignment.Vertical,
 			new()
 			{
-				IconAlignment = ImGuiWidgets.IconAlignment.Vertical,
 				OnContextMenu = () =>
 				{
 					ImGui.MenuItem("Context Menu Item 1");
@@ -180,10 +177,9 @@ internal class ImGuiWidgetsDemo
 				},
 			});
 		ImGui.SameLine();
-		ImGuiWidgets.Icon("Hover Me", ktsuTexture.TextureId, iconWidthPx,
+		ImGuiWidgets.Icon("Hover Me", ktsuTexture.TextureId, iconWidthPx, ImGuiWidgets.IconAlignment.Vertical,
 			new()
 			{
-				IconAlignment = ImGuiWidgets.IconAlignment.Vertical,
 				Tooltip = "You hovered over me"
 			});
 
@@ -203,9 +199,9 @@ internal class ImGuiWidgetsDemo
 		ImGui.SliderInt("Grid items to show", ref gridItemsToShow, 1, GridStrings.Count);
 
 		ImGui.SeparatorText("Grid (Column Major) Icon Alignment Horizontal");
-		ImGuiWidgets.Grid(GridStrings.Take(gridItemsToShow), i => ImGuiWidgets.CalcIconSize(i, iconSizePx), (item, cellSize, itemSize) =>
+		ImGuiWidgets.Grid(GridStrings.Take(gridItemsToShow), i => ImGuiWidgets.CalcIconSize(i, iconSizePx, ImGuiWidgets.IconAlignment.Horizontal), (item, cellSize, itemSize) =>
 		{
-			ImGuiWidgets.Icon(item, ktsuTexture.TextureId, iconSizePx);
+			ImGuiWidgets.Icon(item, ktsuTexture.TextureId, iconSizePx, ImGuiWidgets.IconAlignment.Horizontal);
 		}, ImGuiWidgets.GridOrder.ColumnMajor);
 
 		ImGui.NewLine();
@@ -215,11 +211,7 @@ internal class ImGuiWidgetsDemo
 		{
 			using (new Alignment.CenterWithin(itemSize, cellSize))
 			{
-				ImGuiWidgets.Icon(item, ktsuTexture.TextureId, bigIconSize,
-					new()
-					{
-						IconAlignment = ImGuiWidgets.IconAlignment.Vertical
-					});
+				ImGuiWidgets.Icon(item, ktsuTexture.TextureId, bigIconSize, ImGuiWidgets.IconAlignment.Vertical);
 			}
 		}, ImGuiWidgets.GridOrder.RowMajor);
 

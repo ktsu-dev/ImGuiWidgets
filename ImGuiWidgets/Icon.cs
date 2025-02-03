@@ -46,11 +46,6 @@ public static partial class ImGuiWidgets
 		public string Tooltip { get; init; } = string.Empty;
 
 		/// <summary>
-		/// The alignment of the icon.
-		/// </summary>
-		public IconAlignment IconAlignment { get; init; } = IconAlignment.Horizontal;
-
-		/// <summary>
 		/// Gets or sets the action to be performed on click.
 		/// </summary>
 		public Action? OnClick { get; init; }
@@ -77,8 +72,10 @@ public static partial class ImGuiWidgets
 	/// <param name="label">The label of the icon.</param>
 	/// <param name="textureId">The texture ID of the icon.</param>
 	/// <param name="imageSize">The size of the image.</param>
+	/// <param name="iconAlignment">The alignment of the icon.</param>
 	/// <returns>Was the icon bounds clicked</returns>
-	public static bool Icon(string label, uint textureId, float imageSize) => IconImpl.Show(label, textureId, new(imageSize, imageSize), new());
+	public static bool Icon(string label, uint textureId, float imageSize, IconAlignment iconAlignment) =>
+		IconImpl.Show(label, textureId, new(imageSize, imageSize), iconAlignment, new());
 
 	/// <summary>
 	/// Renders an icon with the specified parameters.
@@ -86,8 +83,10 @@ public static partial class ImGuiWidgets
 	/// <param name="label">The label of the icon.</param>
 	/// <param name="textureId">The texture ID of the icon.</param>
 	/// <param name="imageSize">The size of the image.</param>
+	/// <param name="iconAlignment">The alignment of the icon.</param>
 	/// <returns>Was the icon bounds clicked</returns>
-	public static bool Icon(string label, uint textureId, Vector2 imageSize) => IconImpl.Show(label, textureId, imageSize, new());
+	public static bool Icon(string label, uint textureId, Vector2 imageSize, IconAlignment iconAlignment) =>
+		IconImpl.Show(label, textureId, imageSize, iconAlignment, new());
 
 	/// <summary>
 	/// Renders an icon with the specified parameters.
@@ -95,9 +94,11 @@ public static partial class ImGuiWidgets
 	/// <param name="label">The label of the icon.</param>
 	/// <param name="textureId">The texture ID of the icon.</param>
 	/// <param name="imageSize">The size of the image.</param>
+	/// <param name="iconAlignment">The alignment of the icon.</param>
 	/// <param name="options">Additional options</param>
 	/// <returns>Was the icon bounds clicked</returns>
-	public static bool Icon(string label, uint textureId, float imageSize, IconOptions options) => IconImpl.Show(label, textureId, new(imageSize, imageSize), options);
+	public static bool Icon(string label, uint textureId, float imageSize, IconAlignment iconAlignment, IconOptions options) =>
+		IconImpl.Show(label, textureId, new(imageSize, imageSize), iconAlignment, options);
 
 	/// <summary>
 	/// Renders an icon with the specified parameters.
@@ -105,17 +106,11 @@ public static partial class ImGuiWidgets
 	/// <param name="label">The label of the icon.</param>
 	/// <param name="textureId">The texture ID of the icon.</param>
 	/// <param name="imageSize">The size of the image.</param>
+	/// <param name="iconAlignment">The alignment of the icon.</param>
 	/// <param name="options">Additional options</param>
 	/// <returns>Was the icon bounds clicked</returns>
-	public static bool Icon(string label, uint textureId, Vector2 imageSize, IconOptions options) => IconImpl.Show(label, textureId, imageSize, options);
-
-	/// <summary>
-	/// Calculates the size of the icon with the specified parameters.
-	/// </summary>
-	/// <param name="label">The label of the icon.</param>
-	/// <param name="imageSize">The size of the image.</param>
-	/// <returns>The calculated size of the icon.</returns>
-	public static Vector2 CalcIconSize(string label, float imageSize) => CalcIconSize(label, new Vector2(imageSize), IconAlignment.Horizontal);
+	public static bool Icon(string label, uint textureId, Vector2 imageSize, IconAlignment iconAlignment, IconOptions options) =>
+		IconImpl.Show(label, textureId, imageSize, iconAlignment, options);
 
 	/// <summary>
 	/// Calculates the size of the icon with the specified parameters.
@@ -168,7 +163,7 @@ public static partial class ImGuiWidgets
 	/// </summary>
 	internal static class IconImpl
 	{
-		internal static bool Show(string label, uint textureId, Vector2 imageSize, IconOptions options)
+		internal static bool Show(string label, uint textureId, Vector2 imageSize, IconAlignment iconAlignment, IconOptions options)
 		{
 			ArgumentNullException.ThrowIfNull(label);
 			ArgumentNullException.ThrowIfNull(options);
@@ -183,11 +178,11 @@ public static partial class ImGuiWidgets
 
 			var cursorStartPos = ImGui.GetCursorScreenPos();
 			var labelSize = ImGui.CalcTextSize(label);// TODO, maybe pass this to an internal overload of CalcIconSize to save recalculating
-			var boundingBoxSize = CalcIconSize(label, imageSize, options.IconAlignment);
+			var boundingBoxSize = CalcIconSize(label, imageSize, iconAlignment);
 
 			ImGui.SetCursorScreenPos(cursorStartPos + framePadding);
 
-			switch (options.IconAlignment)
+			switch (iconAlignment)
 			{
 				case IconAlignment.Horizontal:
 					HorizontalLayout(label, textureId, imageSize, labelSize, boundingBoxSize, itemSpacing, options.Color, cursorStartPos);
