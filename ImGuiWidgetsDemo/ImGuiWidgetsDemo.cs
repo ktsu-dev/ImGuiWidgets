@@ -115,7 +115,7 @@ internal class ImGuiWidgetsDemo
 		ImGuiWidgets.Combo("Strong String Combo", ref selectedStrongString, possibleStrongStringValues);
 
 
-		using (new ScopedDisabled(true))
+		using (new ScopedDisable(true))
 		{
 			ImGui.SeparatorText("Disabled");
 
