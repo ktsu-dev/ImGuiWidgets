@@ -38,17 +38,17 @@ public static partial class ImGuiWidgets
 		/// <summary>
 		/// The color of the icon.
 		/// </summary>
-		public Vector4 Color { get; set; } = ktsu.ImGuiStyler.Color.White.Value;
+		public Vector4 Color { get; init; } = ktsu.ImGuiStyler.Color.White.Value;
 
 		/// <summary>
 		/// The tooltip to display.
 		/// </summary>
-		public string Tooltip { get; set; } = string.Empty;
+		public string Tooltip { get; init; } = string.Empty;
 
 		/// <summary>
 		/// The alignment of the icon.
 		/// </summary>
-		public IconAlignment IconAlignment { get; set; } = IconAlignment.Horizontal;
+		public IconAlignment IconAlignment { get; init; } = IconAlignment.Horizontal;
 
 		/// <summary>
 		/// Gets or sets the action to be performed on click.
