@@ -97,11 +97,7 @@ public static partial class ImGuiWidgets
 	/// <param name="imageSize">The size of the image.</param>
 	/// <param name="options">Additional options</param>
 	/// <returns>Was the icon bounds clicked</returns>
-	public static bool Icon(string label, uint textureId, float imageSize, IconOptions options)
-	{
-		ArgumentNullException.ThrowIfNull(options);
-		return IconImpl.Show(label, textureId, new(imageSize, imageSize), options);
-	}
+	public static bool Icon(string label, uint textureId, float imageSize, IconOptions options) => IconImpl.Show(label, textureId, new(imageSize, imageSize), options);
 
 	/// <summary>
 	/// Renders an icon with the specified parameters.
@@ -111,11 +107,7 @@ public static partial class ImGuiWidgets
 	/// <param name="imageSize">The size of the image.</param>
 	/// <param name="options">Additional options</param>
 	/// <returns>Was the icon bounds clicked</returns>
-	public static bool Icon(string label, uint textureId, Vector2 imageSize, IconOptions options)
-	{
-		ArgumentNullException.ThrowIfNull(options);
-		return IconImpl.Show(label, textureId, imageSize, options);
-	}
+	public static bool Icon(string label, uint textureId, Vector2 imageSize, IconOptions options) => IconImpl.Show(label, textureId, imageSize, options);
 
 	/// <summary>
 	/// Calculates the size of the icon with the specified parameters.
@@ -178,7 +170,8 @@ public static partial class ImGuiWidgets
 	{
 		internal static bool Show(string label, uint textureId, Vector2 imageSize, IconOptions options)
 		{
-			ArgumentException.ThrowIfNullOrEmpty(label);
+			ArgumentNullException.ThrowIfNull(label);
+			ArgumentNullException.ThrowIfNull(options);
 
 			bool wasClicked = false;
 
