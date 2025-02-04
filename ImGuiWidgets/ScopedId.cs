@@ -4,28 +4,34 @@ using ImGuiNET;
 using ktsu.ScopedAction;
 
 /// <summary>
-/// Represents a scoped ID for ImGui. This class ensures that the ID is pushed when the object is created
-/// and popped when the object is disposed.
+/// Provides custom ImGui widgets.
 /// </summary>
-public class ScopedId : ScopedAction
+public static partial class ImGuiWidgets
 {
 	/// <summary>
-	/// Initializes a new instance of the <see cref="ScopedId"/> class with a string ID.
+	/// Represents a scoped ID for Dear ImGui. This class ensures that the ID is pushed when the object is created
+	/// and popped when the object is disposed.
 	/// </summary>
-	/// <param name="id">The string ID to push to ImGui.</param>
-	public ScopedId(string id)
+	public class ScopedId : ScopedAction
 	{
-		ImGui.PushID(id);
-		OnClose = ImGui.PopID;
-	}
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ScopedId"/> class with a string ID.
+		/// </summary>
+		/// <param name="id">The string ID to push to ImGui.</param>
+		public ScopedId(string id)
+		{
+			ImGui.PushID(id);
+			OnClose = ImGui.PopID;
+		}
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="ScopedId"/> class with an integer ID.
-	/// </summary>
-	/// <param name="id">The integer ID to push to ImGui.</param>
-	public ScopedId(int id)
-	{
-		ImGui.PushID(id);
-		OnClose = ImGui.PopID;
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ScopedId"/> class with an integer ID.
+		/// </summary>
+		/// <param name="id">The integer ID to push to ImGui.</param>
+		public ScopedId(int id)
+		{
+			ImGui.PushID(id);
+			OnClose = ImGui.PopID;
+		}
 	}
 }

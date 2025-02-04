@@ -120,6 +120,19 @@ internal class ImGuiWidgetsDemo
 		ImGuiWidgets.Combo("String Combo", ref selectedStringValue, possibleStringValues);
 		ImGuiWidgets.Combo("Strong String Combo", ref selectedStrongString, possibleStrongStringValues);
 
+
+		using (new ScopedDisable(true))
+		{
+			ImGui.SeparatorText("Disabled");
+
+			bool value = true;
+			int currentItem = 0;
+			string[] items = ["Item 1", "Item 2", "Item 3"];
+
+			ImGui.Checkbox("Disabled Checkbox", ref value);
+			ImGui.Combo("Disabled Combo", ref currentItem, items, items.Length);
+		}
+
 		ImGui.SeparatorText("Tree");
 		using (var tree = new ImGuiWidgets.Tree())
 		{
@@ -159,25 +172,35 @@ internal class ImGuiWidgetsDemo
 
 		var iconSize = new Vector2(iconWidthPx, iconWidthPx);
 
-		ImGuiWidgets.Icon("Click Me", ktsuTexture.TextureId, iconWidthPx, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical, new ImGuiWidgets.IconDelegates()
-		{
-			OnClick = () => MessageOK.Open("Click", "You chose Tile1")
-		});
-		ImGui.SameLine();
-		ImGuiWidgets.Icon("Double Click Me", ktsuTexture.TextureId, iconWidthPx, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical, new ImGuiWidgets.IconDelegates()
-		{
-			OnDoubleClick = () => MessageOK.Open("Double Click", "Yippee!!!!!!!!")
-		});
-		ImGui.SameLine();
-		ImGuiWidgets.Icon("Right Click Me", ktsuTexture.TextureId, iconWidthPx, Color.White.Value, ImGuiWidgets.IconAlignment.Vertical, new ImGuiWidgets.IconDelegates()
-		{
-			OnContextMenu = () =>
+		ImGuiWidgets.Icon("Click Me", ktsuTexture.TextureId, iconWidthPx, ImGuiWidgets.IconAlignment.Vertical,
+			new()
 			{
-				ImGui.MenuItem("Context Menu Item 1");
-				ImGui.MenuItem("Context Menu Item 2");
-				ImGui.MenuItem("Context Menu Item 3");
-			},
-		});
+				OnClick = () => MessageOK.Open("Click", "You chose Tile1")
+			});
+
+		ImGui.SameLine();
+		ImGuiWidgets.Icon("Double Click Me", ktsuTexture.TextureId, iconWidthPx, ImGuiWidgets.IconAlignment.Vertical,
+			new()
+			{
+				OnDoubleClick = () => MessageOK.Open("Double Click", "Yippee!!!!!!!!")
+			});
+		ImGui.SameLine();
+		ImGuiWidgets.Icon("Right Click Me", ktsuTexture.TextureId, iconWidthPx, ImGuiWidgets.IconAlignment.Vertical,
+			new()
+			{
+				OnContextMenu = () =>
+				{
+					ImGui.MenuItem("Context Menu Item 1");
+					ImGui.MenuItem("Context Menu Item 2");
+					ImGui.MenuItem("Context Menu Item 3");
+				},
+			});
+		ImGui.SameLine();
+		ImGuiWidgets.Icon("Hover Me", ktsuTexture.TextureId, iconWidthPx, ImGuiWidgets.IconAlignment.Vertical,
+			new()
+			{
+				Tooltip = "You hovered over me"
+			});
 
 		ImGui.NewLine();
 
@@ -248,12 +271,12 @@ internal class ImGuiWidgetsDemo
 			{
 				using (new Alignment.CenterWithin(itemSize, cellSize))
 				{
-					ImGuiWidgets.Icon(item, ktsuTexture.TextureId, gridIconSize, Color.White.Value, GridIconAlignment);
+          ImGuiWidgets.Icon(item, ktsuTexture.TextureId, gridIconSize, ImGuiWidgets.IconAlignment.Vertical);
 				}
 			}
 			else
 			{
-				ImGuiWidgets.Icon(item, ktsuTexture.TextureId, gridIconSize, Color.White.Value, GridIconAlignment);
+				ImGuiWidgets.Icon(item, ktsuTexture.TextureId, gridIconSize, ImGuiWidgets.IconAlignment.Vertical);
 			}
 		}
 
