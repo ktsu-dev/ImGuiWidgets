@@ -271,12 +271,12 @@ internal class ImGuiWidgetsDemo
 			{
 				using (new Alignment.CenterWithin(itemSize, cellSize))
 				{
-          ImGuiWidgets.Icon(item, ktsuTexture.TextureId, gridIconSize, ImGuiWidgets.IconAlignment.Vertical);
+					ImGuiWidgets.Icon(item, ktsuTexture.TextureId, gridIconSize, GridIconAlignment);
 				}
 			}
 			else
 			{
-				ImGuiWidgets.Icon(item, ktsuTexture.TextureId, gridIconSize, ImGuiWidgets.IconAlignment.Vertical);
+				ImGuiWidgets.Icon(item, ktsuTexture.TextureId, gridIconSize, GridIconAlignment);
 			}
 		}
 
