@@ -46,8 +46,14 @@ internal class ImGuiWidgetsDemo
 	private ImGuiPopups.MessageOK MessageOK { get; } = new();
 
 	private List<string> GridStrings { get; } = [];
-	private static int InitialGridSize { get; } = 32;
-	private int gridItemsToShow = InitialGridSize;
+	private static int InitialGridItemCount { get; } = 32;
+	private int GridItemsToShow { get; set; } = InitialGridItemCount;
+	private float GridHeight { get; set; } = 500f;
+	private ImGuiWidgets.GridOrder GridOrder { get; set; } = ImGuiWidgets.GridOrder.RowMajor;
+	private ImGuiWidgets.IconAlignment GridIconAlignment { get; set; } = ImGuiWidgets.IconAlignment.Vertical;
+	private bool GridIconSizeBig { get; set; } = true;
+	private bool GridIconCenterWithinCell { get; set; } = true;
+	private bool GridFitToContents { get; set; }
 	private EnumValues selectedEnumValue = EnumValues.Value1;
 	private string selectedStringValue = "Hello";
 	private readonly Collection<string> possibleStringValues = ["Hello", "World", "Goodbye"];
@@ -61,7 +67,7 @@ internal class ImGuiWidgetsDemo
 		DividerContainer.Add(new("Left", 0.25f, ShowLeftPanel));
 		DividerContainer.Add(new("Right", 0.75f, ShowRightPanel));
 
-		for (int i = 0; i < InitialGridSize; i++)
+		for (int i = 0; i < InitialGridItemCount; i++)
 		{
 			string randomString = $"{i}:";
 			int randomAmount = new Random().Next(2, 32);
@@ -149,10 +155,10 @@ internal class ImGuiWidgetsDemo
 
 	private void ShowRightPanel(float size)
 	{
-		ImGui.Text("Right Divider Zone");
-
 		var ktsuIconPath = (AbsoluteDirectoryPath)Environment.CurrentDirectory / (FileName)"ktsu.png";
 		var ktsuTexture = ImGuiApp.GetOrLoadTexture(ktsuIconPath);
+
+		ImGui.Text("Right Divider Zone");
 
 		if (ImGuiWidgets.Image(ktsuTexture.TextureId, new(128, 128)))
 		{
@@ -196,37 +202,104 @@ internal class ImGuiWidgetsDemo
 				Tooltip = "You hovered over me"
 			});
 
-		float iconSizePx = ImGuiApp.EmsToPx(2.5f);
 		ImGui.NewLine();
 
-		bool showGridDebug = ImGuiWidgets.EnableGridDebugDraw;
-		if (ImGui.Checkbox("Show Grid Debug", ref showGridDebug))
+		if (ImGui.CollapsingHeader("Grid Settings"))
 		{
-			ImGuiWidgets.EnableGridDebugDraw = showGridDebug;
-		}
-		bool showIconDebug = ImGuiWidgets.EnableIconDebugDraw;
-		if (ImGui.Checkbox("Show Icon Debug", ref showIconDebug))
-		{
-			ImGuiWidgets.EnableIconDebugDraw = showIconDebug;
-		}
-		ImGui.SliderInt("Grid items to show", ref gridItemsToShow, 1, GridStrings.Count);
-
-		ImGui.SeparatorText("Grid (Column Major) Icon Alignment Horizontal");
-		ImGuiWidgets.Grid(GridStrings.Take(gridItemsToShow), i => ImGuiWidgets.CalcIconSize(i, iconSizePx, ImGuiWidgets.IconAlignment.Horizontal), (item, cellSize, itemSize) =>
-		{
-			ImGuiWidgets.Icon(item, ktsuTexture.TextureId, iconSizePx, ImGuiWidgets.IconAlignment.Horizontal);
-		}, ImGuiWidgets.GridOrder.ColumnMajor);
-
-		ImGui.NewLine();
-		ImGui.SeparatorText("Grid (Row Major) Icon Alignment Vertical");
-		float bigIconSize = iconSizePx * 2;
-		ImGuiWidgets.Grid(GridStrings.Take(gridItemsToShow), i => ImGuiWidgets.CalcIconSize(i, bigIconSize, ImGuiWidgets.IconAlignment.Vertical), (item, cellSize, itemSize) =>
-		{
-			using (new Alignment.CenterWithin(itemSize, cellSize))
+			bool showGridDebug = ImGuiWidgets.EnableGridDebugDraw;
+			if (ImGui.Checkbox("Show Grid Debug", ref showGridDebug))
 			{
-				ImGuiWidgets.Icon(item, ktsuTexture.TextureId, bigIconSize, ImGuiWidgets.IconAlignment.Vertical);
+				ImGuiWidgets.EnableGridDebugDraw = showGridDebug;
 			}
-		}, ImGuiWidgets.GridOrder.RowMajor);
+			bool showIconDebug = ImGuiWidgets.EnableIconDebugDraw;
+			if (ImGui.Checkbox("Show Icon Debug", ref showIconDebug))
+			{
+				ImGuiWidgets.EnableIconDebugDraw = showIconDebug;
+			}
+
+			{
+				bool gridIconCenterWithinCell = GridIconCenterWithinCell;
+				bool gridIconSizeBig = GridIconSizeBig;
+				bool gridFitToContents = GridFitToContents;
+				int gridItemsToShow = GridItemsToShow;
+				var gridOrder = GridOrder;
+				var gridIconAlignment = GridIconAlignment;
+				float gridHeight = GridHeight;
+
+				if (ImGui.Checkbox("Use Big Grid Icons", ref gridIconSizeBig))
+				{
+					GridIconSizeBig = gridIconSizeBig;
+				}
+				if (ImGui.Checkbox("Center within cell", ref gridIconCenterWithinCell))
+				{
+					GridIconCenterWithinCell = gridIconCenterWithinCell;
+				}
+				if (ImGui.Checkbox("Fit to contents", ref gridFitToContents))
+				{
+					GridFitToContents = gridFitToContents;
+				}
+				if (ImGui.SliderInt("Items to show", ref gridItemsToShow, 1, GridStrings.Count))
+				{
+					GridItemsToShow = gridItemsToShow;
+				}
+				if (ImGuiWidgets.Combo("Order", ref gridOrder))
+				{
+					GridOrder = gridOrder;
+				}
+				if (ImGuiWidgets.Combo("Icon Alignment", ref gridIconAlignment))
+				{
+					GridIconAlignment = gridIconAlignment;
+				}
+				if (ImGui.SliderFloat("Grid Height", ref gridHeight, 1f, 1000f))
+				{
+					GridHeight = gridHeight;
+				}
+			}
+		}
+
+		float iconSizePx = ImGuiApp.EmsToPx(2.5f);
+		float bigIconSizePx = iconSizePx * 2;
+		float gridIconSize = GridIconSizeBig ? bigIconSizePx : iconSizePx;
+		var gridSize = new Vector2(ImGui.GetContentRegionAvail().X, GridHeight);
+
+		ImGui.Separator();
+
+		Vector2 MeasureGridSize(string item) => ImGuiWidgets.CalcIconSize(item, gridIconSize, GridIconAlignment);
+		void DrawGridCell(string item, Vector2 cellSize, Vector2 itemSize)
+		{
+			if (GridIconCenterWithinCell)
+			{
+				using (new Alignment.CenterWithin(itemSize, cellSize))
+				{
+					ImGuiWidgets.Icon(item, ktsuTexture.TextureId, gridIconSize, GridIconAlignment);
+				}
+			}
+			else
+			{
+				ImGuiWidgets.Icon(item, ktsuTexture.TextureId, gridIconSize, GridIconAlignment);
+			}
+		}
+
+		ImGuiWidgets.GridOptions gridOptions = new()
+		{
+			GridSize = new(ImGui.GetContentRegionAvail().X, GridHeight),
+			FitToContents = GridFitToContents,
+		};
+		switch (GridOrder)
+		{
+			case ImGuiWidgets.GridOrder.RowMajor:
+				ImGuiWidgets.RowMajorGrid("demoRowMajorGrid", GridStrings.Take(GridItemsToShow), MeasureGridSize, DrawGridCell, gridOptions);
+				break;
+
+			case ImGuiWidgets.GridOrder.ColumnMajor:
+				ImGuiWidgets.ColumnMajorGrid("demoColumnMajorGrid", GridStrings.Take(GridItemsToShow), MeasureGridSize, DrawGridCell, gridOptions);
+				break;
+
+			default:
+				throw new NotImplementedException();
+		}
+
+		ImGui.Separator();
 
 		MessageOK.ShowIfOpen();
 	}
