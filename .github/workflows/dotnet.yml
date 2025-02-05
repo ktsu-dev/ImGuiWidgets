@@ -43,7 +43,7 @@ jobs:
     - name: Configure Environment
       shell: pwsh
       run: |
-        $IS_FORK = (git remote | Out-String).Contains("upstream")
+        $IS_FORK = (gh repo view --json isFork | ConvertFrom-Json).isFork
         $IS_MAIN = "${{ github.ref }}" -eq "refs/heads/main"
         $IS_TAGGED = (git show-ref --tags -d | Out-String).Contains("${{ github.sha }}")
         $SHOULD_RELEASE = ($IS_MAIN -AND -NOT $IS_TAGGED -AND -NOT $IS_FORK)
