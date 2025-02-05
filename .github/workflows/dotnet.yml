@@ -42,6 +42,8 @@ jobs:
 
     - name: Configure Environment
       shell: pwsh
+      env:
+        GH_TOKEN: ${{ github.token }}
       run: |
         $IS_FORK = (gh repo view --json isFork | ConvertFrom-Json).isFork
         $IS_MAIN = "${{ github.ref }}" -eq "refs/heads/main"
