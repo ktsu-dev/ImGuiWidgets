@@ -1,8 +1,9 @@
-## v1.1.4 (patch)
+## v1.1.4-pre.1 (patch)
 
 Changes since v1.1.3:
 
 - Add GitHub token to workflow for fork detection ([@matt-edmondson](https://github.com/matt-edmondson))
+- Add IS_FORK environment variable to GitHub Actions workflow ([@matt-edmondson](https://github.com/matt-edmondson))
 
 ## v1.1.3 (patch)
 
