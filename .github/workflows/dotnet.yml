@@ -57,6 +57,7 @@ jobs:
         $BUILD_ARGS = ""
         $BUILD_ARGS += $USE_DOTNET_SCRIPT ? "-maxCpuCount:1" : ""
 
+        "IS_FORK=$IS_FORK" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
         "IS_MAIN=$IS_MAIN" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
         "IS_TAGGED=$IS_TAGGED" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
         "SHOULD_RELEASE=$SHOULD_RELEASE" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
@@ -66,6 +67,7 @@ jobs:
         "APPLICATION_PATTERN=$APPLICATION_PATTERN" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
         "BUILD_ARGS=$BUILD_ARGS" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
 
+        Write-Host "IS_FORK: $IS_FORK"
         Write-Host "IS_MAIN: $IS_MAIN"
         Write-Host "IS_TAGGED: $IS_TAGGED"
         Write-Host "SHOULD_RELEASE: $SHOULD_RELEASE"
