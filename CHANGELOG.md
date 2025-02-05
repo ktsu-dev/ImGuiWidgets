@@ -1,3 +1,49 @@
+## v1.1.2 (patch)
+
+Changes since v1.1.1:
+
+- Add another API method ([@Damon3000s](https://github.com/Damon3000s))
+- Add ScopedDisabled to ImGuiWidgets ([@Damon3000s](https://github.com/Damon3000s))
+- Add version sorting suffixes for alpha, beta, rc, and pre releases, fixes bug where version increment could be wrong ([@matt-edmondson](https://github.com/matt-edmondson))
+- Added OnGetTooltip to Icon Delegates ([@Damon3000s](https://github.com/Damon3000s))
+- Cleanup ([@Damon3000s](https://github.com/Damon3000s))
+- Cleanup old logic ([@Damon3000s](https://github.com/Damon3000s))
+- Convert enum usages of ImGui.Combo to ImGuiWidgets.Combo ([@Damon3000s](https://github.com/Damon3000s))
+- Default back to 32 grid items to show ([@Damon3000s](https://github.com/Damon3000s))
+- Don't call measureDelegate twice ([@Damon3000s](https://github.com/Damon3000s))
+- Feedback ([@Damon3000s](https://github.com/Damon3000s))
+- First pass of adding row alignment and fixing layout issues ([@Damon3000s](https://github.com/Damon3000s))
+- First pass of implementing a new Column Major grid ([@Damon3000s](https://github.com/Damon3000s))
+- Fix ColumnMajor crashing when there isn't enough vertical space ([@Damon3000s](https://github.com/Damon3000s))
+- Fix demo ([@Damon3000s](https://github.com/Damon3000s))
+- Fix for grid double counting item spacing, yet only using a single during layout ([@Damon3000s](https://github.com/Damon3000s))
+- Fix for potential 0 column situation ([@Damon3000s](https://github.com/Damon3000s))
+- Fix for potential out of range access in ColumnMajor mode ([@Damon3000s](https://github.com/Damon3000s))
+- Fix IDE style warnings ([@Damon3000s](https://github.com/Damon3000s))
+- Fix when grid calculates 0 columns ([@Damon3000s](https://github.com/Damon3000s))
+- Group code with regions ([@Damon3000s](https://github.com/Damon3000s))
+- Improve implementation ([@Damon3000s](https://github.com/Damon3000s))
+- Large refactot ([@Damon3000s](https://github.com/Damon3000s))
+- More renames and cleanup ([@Damon3000s](https://github.com/Damon3000s))
+- More target type new expressions ([@Damon3000s](https://github.com/Damon3000s))
+- Move IconAlignment to a parameter ([@Damon3000s](https://github.com/Damon3000s))
+- Move ScopedId to be within ImGuiWidgets class ([@Damon3000s](https://github.com/Damon3000s))
+- Re-implement RowMajor ([@Damon3000s](https://github.com/Damon3000s))
+- Remove the IconDelegates class ([@Damon3000s](https://github.com/Damon3000s))
+- Resolving merge issues ([@Damon3000s](https://github.com/Damon3000s))
+- Revert additional files ([@Damon3000s](https://github.com/Damon3000s))
+- Review Feedback ([@Damon3000s](https://github.com/Damon3000s))
+- Review feedback ([@Damon3000s](https://github.com/Damon3000s))
+- Review Feedback ([@Damon3000s](https://github.com/Damon3000s))
+- Review Feedback and general improvements ([@Damon3000s](https://github.com/Damon3000s))
+- Tweak code layout ([@Damon3000s](https://github.com/Damon3000s))
+- Update release condition to exclude forked repositories ([@matt-edmondson](https://github.com/matt-edmondson))
+- Updated comments for ColumnMajor enum ([@Damon3000s](https://github.com/Damon3000s))
+- Updated variable names and some comments ([@Damon3000s](https://github.com/Damon3000s))
+- Use Collection instead of List ([@Damon3000s](https://github.com/Damon3000s))
+- Use target type new ([@Damon3000s](https://github.com/Damon3000s))
+- Various cleanups ([@Damon3000s](https://github.com/Damon3000s))
+
 ## v1.1.1 (patch)
 
 Changes since v1.1.0:
@@ -18,6 +64,18 @@ Changes since v1.1.0:
 - Update the demo project with the new combos ([@Damon3000s](https://github.com/Damon3000s))
 - Updated all packages and fixed errors ([@Damon3000s](https://github.com/Damon3000s))
 
+## v1.1.1-pre.1 (patch)
+
+Changes since v1.1.0:
+
+- Add a new Combo widget that works with the enum type ([@Damon3000s](https://github.com/Damon3000s))
+- Add an IString and string combo implementation ([@Damon3000s](https://github.com/Damon3000s))
+- Add the new combo to the ImGuiWidgets demo project ([@Damon3000s](https://github.com/Damon3000s))
+- Changed formatting of collection member variable ([@Damon3000s](https://github.com/Damon3000s))
+- Review feedback ([@Damon3000s](https://github.com/Damon3000s))
+- Update the demo project with the new combos ([@Damon3000s](https://github.com/Damon3000s))
+- Updated all packages and fixed errors ([@Damon3000s](https://github.com/Damon3000s))
+
 ## v1.1.0 (minor)
 
 Changes since v1.0.0:
@@ -26,6 +84,12 @@ Changes since v1.0.0:
 - Add automation scripts for metadata management and versioning ([@matt-edmondson](https://github.com/matt-edmondson))
 - Renamed metadata files ([@matt-edmondson](https://github.com/matt-edmondson))
 - Replace LICENSE file with LICENSE.md and update copyright information ([@matt-edmondson](https://github.com/matt-edmondson))
+
+## v1.0.15 (patch)
+
+Changes since v1.0.15-pre.9:
+
+- Add automation scripts for metadata management and versioning ([@matt-edmondson](https://github.com/matt-edmondson))
 
 ## v1.0.14-pre.1 (patch)
 
@@ -37,6 +101,13 @@ Changes since v1.0.13:
 
 Changes since v1.0.11:
 
+- Replace LICENSE file with LICENSE.md and update copyright information ([@matt-edmondson](https://github.com/matt-edmondson))
+
+## v1.0.10-pre.1 (patch)
+
+Changes since v1.0.9:
+
+- Renamed metadata files ([@matt-edmondson](https://github.com/matt-edmondson))
 - Replace LICENSE file with LICENSE.md and update copyright information ([@matt-edmondson](https://github.com/matt-edmondson))
 
 ## v1.0.0 (major)
