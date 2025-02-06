@@ -86,6 +86,18 @@ if ($LAST_NON_MERGE_COMMIT -eq $LAST_MINOR_COMMIT) {
     $VERSION_INCREMENT = 'minor'
 }
 
+$LAST_NON_MERGE_COMMIT_MESSAGE = git log --format=format:%s $LAST_NON_MERGE_COMMIT
+
+if ($LAST_NON_MERGE_COMMIT_MESSAGE -match '[major]') {
+    $VERSION_INCREMENT = 'major'
+} elseif ($LAST_NON_MERGE_COMMIT_MESSAGE -match '[minor]') {
+    $VERSION_INCREMENT = 'minor'
+} elseif ($LAST_NON_MERGE_COMMIT_MESSAGE -match '[patch]') {
+    $VERSION_INCREMENT = 'patch'
+} elseif ($LAST_NON_MERGE_COMMIT_MESSAGE -match '[pre]') {
+    $VERSION_INCREMENT = 'prerelease'
+}
+
 if ($IS_PRERELEASE) {
     if ($VERSION_INCREMENT -eq 'prerelease') {
     $NEW_PRERELEASE = $LAST_VERSION_PRERELEASE + 1
