@@ -86,7 +86,7 @@ if ($LAST_NON_MERGE_COMMIT -eq $LAST_MINOR_COMMIT) {
     $VERSION_INCREMENT = 'minor'
 }
 
-$LAST_NON_MERGE_COMMIT_MESSAGE = git log --format=format:%s $LAST_NON_MERGE_COMMIT
+$LAST_NON_MERGE_COMMIT_MESSAGE = git log -n 1 --format=format:%s $LAST_NON_MERGE_COMMIT
 
 if ($LAST_NON_MERGE_COMMIT_MESSAGE.Contains('[major]')) {
     $VERSION_INCREMENT = 'major'
