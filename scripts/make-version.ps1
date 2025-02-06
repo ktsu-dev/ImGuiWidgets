@@ -88,13 +88,13 @@ if ($LAST_NON_MERGE_COMMIT -eq $LAST_MINOR_COMMIT) {
 
 $LAST_NON_MERGE_COMMIT_MESSAGE = git log --format=format:%s $LAST_NON_MERGE_COMMIT
 
-if ($LAST_NON_MERGE_COMMIT_MESSAGE -match '[major]') {
+if ($LAST_NON_MERGE_COMMIT_MESSAGE.Contains('[major]')) {
     $VERSION_INCREMENT = 'major'
-} elseif ($LAST_NON_MERGE_COMMIT_MESSAGE -match '[minor]') {
+} elseif ($LAST_NON_MERGE_COMMIT_MESSAGE.Contains('[minor]')) {
     $VERSION_INCREMENT = 'minor'
-} elseif ($LAST_NON_MERGE_COMMIT_MESSAGE -match '[patch]') {
+} elseif ($LAST_NON_MERGE_COMMIT_MESSAGE.Contains('[patch]')) {
     $VERSION_INCREMENT = 'patch'
-} elseif ($LAST_NON_MERGE_COMMIT_MESSAGE -match '[pre]') {
+} elseif ($LAST_NON_MERGE_COMMIT_MESSAGE.Contains('[pre]')) {
     $VERSION_INCREMENT = 'prerelease'
 }
 
