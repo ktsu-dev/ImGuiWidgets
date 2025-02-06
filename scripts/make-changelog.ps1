@@ -5,7 +5,7 @@ param (
     [string]$COMMIT_SHA
 )
 
-Set-PSDebug -Trace 1
+# Set-PSDebug -Trace 1
 
 function TranslateTagTo4ComponentVersion {
     param (

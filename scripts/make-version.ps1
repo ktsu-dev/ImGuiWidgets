@@ -3,7 +3,7 @@ param (
     [string]$github_sha = "" # SHA of the commit
 )
 
-Set-PSDebug -Trace 1
+# Set-PSDebug -Trace 1
 
 git config versionsort.suffix "-alpha"
 git config versionsort.suffix "-beta"
