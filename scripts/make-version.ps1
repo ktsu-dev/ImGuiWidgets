@@ -58,10 +58,12 @@ $LAST_COMMIT = $github_sha
 
 $COMMITS = "$FIRST_COMMIT...$LAST_COMMIT"
 
-$LAST_NON_MERGE_COMMIT = git log -n 1 --topo-order --perl-regexp --regexp-ignore-case --format=format:%H --grep="$EXCLUDE_PRS" --invert-grep $COMMITS
+# note: use date order for this one or else we will get the wrong commit when there are merges from main
+$LAST_NON_MERGE_COMMIT = git log -n 1 --date-order --perl-regexp --regexp-ignore-case --format=format:%H --grep="$EXCLUDE_PRS" --invert-grep $COMMITS
 
 $COMMITS = "$FIRST_COMMIT...$LAST_NON_MERGE_COMMIT"
 
+#note: use topo order for the rest so that branched commits are grouped together
 $LAST_PATCH_COMMIT = git log -n 1 --topo-order --perl-regexp --regexp-ignore-case --format=format:%H --committer="$EXCLUDE_BOTS" --author="$EXCLUDE_BOTS" --grep="$EXCLUDE_PRS" --invert-grep $COMMITS
 
 $LAST_MINOR_COMMIT = git log -n 1 --topo-order --perl-regexp --regexp-ignore-case --format=format:%H --committer="$EXCLUDE_BOTS" --author="$EXCLUDE_BOTS" --grep="$EXCLUDE_PRS" --invert-grep $COMMITS `
