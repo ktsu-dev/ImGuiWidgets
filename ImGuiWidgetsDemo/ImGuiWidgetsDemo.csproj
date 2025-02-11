@@ -8,7 +8,7 @@
     <PackageReference Include="ktsu.ImGuiPopups" Version="1.0.0-alpha.86" />
     <PackageReference Include="Microsoft.DotNet.ILCompiler" Version="9.0.1" />
     <PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="9.0.1" />
-    <PackageReference Include="System.Text.Json" Version="9.0.1" />
+    <PackageReference Include="System.Text.Json" Version="9.0.2" />
   </ItemGroup>
 
   <ItemGroup>
