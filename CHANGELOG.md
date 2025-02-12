@@ -1,3 +1,10 @@
+## v1.3.0 (minor)
+
+Changes since v1.2.0:
+
+- Refactor array initializations and clean up code ([@matt-edmondson](https://github.com/matt-edmondson))
+- Remove debugging trace from changelog and version scripts ([@matt-edmondson](https://github.com/matt-edmondson))
+
 ## v1.2.1 (patch)
 
 Changes since v1.2.0:
