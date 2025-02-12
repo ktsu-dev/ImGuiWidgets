@@ -45,7 +45,7 @@ public static partial class ImGuiWidgets
 		/// </summary>
 		public string Id { get; init; } = id;
 		private int DragIndex { get; set; } = -1;
-		private List<DividerZone> Zones { get; init; } = zones.ToList();
+		private List<DividerZone> Zones { get; init; } = [.. zones];
 
 		/// <summary>
 		/// Create a new divider container with a callback for when the container is resized and a specified layout direction.

@@ -39,7 +39,7 @@ public static partial class ImGuiWidgets
 		ArgumentNullException.ThrowIfNull(possibleValues);
 
 		int currentIndex = possibleValues.IndexOf(selectedValue);
-		string[] possibleValuesNames = possibleValues.Select(e => e.ToString()).ToArray();
+		string[] possibleValuesNames = [.. possibleValues.Select(e => e.ToString())];
 		if (ImGui.Combo(label, ref currentIndex, possibleValuesNames, possibleValuesNames.Length))
 		{
 			selectedValue = possibleValues[currentIndex];

@@ -38,7 +38,7 @@ public static partial class ImGuiWidgets
 		/// <summary>
 		/// The color of the icon.
 		/// </summary>
-		public Vector4 Color { get; init; } = ktsu.ImGuiStyler.Color.White.Value;
+		public Vector4 Color { get; init; } = ImGuiStyler.Color.White.Value;
 
 		/// <summary>
 		/// The tooltip to display.
