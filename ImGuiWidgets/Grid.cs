@@ -184,7 +184,7 @@ public static partial class ImGuiWidgets
 			{
 				Dimensions = new(1, itemSizes.Length),
 				ColumnWidths = [widestElementHeight],
-				RowHeights = itemSizes.Select(itemSize => itemSize.Y).ToArray()
+				RowHeights = [.. itemSizes.Select(itemSize => itemSize.Y)]
 			};
 
 			var previousGridLayout = currentGridLayout;
@@ -314,7 +314,7 @@ public static partial class ImGuiWidgets
 			GridLayout currentGridLayout = new()
 			{
 				Dimensions = new(itemSizes.Length, 1),
-				ColumnWidths = itemSizes.Select(itemSize => itemSize.X).ToArray(),
+				ColumnWidths = [.. itemSizes.Select(itemSize => itemSize.X)],
 				RowHeights = [tallestElementHeight],
 			};
 
