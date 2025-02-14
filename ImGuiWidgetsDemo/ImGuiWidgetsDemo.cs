@@ -75,6 +75,7 @@ internal class ImGuiWidgetsDemo
 			{
 				randomString += (char)new Random().Next(32, 127);
 			}
+
 			GridStrings.Add(randomString);
 		}
 	}
@@ -119,7 +120,6 @@ internal class ImGuiWidgetsDemo
 		ImGuiWidgets.Combo("Enum Combo", ref selectedEnumValue);
 		ImGuiWidgets.Combo("String Combo", ref selectedStringValue, possibleStringValues);
 		ImGuiWidgets.Combo("Strong String Combo", ref selectedStrongString, possibleStrongStringValues);
-
 
 		using (new ScopedDisable(true))
 		{
@@ -211,6 +211,7 @@ internal class ImGuiWidgetsDemo
 			{
 				ImGuiWidgets.EnableGridDebugDraw = showGridDebug;
 			}
+
 			bool showIconDebug = ImGuiWidgets.EnableIconDebugDraw;
 			if (ImGui.Checkbox("Show Icon Debug", ref showIconDebug))
 			{
@@ -230,26 +231,32 @@ internal class ImGuiWidgetsDemo
 				{
 					GridIconSizeBig = gridIconSizeBig;
 				}
+
 				if (ImGui.Checkbox("Center within cell", ref gridIconCenterWithinCell))
 				{
 					GridIconCenterWithinCell = gridIconCenterWithinCell;
 				}
+
 				if (ImGui.Checkbox("Fit to contents", ref gridFitToContents))
 				{
 					GridFitToContents = gridFitToContents;
 				}
+
 				if (ImGui.SliderInt("Items to show", ref gridItemsToShow, 1, GridStrings.Count))
 				{
 					GridItemsToShow = gridItemsToShow;
 				}
+
 				if (ImGuiWidgets.Combo("Order", ref gridOrder))
 				{
 					GridOrder = gridOrder;
 				}
+
 				if (ImGuiWidgets.Combo("Icon Alignment", ref gridIconAlignment))
 				{
 					GridIconAlignment = gridIconAlignment;
 				}
+
 				if (ImGui.SliderFloat("Grid Height", ref gridHeight, 1f, 1000f))
 				{
 					GridHeight = gridHeight;

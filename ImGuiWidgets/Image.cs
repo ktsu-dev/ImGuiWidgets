@@ -1,6 +1,8 @@
 namespace ktsu.ImGuiWidgets;
 using System.Numerics;
+
 using ImGuiNET;
+
 using ktsu.ImGuiStyler;
 
 /// <summary>
@@ -106,6 +108,7 @@ public static partial class ImGuiWidgets
 			{
 				clicked = Show(textureId, size, color);
 			}
+
 			return clicked;
 		}
 
@@ -133,6 +136,7 @@ public static partial class ImGuiWidgets
 			{
 				clicked = Show(textureId, imageSize, color);
 			}
+
 			return clicked;
 		}
 	}

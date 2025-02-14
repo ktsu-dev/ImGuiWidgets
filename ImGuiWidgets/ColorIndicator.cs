@@ -1,5 +1,7 @@
 namespace ktsu.ImGuiWidgets;
 
+using System.Numerics;
+
 using ImGuiNET;
 
 /// <summary>
@@ -19,7 +21,7 @@ public static partial class ImGuiWidgets
 		public static void Show(ImColor color, bool enabled)
 		{
 			float frameHeight = ImGui.GetFrameHeight();
-			ImGui.Dummy(new System.Numerics.Vector2(frameHeight, frameHeight));
+			ImGui.Dummy(new Vector2(frameHeight, frameHeight));
 			var dummyRectMin = ImGui.GetItemRectMin();
 			var dummyRectMax = ImGui.GetItemRectMax();
 			var drawList = ImGui.GetWindowDrawList();

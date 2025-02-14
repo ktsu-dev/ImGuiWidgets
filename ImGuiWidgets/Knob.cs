@@ -2,8 +2,8 @@ namespace ktsu.ImGuiWidgets;
 using System;
 using System.Globalization;
 using System.Numerics;
-using ImGuiNET;
 
+using ImGuiNET;
 
 /// <summary>
 /// Options for customizing the appearance and behavior of the knob widget.
@@ -36,7 +36,6 @@ public enum ImGuiKnobOptions
 	/// </summary>
 	TitleBelow = 1 << 4,
 };
-
 
 /// <summary>
 /// Variants for customizing the visual appearance of the knob widget.
@@ -332,6 +331,7 @@ public static partial class ImGuiWidgets
 					{
 						precisionLength++;
 					}
+
 					precision = int.Parse(fmtSpan[..precisionLength], CultureInfo.CurrentCulture);
 					fmtSpan = fmtSpan[precisionLength..];
 
@@ -340,6 +340,7 @@ public static partial class ImGuiWidgets
 						precision = defaultPrecision;
 					}
 				}
+
 				if (fmtSpan[0] is 'e' or 'E') // Maximum precision with scientific notation
 				{
 					precision = -1;
@@ -483,6 +484,7 @@ public static partial class ImGuiWidgets
 						{
 							lineSpan = lineSpan[..(lineSpan.Length - 1)];
 						}
+
 						lineSize = ImGui.CalcTextSize(lineSpan).X;
 					}
 
@@ -611,6 +613,7 @@ public static partial class ImGuiWidgets
 						{
 							knob.DrawArc(0.8f, 0.43f, knob.AngleMin, knob.Angle, GetPrimaryColorSet(), 16, 2);
 						}
+
 						break;
 					}
 					case ImGuiKnobVariant.WiperOnly:
@@ -621,6 +624,7 @@ public static partial class ImGuiWidgets
 						{
 							knob.DrawArc(0.8f, 0.43f, knob.AngleMin, knob.Angle, GetPrimaryColorSet(), 16, 2);
 						}
+
 						break;
 					}
 					case ImGuiKnobVariant.WiperDot:
@@ -653,6 +657,7 @@ public static partial class ImGuiWidgets
 							knob.DrawArc(0.6f, 0.15f, knob.AngleMin + 1.0f, knob.Angle + 1.0f, GetPrimaryColorSet(), 16, 2);
 							knob.DrawArc(0.8f, 0.15f, knob.AngleMin + 3.0f, knob.Angle + 3.0f, GetPrimaryColorSet(), 16, 2);
 						}
+
 						break;
 					}
 

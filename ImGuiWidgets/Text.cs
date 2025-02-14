@@ -1,7 +1,9 @@
 namespace ktsu.ImGuiWidgets;
 
 using System.Numerics;
+
 using ImGuiNET;
+
 using ktsu.ImGuiStyler;
 
 /// <summary>

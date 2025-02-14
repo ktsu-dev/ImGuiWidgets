@@ -3,7 +3,9 @@ namespace ktsu.ImGuiWidgets;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Numerics;
+
 using Extensions;
+
 using ImGuiNET;
 
 /// <summary>
@@ -116,53 +118,18 @@ public static partial class ImGuiWidgets
 			var windowPos = ImGui.GetWindowPos();
 			var advance = windowPos + windowPadding;
 
-			Vector2 CalculateAdvance(DividerZone z)
-			{
-				var advance = containerSize * z.Size * layoutMask;
-
-				var first = Zones.First();
-				var last = Zones.Last();
-				if (first != last && z == first)
-				{
-					advance += windowPadding * 0.5f * layoutMask;
-				}
-
-				return new Vector2((float)Math.Round(advance.X), (float)Math.Round(advance.Y));
-			}
-
-			Vector2 CalculateZoneSize(DividerZone z)
-			{
-				var zoneSize = (containerSize * z.Size * layoutMask) + (containerSize * layoutMaskInverse);
-
-				var first = Zones.First();
-				var last = Zones.Last();
-				if (first != last)
-				{
-					if (z == first || z == last)
-					{
-						zoneSize -= windowPadding * 0.5f * layoutMask;
-					}
-					else
-					{
-						zoneSize -= windowPadding * layoutMask;
-					}
-				}
-
-				return new Vector2((float)Math.Floor(zoneSize.X), (float)Math.Floor(zoneSize.Y));
-			}
-
 			ImGui.SetNextWindowPos(advance);
 			ImGui.BeginChild(Id, containerSize, ImGuiChildFlags.None, ImGuiWindowFlags.NoSavedSettings);
 
 			foreach (var z in Zones)
 			{
-				var zoneSize = CalculateZoneSize(z);
+				var zoneSize = CalculateZoneSize(z, windowPadding, containerSize, layoutMask, layoutMaskInverse);
 				ImGui.SetNextWindowPos(advance);
 				ImGui.BeginChild(z.Id, zoneSize, ImGuiChildFlags.Borders, ImGuiWindowFlags.NoSavedSettings);
 				z.Tick(dt);
 				ImGui.EndChild();
 
-				advance += CalculateAdvance(z);
+				advance += CalculateAdvance(z, windowPadding, containerSize, layoutMask);
 			}
 
 			ImGui.EndChild();
@@ -179,7 +146,7 @@ public static partial class ImGuiWidgets
 				//draw the grab handle if we're not the last zone
 				if (z != Zones.Last())
 				{
-					var zoneSize = CalculateZoneSize(z);
+					var zoneSize = CalculateZoneSize(z, windowPadding, containerSize, layoutMask, layoutMaskInverse);
 					var lineA = advance + (zoneSize * layoutMask) + (windowPadding * 0.5f * layoutMask);
 					var lineB = lineA + (zoneSize * layoutMaskInverse);
 					float lineWidth = style.WindowPadding.X * 0.5f;
@@ -245,7 +212,7 @@ public static partial class ImGuiWidgets
 					}
 				}
 
-				advance += CalculateAdvance(z);
+				advance += CalculateAdvance(z, windowPadding, containerSize, layoutMask);
 			}
 
 			//do the actual resize at the end of the tick so that we don't mess with the dimensions of the layout mid rendering
@@ -255,6 +222,7 @@ public static partial class ImGuiWidgets
 				{
 					resize = Zones[DragIndex].InitialSize;
 				}
+
 				var resizedZone = Zones[DragIndex];
 				var neighbourZone = Zones[DragIndex + 1];
 				float combinedSize = resizedZone.Size + neighbourZone.Size;
@@ -273,6 +241,41 @@ public static partial class ImGuiWidgets
 					DragIndex = -1;
 				}
 			}
+		}
+
+		private Vector2 CalculateZoneSize(DividerZone z, Vector2 windowPadding, Vector2 containerSize, Vector2 layoutMask, Vector2 layoutMaskInverse)
+		{
+			var zoneSize = (containerSize * z.Size * layoutMask) + (containerSize * layoutMaskInverse);
+
+			var first = Zones.First();
+			var last = Zones.Last();
+			if (first != last)
+			{
+				if (z == first || z == last)
+				{
+					zoneSize -= windowPadding * 0.5f * layoutMask;
+				}
+				else
+				{
+					zoneSize -= windowPadding * layoutMask;
+				}
+			}
+
+			return new Vector2((float)Math.Floor(zoneSize.X), (float)Math.Floor(zoneSize.Y));
+		}
+
+		private Vector2 CalculateAdvance(DividerZone z, Vector2 windowPadding, Vector2 containerSize, Vector2 layoutMask)
+		{
+			var advance = containerSize * z.Size * layoutMask;
+
+			var first = Zones.First();
+			var last = Zones.Last();
+			if (first != last && z == first)
+			{
+				advance += windowPadding * 0.5f * layoutMask;
+			}
+
+			return new Vector2((float)Math.Round(advance.X), (float)Math.Round(advance.Y));
 		}
 
 		/// <summary>

@@ -1,6 +1,7 @@
 namespace ktsu.ImGuiWidgets;
 
 using ImGuiNET;
+
 using ktsu.ScopedAction;
 
 /// <summary>

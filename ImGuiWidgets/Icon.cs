@@ -1,7 +1,9 @@
 namespace ktsu.ImGuiWidgets;
 
 using System.Numerics;
+
 using ImGuiNET;
+
 using ktsu.ImGuiStyler;
 
 /// <summary>
@@ -206,6 +208,7 @@ public static partial class ImGuiWidgets
 			{
 				ImGui.SetItemTooltip(options.Tooltip);
 			}
+
 			if (isHovered || EnableIconDebugDraw)
 			{
 				uint borderColor = ImGui.GetColorU32(ImGui.GetStyle().Colors[(int)ImGuiCol.Border]);
@@ -220,14 +223,17 @@ public static partial class ImGuiWidgets
 					options.OnClick?.Invoke();
 					wasClicked = true;
 				}
+
 				if (isMouseDoubleClicked)
 				{
 					options.OnDoubleClick?.Invoke();
 				}
+
 				if (isRightMouseClicked)
 				{
 					options.OnRightClick?.Invoke();
 				}
+
 				if (isRightMouseReleased && options.OnContextMenu is not null)
 				{
 					ImGui.OpenPopup($"{label}_Context");

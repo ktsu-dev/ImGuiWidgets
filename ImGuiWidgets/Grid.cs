@@ -2,6 +2,7 @@ namespace ktsu.ImGuiWidgets;
 
 using System.Drawing;
 using System.Numerics;
+
 using ImGuiNET;
 
 /// <summary>
@@ -218,6 +219,7 @@ public static partial class ImGuiWidgets
 					currentGridLayout = previousGridLayout;
 					break;
 				}
+
 				previousGridLayout = currentGridLayout;
 			}
 
@@ -230,6 +232,7 @@ public static partial class ImGuiWidgets
 			{
 				gridOptions.GridSize = new(ImGui.GetContentRegionAvail().X, gridOptions.GridSize.Y);
 			}
+
 			if (gridOptions.GridSize.Y <= 0)
 			{
 				gridOptions.GridSize = new(gridOptions.GridSize.X, ImGui.GetContentRegionAvail().Y);
@@ -292,10 +295,12 @@ public static partial class ImGuiWidgets
 						{
 							drawList.AddRect(cellTopLeft, cellTopLeft + cellSize, borderColor);
 						}
+
 						drawDelegate(itemList[itemIndex], cellSize, itemDimensions[itemIndex]);
 					}
 				}
 			}
+
 			ImGui.EndChild();
 		}
 		#endregion
@@ -349,6 +354,7 @@ public static partial class ImGuiWidgets
 					currentGridLayout = previousGridLayout;
 					break;
 				}
+
 				previousGridLayout = currentGridLayout;
 			}
 
@@ -361,6 +367,7 @@ public static partial class ImGuiWidgets
 			{
 				gridOptions.GridSize = new(ImGui.GetContentRegionAvail().X, gridOptions.GridSize.Y);
 			}
+
 			if (gridOptions.GridSize.Y <= 0)
 			{
 				gridOptions.GridSize = new(gridOptions.GridSize.X, ImGui.GetContentRegionAvail().Y);
@@ -423,10 +430,12 @@ public static partial class ImGuiWidgets
 						{
 							drawList.AddRect(cellTopLeft, cellTopLeft + cellSize, borderColor);
 						}
+
 						drawDelegate(itemList[itemIndex], cellSize, itemDimensions[itemIndex]);
 					}
 				}
 			}
+
 			ImGui.EndChild();
 		}
 		#endregion

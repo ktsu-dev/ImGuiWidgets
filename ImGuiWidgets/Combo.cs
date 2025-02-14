@@ -1,7 +1,9 @@
 namespace ktsu.ImGuiWidgets;
 
 using System.Collections.ObjectModel;
+
 using ImGuiNET;
+
 using ktsu.StrongStrings;
 
 public static partial class ImGuiWidgets
@@ -23,6 +25,7 @@ public static partial class ImGuiWidgets
 			selectedValue = (TEnum)possibleValues.GetValue(currentIndex)!;
 			return true;
 		}
+
 		return false;
 	}
 
@@ -45,6 +48,7 @@ public static partial class ImGuiWidgets
 			selectedValue = possibleValues[currentIndex];
 			return true;
 		}
+
 		return false;
 	}
 
@@ -66,6 +70,7 @@ public static partial class ImGuiWidgets
 			selectedValue = possibleValues[currentIndex];
 			return true;
 		}
+
 		return false;
 	}
 }
