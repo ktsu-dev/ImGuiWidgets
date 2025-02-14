@@ -1,3 +1,10 @@
+## v1.4.0 (minor)
+
+Changes since v1.3.0:
+
+- Enhance code style and improve UI widget functionality ([@matt-edmondson](https://github.com/matt-edmondson))
+- Update .gitignore to include additional IDE and OS-specific files ([@matt-edmondson](https://github.com/matt-edmondson))
+
 ## v1.3.1 (patch)
 
 Changes since v1.3.0:
