@@ -12,7 +12,7 @@
     <PackageReference Include="ktsu.ImGuiStyler" Version="1.2.0" />
     <PackageReference Include="ktsu.ScopedAction" Version="1.0.15" />
     <PackageReference Include="ktsu.StrongPaths" Version="1.2.0" />
-    <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="9.0.2" />
+    <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="9.0.3" />
   </ItemGroup>
 
 </Project>
