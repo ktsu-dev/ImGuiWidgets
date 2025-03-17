@@ -242,7 +242,7 @@ internal class ImGuiWidgetsDemo
 					GridFitToContents = gridFitToContents;
 				}
 
-				if (ImGui.SliderInt("Items to show", ref gridItemsToShow, 1, GridStrings.Count))
+				if (ImGui.SliderInt("Items to show", ref gridItemsToShow, 0, GridStrings.Count))
 				{
 					GridItemsToShow = gridItemsToShow;
 				}
