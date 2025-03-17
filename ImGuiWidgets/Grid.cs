@@ -243,6 +243,14 @@ public static partial class ImGuiWidgets
 			int itemListCount = itemList.Length;
 			var itemDimensions = itemList.Select(i => measureDelegate(i)).ToArray();
 			var itemDimensionsWithSpacing = itemDimensions.Select(d => d + itemSpacing).ToArray();
+
+			if (itemList.Length == 0)
+			{
+				// No items to display
+				ImGui.Dummy(gridOptions.GridSize);
+				return;
+			}
+
 			var gridLayout = CalculateRowMajorGridLayout(itemDimensionsWithSpacing, gridOptions.GridSize.X);
 
 			if (gridOptions.FitToContents)
@@ -378,6 +386,14 @@ public static partial class ImGuiWidgets
 			int itemListCount = itemList.Length;
 			var itemDimensions = itemList.Select(i => measureDelegate(i)).ToArray();
 			var itemDimensionsWithSpacing = itemDimensions.Select(d => d + itemSpacing).ToArray();
+
+			if (itemList.Length == 0)
+			{
+				// No items to display
+				ImGui.Dummy(gridOptions.GridSize);
+				return;
+			}
+
 			var gridLayout = CalculateColumnMajorGridLayout(itemDimensionsWithSpacing, gridOptions.GridSize.Y);
 
 			if (gridOptions.FitToContents)
