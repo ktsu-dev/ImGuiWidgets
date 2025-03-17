@@ -1,3 +1,11 @@
+## v1.5.0 (minor)
+
+Changes since v1.4.0:
+
+- Adjust grid item slider to allow for testing zero items in the grid ([@matt-edmondson](https://github.com/matt-edmondson))
+- Display a dummy and early out if there are no items to show in the grid ([@matt-edmondson](https://github.com/matt-edmondson))
+- Dont render a dummy if theres no items and the layout is "FitToContents" ([@matt-edmondson](https://github.com/matt-edmondson))
+
 ## v1.4.0 (minor)
 
 Changes since v1.3.0:
