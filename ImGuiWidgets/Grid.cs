@@ -247,7 +247,11 @@ public static partial class ImGuiWidgets
 			if (itemList.Length == 0)
 			{
 				// No items to display
-				ImGui.Dummy(gridOptions.GridSize);
+				if (!gridOptions.FitToContents)
+				{
+					ImGui.Dummy(gridOptions.GridSize);
+				}
+
 				return;
 			}
 
@@ -390,7 +394,11 @@ public static partial class ImGuiWidgets
 			if (itemList.Length == 0)
 			{
 				// No items to display
-				ImGui.Dummy(gridOptions.GridSize);
+				if (!gridOptions.FitToContents)
+				{
+					ImGui.Dummy(gridOptions.GridSize);
+				}
+
 				return;
 			}
 
