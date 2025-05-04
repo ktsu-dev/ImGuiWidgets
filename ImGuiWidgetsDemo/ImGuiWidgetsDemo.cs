@@ -45,9 +45,13 @@ internal class ImGuiWidgetsDemo
 	}
 
 	private static float value = 0.5f;
+	private float tab2Value = 0.5f;
 
 	private ImGuiWidgets.DividerContainer DividerContainer { get; } = new("DemoDividerContainer");
 	private ImGuiPopups.MessageOK MessageOK { get; } = new();
+	private ImGuiWidgets.TabPanel DemoTabPanel { get; } = new("DemoTabPanel", true, true);
+	private Dictionary<string, string> TabIds { get; } = [];
+	private int NextDynamicTabId { get; set; } = 1;
 
 	private List<string> GridStrings { get; } = [];
 	private static int InitialGridItemCount { get; } = 32;
@@ -70,6 +74,11 @@ internal class ImGuiWidgetsDemo
 	{
 		DividerContainer.Add(new("Left", 0.25f, ShowLeftPanel));
 		DividerContainer.Add(new("Right", 0.75f, ShowRightPanel));
+
+		// Initialize TabPanel demo
+		TabIds["tab1"] = DemoTabPanel.AddTab("tab1", "Tab 1", ShowTab1Content);
+		TabIds["tab2"] = DemoTabPanel.AddTab("tab2", "Tab 2", ShowTab2Content);
+		TabIds["tab3"] = DemoTabPanel.AddTab("tab3", "Tab 3", ShowTab3Content);
 
 		for (var i = 0; i < InitialGridItemCount; i++)
 		{
@@ -163,6 +172,36 @@ internal class ImGuiWidgetsDemo
 		var ktsuTexture = ImGuiApp.GetOrLoadTexture(ktsuIconPath);
 
 		ImGui.Text("Right Divider Zone");
+
+		ImGui.SeparatorText("TabPanel Demo");
+
+		// Tab Panel controls
+		if (ImGui.Button("Mark Active Tab Dirty"))
+		{
+			DemoTabPanel.MarkActiveTabDirty();
+		}
+
+		ImGui.SameLine();
+
+		if (ImGui.Button("Mark Active Tab Clean"))
+		{
+			DemoTabPanel.MarkActiveTabClean();
+		}
+
+		ImGui.SameLine();
+
+		if (ImGui.Button("Add New Tab"))
+		{
+			var tabIndex = NextDynamicTabId++;
+			var tabKey = $"dynamic{tabIndex}";
+			var tabId = $"dyntab_{tabIndex}";
+			TabIds[tabKey] = DemoTabPanel.AddTab(tabId, $"Extra Tab {tabIndex}", () => ShowDynamicTabContent(tabIndex));
+		}
+
+		// Display tab panel
+		DemoTabPanel.Draw();
+
+		ImGui.Separator();
 
 		if (ImGuiWidgets.Image(ktsuTexture.TextureId, new(128, 128)))
 		{
@@ -313,5 +352,78 @@ internal class ImGuiWidgetsDemo
 		ImGui.Separator();
 
 		MessageOK.ShowIfOpen();
+	}
+
+	// Tab content methods
+	private void ShowTab1Content()
+	{
+		ImGui.Text("This is the content of Tab 1");
+
+		if (ImGui.Button("Edit Content"))
+		{
+			DemoTabPanel.MarkTabDirty(TabIds["tab1"]);
+		}
+
+		if (ImGui.Button("Save Content"))
+		{
+			DemoTabPanel.MarkTabClean(TabIds["tab1"]);
+		}
+
+		ImGui.Text("Dirty State: " + (DemoTabPanel.IsTabDirty(TabIds["tab1"]) ? "Modified" : "Unchanged"));
+	}
+
+	private void ShowTab2Content()
+	{
+		ImGui.Text("This is the content of Tab 2");
+
+		if (ImGui.SliderFloat("Value", ref tab2Value, 0.0f, 1.0f))
+		{
+			// Mark tab as dirty when slider value changes
+			DemoTabPanel.MarkTabDirty(TabIds["tab2"]);
+		}
+
+		if (ImGui.Button("Reset"))
+		{
+			tab2Value = 0.5f;
+			DemoTabPanel.MarkTabClean(TabIds["tab2"]);
+		}
+	}
+
+	private void ShowTab3Content()
+	{
+		ImGui.Text("This is the content of Tab 3");
+		ImGui.Text("Try clicking 'Mark Active Tab Dirty' button above");
+		ImGui.Text("to see the dirty indicator (*) appear next to the tab name.");
+
+		if (ImGui.Button("Toggle Dirty State"))
+		{
+			if (DemoTabPanel.IsTabDirty(TabIds["tab3"]))
+			{
+				DemoTabPanel.MarkTabClean(TabIds["tab3"]);
+			}
+			else
+			{
+				DemoTabPanel.MarkTabDirty(TabIds["tab3"]);
+			}
+		}
+	}
+
+	private void ShowDynamicTabContent(int tabIndex)
+	{
+		var tabKey = $"dynamic{tabIndex}";
+		ImGui.Text($"This is a dynamically added tab ({tabIndex})");
+		ImGui.Text("The (*) indicator shows when content has been modified.");
+
+		if (ImGui.Button("Toggle Dirty State"))
+		{
+			if (DemoTabPanel.IsTabDirty(TabIds[tabKey]))
+			{
+				DemoTabPanel.MarkTabClean(TabIds[tabKey]);
+			}
+			else
+			{
+				DemoTabPanel.MarkTabDirty(TabIds[tabKey]);
+			}
+		}
 	}
 }

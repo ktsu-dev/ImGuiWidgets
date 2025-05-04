@@ -6,6 +6,7 @@ ImGuiWidgets is a library of custom widgets using ImGui.NET. This library provid
 
 - **Knobs**: Ported to .NET from [ImGui-works/ImGui-knobs-dial-gauge-meter](https://github.com/imgui-works/imgui-knobs-dial-gauge-meter)
 - **Resizable Layout Dividers**: Draggable layout dividers for resizable layouts
+- **TabPanel**: Tabbed interface with closable, reorderable tabs and dirty indicator support
 - **Icons**: Customizable icons with various alignment options and event delegates
 - **Grid**: Flexible grid layout for displaying items
 - **Color Indicator**: An indicator that displays a color when enabled
@@ -45,6 +46,51 @@ float value = 0.5f;
 float minValue = 0.0f;
 
 ImGuiWidgets.Knob("Knob", ref value, minValue);
+```
+
+### TabPanel
+
+TabPanel creates a tabbed interface with support for closable tabs, reordering, and dirty state indication:
+
+```csharp
+// Create a tab panel with closable and reorderable tabs
+var tabPanel = new ImGuiWidgets.TabPanel("MyTabPanel", true, true);
+
+// Add tabs with explicit IDs (recommended for stability when tabs are reordered)
+string tab1Id = tabPanel.AddTab("tab1", "First Tab", RenderTab1Content);
+string tab2Id = tabPanel.AddTab("tab2", "Second Tab", RenderTab2Content);
+string tab3Id = tabPanel.AddTab("tab3", "Third Tab", RenderTab3Content);
+
+// Draw the tab panel in your render loop
+tabPanel.Draw();
+
+// Methods to render tab content
+void RenderTab1Content()
+{
+    ImGui.Text("Tab 1 Content");
+    
+    // Mark tab as dirty when content changes
+    if (ImGui.Button("Edit"))
+    {
+        tabPanel.MarkTabDirty(tab1Id);
+    }
+    
+    // Mark tab as clean when content is saved
+    if (ImGui.Button("Save"))
+    {
+        tabPanel.MarkTabClean(tab1Id);
+    }
+}
+
+void RenderTab2Content()
+{
+    ImGui.Text("Tab 2 Content");
+}
+
+void RenderTab3Content()
+{
+    ImGui.Text("Tab 3 Content");
+}
 ```
 
 ### Icons
