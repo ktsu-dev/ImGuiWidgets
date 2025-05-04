@@ -1,3 +1,9 @@
+## v1.6.2 (patch)
+
+Changes since v1.6.1:
+
+- Update README and project files to reflect SDK changes and correct links ([@matt-edmondson](https://github.com/matt-edmondson))
+
 ## v1.6.1 (patch)
 
 Changes since v1.6.0:
