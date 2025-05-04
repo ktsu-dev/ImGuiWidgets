@@ -1,3 +1,8 @@
+## v1.6.4 (patch)
+
+Changes since v1.6.3:
+
+- Add SearchBox widget with support for various filter types and matching options. Update README with usage examples and integrate SearchBox into demo application. ([@matt-edmondson](https://github.com/matt-edmondson))
 ## v1.6.3 (patch)
 
 Changes since v1.6.2:
@@ -5,9 +10,7 @@ Changes since v1.6.2:
 - Add TabPanel widget with support for closable, reorderable tabs and dirty state indication. Update README with usage examples and integrate TabPanel into demo application. ([@matt-edmondson](https://github.com/matt-edmondson))
 ## v1.6.3-pre.1 (prerelease)
 
-Changes since v1.6.2:
-
-- Sync scripts\PSBuild.psm1 ([@ktsu[bot]](https://github.com/ktsu[bot]))
+Incremental prerelease update.
 ## v1.6.2 (patch)
 
 Changes since v1.6.1:
