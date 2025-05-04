@@ -4,7 +4,7 @@ ImGuiWidgets is a library of custom widgets using ImGui.NET. This library provid
 
 ## Features
 
-- **Knobs**: Ported to .NET from [imgui-works/imgui-knobs-dial-gauge-meter](https://github.com/imgui-works/imgui-knobs-dial-gauge-meter)
+- **Knobs**: Ported to .NET from [ImGui-works/ImGui-knobs-dial-gauge-meter](https://github.com/imgui-works/imgui-knobs-dial-gauge-meter)
 - **Resizable Layout Dividers**: Draggable layout dividers for resizable layouts
 - **Icons**: Customizable icons with various alignment options and event delegates
 - **Grid**: Flexible grid layout for displaying items
@@ -25,6 +25,7 @@ dotnet add package ktsu.ImGuiWidgets
 ## Usage
 
 To use ImGuiWidgets, you need to include the `ktsu.ImGuiWidgets` namespace in your code:
+
 ```csharp
 using ktsu.ImGuiWidgets;
 ```
@@ -169,9 +170,9 @@ Contributions are welcome! For feature requests, bug reports, or questions, plea
 
 ImGuiWidgets is inspired by the following projects:
 
-- [ocornut/imgui](https://github.com/ocornut/imgui)
+- [ocornut/ImGui](https://github.com/ocornut/imgui)
 - [ImGui.NET](https://github.com/ImGuiNET/ImGui.NET)
-- [imgui-works/imgui-knobs-dial-gauge-meter](https://github.com/imgui-works/imgui-knobs-dial-gauge-meter)
+- [ImGui-works/ImGui-knobs-dial-gauge-meter](https://github.com/imgui-works/imgui-knobs-dial-gauge-meter)
 
 ## License
 
