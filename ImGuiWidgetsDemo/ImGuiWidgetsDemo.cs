@@ -14,6 +14,7 @@ using ktsu.ImGuiStyler;
 using ktsu.ImGuiWidgets;
 using ktsu.StrongPaths;
 using ktsu.StrongStrings;
+using ktsu.TextFilter;
 
 internal sealed record class StrongStringExample : StrongStringAbstract<StrongStringExample> { }
 
@@ -69,6 +70,25 @@ internal class ImGuiWidgetsDemo
 	private readonly Collection<StrongStringExample> possibleStrongStringValues = ["Strong Hello".As<StrongStringExample>(),
 		 "Strong World".As<StrongStringExample>(), "Strong Goodbye".As<StrongStringExample>()];
 
+	// Static fields for SearchBox filter persistence
+	private static string BasicSearchTerm = string.Empty;
+	private static TextFilterType BasicFilterType = TextFilterType.Glob;
+	private static TextFilterMatchOptions BasicMatchOptions = TextFilterMatchOptions.ByWholeString;
+
+	private static string FilteredSearchTerm = string.Empty;
+	private static TextFilterType FilteredFilterType = TextFilterType.Glob;
+	private static TextFilterMatchOptions FilteredMatchOptions = TextFilterMatchOptions.ByWholeString;
+
+	private static string RankedSearchTerm = string.Empty;
+
+	private static string GlobSearchTerm = string.Empty;
+	private static TextFilterType GlobFilterType = TextFilterType.Glob;
+	private static TextFilterMatchOptions GlobMatchOptions = TextFilterMatchOptions.ByWholeString;
+
+	private static string RegexSearchTerm = string.Empty;
+	private static TextFilterType RegexFilterType = TextFilterType.Regex;
+	private static TextFilterMatchOptions RegexMatchOptions = TextFilterMatchOptions.ByWholeString;
+
 #pragma warning disable CA5394 //Do not use insecure randomness
 	private void OnStart()
 	{
@@ -109,7 +129,7 @@ internal class ImGuiWidgetsDemo
 	[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0063:Use simple 'using' statement", Justification = "<Pending>")]
 	private void ShowLeftPanel(float size)
 	{
-		ImGui.Text("Left Divider Zone");
+		ImGui.TextUnformatted("Left Divider Zone");
 
 		ImGui.SeparatorText("Knobs");
 		ImGuiWidgets.Knob(nameof(ImGuiKnobVariant.Wiper) + "Test Pascal Case", ref value, 0, 1, 0, null, ImGuiKnobVariant.Wiper);
@@ -171,8 +191,19 @@ internal class ImGuiWidgetsDemo
 		var ktsuIconPath = (AbsoluteDirectoryPath)Environment.CurrentDirectory / (FileName)"ktsu.png";
 		var ktsuTexture = ImGuiApp.GetOrLoadTexture(ktsuIconPath);
 
-		ImGui.Text("Right Divider Zone");
+		ImGui.TextUnformatted("Right Divider Zone");
 
+		ShowTabPanelDemo();
+		ShowImageDemo(ktsuTexture);
+		ShowGridSettings();
+		ShowSearchBoxDemo();
+		ShowGridDemo(ktsuTexture);
+
+		MessageOK.ShowIfOpen();
+	}
+
+	private void ShowTabPanelDemo()
+	{
 		ImGui.SeparatorText("TabPanel Demo");
 
 		// Tab Panel controls
@@ -202,8 +233,11 @@ internal class ImGuiWidgetsDemo
 		DemoTabPanel.Draw();
 
 		ImGui.Separator();
+	}
 
-		if (ImGuiWidgets.Image(ktsuTexture.TextureId, new(128, 128)))
+	private void ShowImageDemo(ImGuiAppTextureInfo ktsuTexture)
+	{
+		if (ImGuiWidgets.Image(ktsuTexture.TextureId, new Vector2(128, 128)))
 		{
 			MessageOK.Open("Click", "You chose the image");
 		}
@@ -216,20 +250,20 @@ internal class ImGuiWidgetsDemo
 		var iconSize = new Vector2(iconWidthPx, iconWidthPx);
 
 		ImGuiWidgets.Icon("Click Me", ktsuTexture.TextureId, iconWidthPx, ImGuiWidgets.IconAlignment.Vertical,
-			new()
+			new ImGuiWidgets.IconOptions()
 			{
 				OnClick = () => MessageOK.Open("Click", "You chose Tile1")
 			});
 
 		ImGui.SameLine();
 		ImGuiWidgets.Icon("Double Click Me", ktsuTexture.TextureId, iconWidthPx, ImGuiWidgets.IconAlignment.Vertical,
-			new()
+			new ImGuiWidgets.IconOptions()
 			{
 				OnDoubleClick = () => MessageOK.Open("Double Click", "Yippee!!!!!!!!")
 			});
 		ImGui.SameLine();
 		ImGuiWidgets.Icon("Right Click Me", ktsuTexture.TextureId, iconWidthPx, ImGuiWidgets.IconAlignment.Vertical,
-			new()
+			new ImGuiWidgets.IconOptions()
 			{
 				OnContextMenu = () =>
 				{
@@ -240,13 +274,16 @@ internal class ImGuiWidgetsDemo
 			});
 		ImGui.SameLine();
 		ImGuiWidgets.Icon("Hover Me", ktsuTexture.TextureId, iconWidthPx, ImGuiWidgets.IconAlignment.Vertical,
-			new()
+			new ImGuiWidgets.IconOptions()
 			{
 				Tooltip = "You hovered over me"
 			});
 
 		ImGui.NewLine();
+	}
 
+	private void ShowGridSettings()
+	{
 		if (ImGui.CollapsingHeader("Grid Settings"))
 		{
 			var showGridDebug = ImGuiWidgets.EnableGridDebugDraw;
@@ -306,7 +343,138 @@ internal class ImGuiWidgetsDemo
 				}
 			}
 		}
+	}
 
+	private void ShowSearchBoxDemo()
+	{
+		if (ImGui.CollapsingHeader("SearchBox Demo"))
+		{
+			ImGui.TextUnformatted("Search the grid items:");
+
+			ImGui.Separator();
+			ImGui.TextUnformatted("Basic SearchBox");
+
+			// Basic search demo - just show the search box control
+			ImGuiWidgets.SearchBox("##BasicSearch", ref BasicSearchTerm, ref BasicFilterType, ref BasicMatchOptions);
+
+			ImGui.Separator();
+			ImGui.TextUnformatted("Filtered SearchBox with Items");
+
+			// Using the SearchBox that returns filtered results
+			var filteredResults = ImGuiWidgets.SearchBox(
+				"##FilteredSearch",
+				ref FilteredSearchTerm,
+				GridStrings,
+				s => s,
+				ref FilteredFilterType,
+				ref FilteredMatchOptions).ToList(); // Materialize the collection
+
+			if (!string.IsNullOrEmpty(FilteredSearchTerm))
+			{
+				ImGui.TextUnformatted($"Search results for: {FilteredSearchTerm} (Type: {FilteredFilterType}, Match: {FilteredMatchOptions})");
+				foreach (var item in filteredResults.Take(10))
+				{
+					ImGui.TextUnformatted(item);
+				}
+
+				// Show count if there are more
+				var totalCount = filteredResults.Count;
+				if (totalCount > 10)
+				{
+					ImGui.TextUnformatted($"... and {totalCount - 10} more items");
+				}
+			}
+
+			ImGui.Separator();
+			ImGui.TextUnformatted("Ranked SearchBox");
+
+			// Using a ranked search box
+			var rankedResults = ImGuiWidgets.SearchBoxRanked("##RankedSearch",
+				ref RankedSearchTerm,
+				GridStrings,
+				s => s)
+				.ToList(); // Materialize the collection to avoid multiple enumerations
+
+			if (!string.IsNullOrEmpty(RankedSearchTerm))
+			{
+				ImGui.TextUnformatted($"Ranked results for: {RankedSearchTerm} (using fuzzy matching)");
+				foreach (var item in rankedResults.Take(10))
+				{
+					ImGui.TextUnformatted(item);
+				}
+
+				// Show count if there are more
+				var totalCount = rankedResults.Count;
+				if (totalCount > 10)
+				{
+					ImGui.TextUnformatted($"... and {totalCount - 10} more items");
+				}
+			}
+
+			ImGui.Separator();
+			ImGui.TextUnformatted("Filter Type Comparison");
+
+			// Side-by-side comparison of different filter types
+			ImGui.Columns(2);
+
+			ImGui.TextUnformatted("Glob Filter:");
+			// Glob filter - pass GridStrings to use search box with filtering
+			var globResults = ImGuiWidgets.SearchBox("##GlobSearch",
+				ref GlobSearchTerm,
+				GridStrings,
+				s => s,
+				ref GlobFilterType,
+				ref GlobMatchOptions)
+				.ToList(); // Materialize the collection
+
+			if (!string.IsNullOrEmpty(GlobSearchTerm))
+			{
+				ImGui.TextUnformatted($"Results for: {GlobSearchTerm}");
+				foreach (var item in globResults.Take(10))
+				{
+					ImGui.TextUnformatted(item);
+				}
+
+				var globCount = globResults.Count;
+				if (globCount > 10)
+				{
+					ImGui.TextUnformatted($"... and {globCount - 10} more items");
+				}
+			}
+
+			ImGui.NextColumn();
+
+			ImGui.TextUnformatted("Regex Filter:");
+			// Regex filter - pass GridStrings to use search box with filtering
+			var regexResults = ImGuiWidgets.SearchBox("##RegexSearch",
+				ref RegexSearchTerm,
+				GridStrings,
+				s => s,
+				ref RegexFilterType,
+				ref RegexMatchOptions)
+				.ToList(); // Materialize the collection
+
+			if (!string.IsNullOrEmpty(RegexSearchTerm))
+			{
+				ImGui.TextUnformatted($"Results for: {RegexSearchTerm}");
+				foreach (var item in regexResults.Take(10))
+				{
+					ImGui.TextUnformatted(item);
+				}
+
+				var regexCount = regexResults.Count;
+				if (regexCount > 10)
+				{
+					ImGui.TextUnformatted($"... and {regexCount - 10} more items");
+				}
+			}
+
+			ImGui.Columns(1);
+		}
+	}
+
+	private void ShowGridDemo(ImGuiAppTextureInfo ktsuTexture)
+	{
 		float iconSizePx = ImGuiApp.EmsToPx(2.5f);
 		var bigIconSizePx = iconSizePx * 2;
 		var gridIconSize = GridIconSizeBig ? bigIconSizePx : iconSizePx;
@@ -332,7 +500,7 @@ internal class ImGuiWidgetsDemo
 
 		ImGuiWidgets.GridOptions gridOptions = new()
 		{
-			GridSize = new(ImGui.GetContentRegionAvail().X, GridHeight),
+			GridSize = new Vector2(ImGui.GetContentRegionAvail().X, GridHeight),
 			FitToContents = GridFitToContents,
 		};
 		switch (GridOrder)
@@ -350,14 +518,12 @@ internal class ImGuiWidgetsDemo
 		}
 
 		ImGui.Separator();
-
-		MessageOK.ShowIfOpen();
 	}
 
 	// Tab content methods
 	private void ShowTab1Content()
 	{
-		ImGui.Text("This is the content of Tab 1");
+		ImGui.TextUnformatted("This is the content of Tab 1");
 
 		if (ImGui.Button("Edit Content"))
 		{
@@ -369,12 +535,12 @@ internal class ImGuiWidgetsDemo
 			DemoTabPanel.MarkTabClean(TabIds["tab1"]);
 		}
 
-		ImGui.Text("Dirty State: " + (DemoTabPanel.IsTabDirty(TabIds["tab1"]) ? "Modified" : "Unchanged"));
+		ImGui.TextUnformatted("Dirty State: " + (DemoTabPanel.IsTabDirty(TabIds["tab1"]) ? "Modified" : "Unchanged"));
 	}
 
 	private void ShowTab2Content()
 	{
-		ImGui.Text("This is the content of Tab 2");
+		ImGui.TextUnformatted("This is the content of Tab 2");
 
 		if (ImGui.SliderFloat("Value", ref tab2Value, 0.0f, 1.0f))
 		{
@@ -391,9 +557,9 @@ internal class ImGuiWidgetsDemo
 
 	private void ShowTab3Content()
 	{
-		ImGui.Text("This is the content of Tab 3");
-		ImGui.Text("Try clicking 'Mark Active Tab Dirty' button above");
-		ImGui.Text("to see the dirty indicator (*) appear next to the tab name.");
+		ImGui.TextUnformatted("This is the content of Tab 3");
+		ImGui.TextUnformatted("Try clicking 'Mark Active Tab Dirty' button above");
+		ImGui.TextUnformatted("to see the dirty indicator (*) appear next to the tab name.");
 
 		if (ImGui.Button("Toggle Dirty State"))
 		{
@@ -411,8 +577,8 @@ internal class ImGuiWidgetsDemo
 	private void ShowDynamicTabContent(int tabIndex)
 	{
 		var tabKey = $"dynamic{tabIndex}";
-		ImGui.Text($"This is a dynamically added tab ({tabIndex})");
-		ImGui.Text("The (*) indicator shows when content has been modified.");
+		ImGui.TextUnformatted($"This is a dynamically added tab ({tabIndex})");
+		ImGui.TextUnformatted("The (*) indicator shows when content has been modified.");
 
 		if (ImGui.Button("Toggle Dirty State"))
 		{

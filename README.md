@@ -14,6 +14,7 @@ ImGuiWidgets is a library of custom widgets using ImGui.NET. This library provid
 - **Text**: A text widget with alignment options
 - **Tree**: A tree widget for displaying hierarchical data
 - **Scoped Id**: A utility class for creating scoped IDs
+- **SearchBox**: A powerful search box with support for various filter types (Glob, Regex, Fuzzy) and matching options
 
 ## Installation
 
@@ -46,6 +47,45 @@ float value = 0.5f;
 float minValue = 0.0f;
 
 ImGuiWidgets.Knob("Knob", ref value, minValue);
+```
+
+### SearchBox
+
+The SearchBox widget provides a powerful search interface with multiple filter type options:
+
+```csharp
+// Static fields to maintain filter state between renders
+private static string searchTerm = string.Empty;
+private static TextFilterType filterType = TextFilterType.Glob;
+private static TextFilterMatchOptions matchOptions = TextFilterMatchOptions.ByWholeString;
+
+// List of items to search
+var items = new List<string> { "Apple", "Banana", "Cherry", "Date", "Elderberry" };
+
+// Basic search box with right-click context menu for filter options
+ImGuiWidgets.SearchBox("##BasicSearch", ref searchTerm, ref filterType, ref matchOptions);
+
+// Display results
+if (!string.IsNullOrEmpty(searchTerm))
+{
+    ImGui.TextUnformatted($"Search results for: {searchTerm}");
+}
+
+// Search box that returns filtered results directly
+var filteredResults = ImGuiWidgets.SearchBox(
+    "##FilteredSearch",
+    ref searchTerm,
+    items,                  // Collection to filter
+    item => item,           // Selector function to extract string from each item
+    ref filterType,
+    ref matchOptions).ToList();
+
+// Ranked search box for fuzzy matching and ranked results
+var rankedResults = ImGuiWidgets.SearchBoxRanked(
+    "##RankedSearch", 
+    ref searchTerm, 
+    items, 
+    item => item).ToList();
 ```
 
 ### TabPanel
