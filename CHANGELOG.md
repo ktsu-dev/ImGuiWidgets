@@ -1,3 +1,8 @@
+## v1.6.3 (patch)
+
+Changes since v1.6.2:
+
+- Add TabPanel widget with support for closable, reorderable tabs and dirty state indication. Update README with usage examples and integrate TabPanel into demo application. ([@matt-edmondson](https://github.com/matt-edmondson))
 ## v1.6.3-pre.1 (prerelease)
 
 Changes since v1.6.2:
