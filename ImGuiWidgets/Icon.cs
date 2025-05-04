@@ -1,3 +1,7 @@
+// Copyright (c) ktsu.dev
+// All rights reserved.
+// Licensed under the MIT license.
+
 namespace ktsu.ImGuiWidgets;
 
 using System.Numerics;
@@ -170,7 +174,7 @@ public static partial class ImGuiWidgets
 			ArgumentNullException.ThrowIfNull(label);
 			ArgumentNullException.ThrowIfNull(options);
 
-			bool wasClicked = false;
+			var wasClicked = false;
 
 			var style = ImGui.GetStyle();
 			var framePadding = style.FramePadding;
@@ -198,11 +202,11 @@ public static partial class ImGuiWidgets
 
 			ImGui.SetCursorScreenPos(cursorStartPos);
 			ImGui.Dummy(boundingBoxSize);
-			bool isHovered = ImGui.IsItemHovered();
-			bool isMouseClicked = ImGui.IsMouseClicked(ImGuiMouseButton.Left);
-			bool isMouseDoubleClicked = ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left);
-			bool isRightMouseClicked = ImGui.IsMouseClicked(ImGuiMouseButton.Right);
-			bool isRightMouseReleased = ImGui.IsMouseReleased(ImGuiMouseButton.Right);
+			var isHovered = ImGui.IsItemHovered();
+			var isMouseClicked = ImGui.IsMouseClicked(ImGuiMouseButton.Left);
+			var isMouseDoubleClicked = ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left);
+			var isRightMouseClicked = ImGui.IsMouseClicked(ImGuiMouseButton.Right);
+			var isRightMouseReleased = ImGui.IsMouseReleased(ImGuiMouseButton.Right);
 
 			if (!string.IsNullOrEmpty(options.Tooltip))
 			{
@@ -211,7 +215,7 @@ public static partial class ImGuiWidgets
 
 			if (isHovered || EnableIconDebugDraw)
 			{
-				uint borderColor = ImGui.GetColorU32(ImGui.GetStyle().Colors[(int)ImGuiCol.Border]);
+				var borderColor = ImGui.GetColorU32(ImGui.GetStyle().Colors[(int)ImGuiCol.Border]);
 				var drawList = ImGui.GetWindowDrawList();
 				drawList.AddRect(cursorStartPos, cursorStartPos + boundingBoxSize, ImGui.GetColorU32(borderColor));
 			}

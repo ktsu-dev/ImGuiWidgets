@@ -1,3 +1,7 @@
+// Copyright (c) ktsu.dev
+// All rights reserved.
+// Licensed under the MIT license.
+
 namespace ktsu.ImGuiWidgets;
 
 using System.Numerics;
@@ -20,12 +24,12 @@ public static partial class ImGuiWidgets
 	{
 		public static void Show(ImColor color, bool enabled)
 		{
-			float frameHeight = ImGui.GetFrameHeight();
+			var frameHeight = ImGui.GetFrameHeight();
 			ImGui.Dummy(new Vector2(frameHeight, frameHeight));
 			var dummyRectMin = ImGui.GetItemRectMin();
 			var dummyRectMax = ImGui.GetItemRectMax();
 			var drawList = ImGui.GetWindowDrawList();
-			uint colorToShow = enabled ? ImGui.GetColorU32(color.Value) : ImGui.GetColorU32(ImGuiCol.FrameBg);
+			var colorToShow = enabled ? ImGui.GetColorU32(color.Value) : ImGui.GetColorU32(ImGuiCol.FrameBg);
 			drawList.AddRectFilled(dummyRectMin, dummyRectMax, colorToShow);
 		}
 	}

@@ -1,3 +1,7 @@
+// Copyright (c) ktsu.dev
+// All rights reserved.
+// Licensed under the MIT license.
+
 namespace ktsu.ImGuiWidgets;
 
 using System.Numerics;
@@ -86,14 +90,14 @@ public static partial class ImGuiWidgets
 		/// <returns>The clipped text with an ellipsis if it exceeds the container size.</returns>
 		public static string Clip(string text, Vector2 containerSize)
 		{
-			float textWidth = ImGui.CalcTextSize(text).X;
+			var textWidth = ImGui.CalcTextSize(text).X;
 			if (textWidth <= containerSize.X)
 			{
 				return text;
 			}
 
-			string ellipsis = "...";
-			float ellipsisWidth = ImGui.CalcTextSize(ellipsis).X;
+			var ellipsis = "...";
+			var ellipsisWidth = ImGui.CalcTextSize(ellipsis).X;
 
 			while (textWidth + ellipsisWidth > containerSize.X && text.Length > 0)
 			{

@@ -1,3 +1,7 @@
+// Copyright (c) ktsu.dev
+// All rights reserved.
+// Licensed under the MIT license.
+
 namespace ktsu.ImGuiWidgets;
 using System.Numerics;
 
@@ -103,7 +107,7 @@ public static partial class ImGuiWidgets
 		/// <returns>True if the image is clicked; otherwise, false.</returns>
 		internal static bool Centered(uint textureId, Vector2 size, Vector4 color)
 		{
-			bool clicked = false;
+			var clicked = false;
 			using (new Alignment.Center(size))
 			{
 				clicked = Show(textureId, size, color);
@@ -131,7 +135,7 @@ public static partial class ImGuiWidgets
 		/// <returns>True if the image is clicked; otherwise, false.</returns>
 		internal static bool CenteredWithin(uint textureId, Vector2 imageSize, Vector2 containerSize, Vector4 color)
 		{
-			bool clicked = false;
+			var clicked = false;
 			using (new Alignment.CenterWithin(imageSize, containerSize))
 			{
 				clicked = Show(textureId, imageSize, color);

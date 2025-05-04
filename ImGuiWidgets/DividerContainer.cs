@@ -1,3 +1,7 @@
+// Copyright (c) ktsu.dev
+// All rights reserved.
+// Licensed under the MIT license.
+
 namespace ktsu.ImGuiWidgets;
 
 using System.Collections.ObjectModel;
@@ -140,7 +144,7 @@ public static partial class ImGuiWidgets
 			advance = windowPos + windowPadding;
 			float resize = 0;
 			var mousePos = ImGui.GetMousePos();
-			bool resetSize = false;
+			var resetSize = false;
 			foreach (var (z, i) in Zones.WithIndex())
 			{
 				//draw the grab handle if we're not the last zone
@@ -149,17 +153,17 @@ public static partial class ImGuiWidgets
 					var zoneSize = CalculateZoneSize(z, windowPadding, containerSize, layoutMask, layoutMaskInverse);
 					var lineA = advance + (zoneSize * layoutMask) + (windowPadding * 0.5f * layoutMask);
 					var lineB = lineA + (zoneSize * layoutMaskInverse);
-					float lineWidth = style.WindowPadding.X * 0.5f;
-					float grabWidth = style.WindowPadding.X * 2;
+					var lineWidth = style.WindowPadding.X * 0.5f;
+					var grabWidth = style.WindowPadding.X * 2;
 					var grabBox = new Vector2(grabWidth, grabWidth) * 0.5f;
 					var grabMin = lineA - (grabBox * layoutMask);
 					var grabMax = lineB + (grabBox * layoutMask);
 					var grabSize = grabMax - grabMin;
 					RectangleF handleRect = new(grabMin.X, grabMin.Y, grabSize.X, grabSize.Y);
-					bool handleHovered = handleRect.Contains(mousePos.X, mousePos.Y);
-					bool mouseClickedThisFrame = ImGui.IsMouseClicked(ImGuiMouseButton.Left);
-					bool handleClicked = handleHovered && mouseClickedThisFrame;
-					bool handleDoubleClicked = handleHovered && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left);
+					var handleHovered = handleRect.Contains(mousePos.X, mousePos.Y);
+					var mouseClickedThisFrame = ImGui.IsMouseClicked(ImGuiMouseButton.Left);
+					var handleClicked = handleHovered && mouseClickedThisFrame;
+					var handleDoubleClicked = handleHovered && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left);
 
 					if (handleClicked)
 					{
@@ -183,7 +187,7 @@ public static partial class ImGuiWidgets
 								mousePosLocal += windowPadding * 0.5f * layoutMask;
 							}
 
-							float requestedSize = layout switch
+							var requestedSize = layout switch
 							{
 								DividerLayout.Columns => mousePosLocal.X / containerSize.X,
 								DividerLayout.Rows => mousePosLocal.Y / containerSize.Y,
@@ -225,10 +229,10 @@ public static partial class ImGuiWidgets
 
 				var resizedZone = Zones[DragIndex];
 				var neighbourZone = Zones[DragIndex + 1];
-				float combinedSize = resizedZone.Size + neighbourZone.Size;
-				float maxSize = combinedSize - 0.1f;
+				var combinedSize = resizedZone.Size + neighbourZone.Size;
+				var maxSize = combinedSize - 0.1f;
 				resize = Math.Clamp(resize, 0.1f, maxSize);
-				bool sizeDidChange = resizedZone.Size != resize;
+				var sizeDidChange = resizedZone.Size != resize;
 				resizedZone.Size = resize;
 				neighbourZone.Size = combinedSize - resize;
 				if (sizeDidChange)
@@ -302,7 +306,7 @@ public static partial class ImGuiWidgets
 		/// <param name="tickDelegate">The delegate to call when the zone is ticked.</param>
 		public void Add(string id, Action<float> tickDelegate)
 		{
-			float size = 1.0f / (Zones.Count + 1);
+			var size = 1.0f / (Zones.Count + 1);
 			Zones.Add(new(id, size, tickDelegate));
 		}
 

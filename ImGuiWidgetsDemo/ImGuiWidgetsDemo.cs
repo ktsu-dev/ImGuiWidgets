@@ -1,15 +1,19 @@
+// Copyright (c) ktsu.dev
+// All rights reserved.
+// Licensed under the MIT license.
+
 namespace ktsu.ImGuiWidgetsDemo;
 
+using System.Collections.ObjectModel;
 using System.Numerics;
 using ImGuiNET;
+using ktsu.Extensions;
 using ktsu.ImGuiApp;
-using ktsu.ImGuiStyler;
 using ktsu.ImGuiPopups;
+using ktsu.ImGuiStyler;
 using ktsu.ImGuiWidgets;
 using ktsu.StrongPaths;
-using System.Collections.ObjectModel;
 using ktsu.StrongStrings;
-using ktsu.Extensions;
 
 internal sealed record class StrongStringExample : StrongStringAbstract<StrongStringExample> { }
 
@@ -67,11 +71,11 @@ internal class ImGuiWidgetsDemo
 		DividerContainer.Add(new("Left", 0.25f, ShowLeftPanel));
 		DividerContainer.Add(new("Right", 0.75f, ShowRightPanel));
 
-		for (int i = 0; i < InitialGridItemCount; i++)
+		for (var i = 0; i < InitialGridItemCount; i++)
 		{
-			string randomString = $"{i}:";
-			int randomAmount = new Random().Next(2, 32);
-			for (int j = 0; j < randomAmount; j++)
+			var randomString = $"{i}:";
+			var randomAmount = new Random().Next(2, 32);
+			for (var j = 0; j < randomAmount; j++)
 			{
 				randomString += (char)new Random().Next(32, 127);
 			}
@@ -125,8 +129,8 @@ internal class ImGuiWidgetsDemo
 		{
 			ImGui.SeparatorText("Disabled");
 
-			bool value = true;
-			int currentItem = 0;
+			var value = true;
+			var currentItem = 0;
 			string[] items = ["Item 1", "Item 2", "Item 3"];
 
 			ImGui.Checkbox("Disabled Checkbox", ref value);
@@ -136,7 +140,7 @@ internal class ImGuiWidgetsDemo
 		ImGui.SeparatorText("Tree");
 		using (var tree = new ImGuiWidgets.Tree())
 		{
-			for (int i = 0; i < 5; i++)
+			for (var i = 0; i < 5; i++)
 			{
 				using (tree.Child)
 				{
@@ -165,8 +169,8 @@ internal class ImGuiWidgetsDemo
 			MessageOK.Open("Click", "You chose the image");
 		}
 
-		float iconWidthEms = 7.5f;
-		float tilePaddingEms = 0.5f;
+		var iconWidthEms = 7.5f;
+		var tilePaddingEms = 0.5f;
 		float iconWidthPx = ImGuiApp.EmsToPx(iconWidthEms);
 		float tilePaddingPx = ImGuiApp.EmsToPx(tilePaddingEms);
 
@@ -206,26 +210,26 @@ internal class ImGuiWidgetsDemo
 
 		if (ImGui.CollapsingHeader("Grid Settings"))
 		{
-			bool showGridDebug = ImGuiWidgets.EnableGridDebugDraw;
+			var showGridDebug = ImGuiWidgets.EnableGridDebugDraw;
 			if (ImGui.Checkbox("Show Grid Debug", ref showGridDebug))
 			{
 				ImGuiWidgets.EnableGridDebugDraw = showGridDebug;
 			}
 
-			bool showIconDebug = ImGuiWidgets.EnableIconDebugDraw;
+			var showIconDebug = ImGuiWidgets.EnableIconDebugDraw;
 			if (ImGui.Checkbox("Show Icon Debug", ref showIconDebug))
 			{
 				ImGuiWidgets.EnableIconDebugDraw = showIconDebug;
 			}
 
 			{
-				bool gridIconCenterWithinCell = GridIconCenterWithinCell;
-				bool gridIconSizeBig = GridIconSizeBig;
-				bool gridFitToContents = GridFitToContents;
-				int gridItemsToShow = GridItemsToShow;
+				var gridIconCenterWithinCell = GridIconCenterWithinCell;
+				var gridIconSizeBig = GridIconSizeBig;
+				var gridFitToContents = GridFitToContents;
+				var gridItemsToShow = GridItemsToShow;
 				var gridOrder = GridOrder;
 				var gridIconAlignment = GridIconAlignment;
-				float gridHeight = GridHeight;
+				var gridHeight = GridHeight;
 
 				if (ImGui.Checkbox("Use Big Grid Icons", ref gridIconSizeBig))
 				{
@@ -265,8 +269,8 @@ internal class ImGuiWidgetsDemo
 		}
 
 		float iconSizePx = ImGuiApp.EmsToPx(2.5f);
-		float bigIconSizePx = iconSizePx * 2;
-		float gridIconSize = GridIconSizeBig ? bigIconSizePx : iconSizePx;
+		var bigIconSizePx = iconSizePx * 2;
+		var gridIconSize = GridIconSizeBig ? bigIconSizePx : iconSizePx;
 		var gridSize = new Vector2(ImGui.GetContentRegionAvail().X, GridHeight);
 
 		ImGui.Separator();

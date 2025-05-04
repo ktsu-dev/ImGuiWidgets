@@ -1,3 +1,7 @@
+// Copyright (c) ktsu.dev
+// All rights reserved.
+// Licensed under the MIT license.
+
 namespace ktsu.ImGuiWidgets;
 using System;
 using System.Globalization;
@@ -155,13 +159,13 @@ public static partial class ImGuiWidgets
 						center[1] + (MathF.Sin(endAngle) * radius));
 
 			// Calculate bezier arc points
-			float ax = start[0] - center[0];
-			float ay = start[1] - center[1];
-			float bx = end[0] - center[0];
-			float by = end[1] - center[1];
-			float q1 = (ax * ax) + (ay * ay);
-			float q2 = q1 + (ax * bx) + (ay * by);
-			float k2 = 4.0f / 3.0f * (MathF.Sqrt(2.0f * q1 * q2) - q2) / ((ax * by) - (ay * bx));
+			var ax = start[0] - center[0];
+			var ay = start[1] - center[1];
+			var bx = end[0] - center[0];
+			var by = end[1] - center[1];
+			var q1 = (ax * ax) + (ay * ay);
+			var q2 = q1 + (ax * bx) + (ay * by);
+			var k2 = 4.0f / 3.0f * (MathF.Sqrt(2.0f * q1 * q2) - q2) / ((ax * by) - (ay * bx));
 			var arc1 = new Vector2(center[0] + ax - (k2 * ay), center[1] + ay + (k2 * ax));
 			var arc2 = new Vector2(center[0] + bx + (k2 * by), center[1] + by - (k2 * bx));
 
@@ -173,14 +177,14 @@ public static partial class ImGuiWidgets
 		internal static void DrawArc(Vector2 center, float radius, float startAngle, float endAngle, float thickness, ImColor color, int numSegments, int bezierCount)
 		{
 			// Overlap and angle of ends of bezier curves needs work, only looks good when not transperant
-			float overlap = thickness * radius * 0.00001f * MathF.PI;
-			float delta = endAngle - startAngle;
-			float bez_step = 1.0f / bezierCount;
-			float mid_angle = startAngle + overlap;
+			var overlap = thickness * radius * 0.00001f * MathF.PI;
+			var delta = endAngle - startAngle;
+			var bez_step = 1.0f / bezierCount;
+			var mid_angle = startAngle + overlap;
 
-			for (int i = 0; i < bezierCount - 1; i++)
+			for (var i = 0; i < bezierCount - 1; i++)
 			{
-				float mid_angle2 = (delta * bez_step) + mid_angle;
+				var mid_angle2 = (delta * bez_step) + mid_angle;
 				DrawArc1(center, radius, mid_angle - overlap, mid_angle2 + overlap, thickness, color, numSegments);
 				mid_angle = mid_angle2;
 			}
@@ -228,26 +232,26 @@ public static partial class ImGuiWidgets
 
 			private bool DragBehavior(ImGuiDataType dataType, ref TDataType v, TDataType vMin, TDataType vMax, float speed, string format, ImGuiKnobOptions flags)
 			{
-				float floatValue = float.CreateSaturating(v);
-				float floatMin = float.CreateSaturating(vMin);
-				float floatMax = float.CreateSaturating(vMax);
-				bool isClamped = vMin < vMax;
-				float range = floatMax - floatMin;
+				var floatValue = float.CreateSaturating(v);
+				var floatMin = float.CreateSaturating(vMin);
+				var floatMax = float.CreateSaturating(vMax);
+				var isClamped = vMin < vMax;
+				var range = floatMax - floatMin;
 				if (speed == 0.0f && isClamped && (range < float.MaxValue))
 				{
 					speed = range * 0.01f;
 				}
 
-				bool justActivated = ImGui.IsItemActivated();
+				var justActivated = ImGui.IsItemActivated();
 				IsActive = ImGui.IsItemActive();
 				IsHovered = ImGui.IsItemHovered();
 
-				bool isFloatingPoint = dataType is ImGuiDataType.Float or ImGuiDataType.Double;
-				int decimalPrecision = isFloatingPoint ? ParseFormatPrecision(format, 3) : 0;
+				var isFloatingPoint = dataType is ImGuiDataType.Float or ImGuiDataType.Double;
+				var decimalPrecision = isFloatingPoint ? ParseFormatPrecision(format, 3) : 0;
 				speed = MathF.Max(speed, GetMinimumStepAtDecimalPrecision(decimalPrecision));
 
 				var mouseDelta = ImGui.GetIO().MouseDelta;
-				float diff = (flags.HasFlag(ImGuiKnobOptions.DragHorizontal) ? mouseDelta.X : -mouseDelta.Y) * speed;
+				var diff = (flags.HasFlag(ImGuiKnobOptions.DragHorizontal) ? mouseDelta.X : -mouseDelta.Y) * speed;
 
 				diff = IsActive ? diff : 0.0f;
 
@@ -267,7 +271,7 @@ public static partial class ImGuiWidgets
 					return false;
 				}
 
-				float newValue = floatValue + diff;
+				var newValue = floatValue + diff;
 
 				// Round to user desired precision based on format string
 				if (isFloatingPoint)
@@ -275,7 +279,7 @@ public static partial class ImGuiWidgets
 					newValue = MathF.Round(newValue, decimalPrecision);
 				}
 
-				float appliedDiff = newValue - floatValue;
+				var appliedDiff = newValue - floatValue;
 				AccumulatedDiff -= appliedDiff;
 				AccumulatorDirty = false;
 
@@ -322,11 +326,11 @@ public static partial class ImGuiWidgets
 					fmtSpan = fmtSpan[1..];
 				}
 
-				int precision = int.MaxValue;
+				var precision = int.MaxValue;
 				if (fmtSpan[0] == '.')
 				{
 					fmtSpan = fmtSpan[1..];
-					int precisionLength = 0;
+					var precisionLength = 0;
 					while (fmtSpan[precisionLength] is >= '0' and <= '9')
 					{
 						precisionLength++;
@@ -359,7 +363,7 @@ public static partial class ImGuiWidgets
 				var fmtSpan = fmt.AsSpan();
 				while (fmtSpan.Length > 2)
 				{
-					char c = fmtSpan[0];
+					var c = fmtSpan[0];
 					if (c == '%' && fmtSpan[1] != '%')
 					{
 						return fmtSpan;
@@ -385,8 +389,8 @@ public static partial class ImGuiWidgets
 
 			private void DrawDot(float size, float radius, float angle, KnobColors color, int segments)
 			{
-				float dotSize = size * Radius;
-				float dotRadius = radius * Radius;
+				var dotSize = size * Radius;
+				var dotRadius = radius * Radius;
 
 				ImGui.GetWindowDrawList().AddCircleFilled(
 							new(Center[0] + (MathF.Cos(angle) * dotRadius), Center[1] + (MathF.Sin(angle) * dotRadius)),
@@ -397,10 +401,10 @@ public static partial class ImGuiWidgets
 
 			private void DrawTick(float start, float end, float width, float angle, KnobColors color)
 			{
-				float tickStart = start * Radius;
-				float tickEnd = end * Radius;
-				float angleCos = MathF.Cos(angle);
-				float angleSin = MathF.Sin(angle);
+				var tickStart = start * Radius;
+				var tickEnd = end * Radius;
+				var angleCos = MathF.Cos(angle);
+				var angleSin = MathF.Sin(angle);
 
 				ImGui.GetWindowDrawList().AddLine(
 
@@ -412,7 +416,7 @@ public static partial class ImGuiWidgets
 
 			private void DrawCircle(float size, KnobColors color, int segments)
 			{
-				float circleRadius = size * Radius;
+				var circleRadius = size * Radius;
 
 				ImGui.GetWindowDrawList().AddCircleFilled(
 						Center,
@@ -423,8 +427,8 @@ public static partial class ImGuiWidgets
 
 			private void DrawArc(float radius, float size, float startAngle, float endAngle, KnobColors color, int segments, int bezierCount)
 			{
-				float trackRadius = radius * Radius;
-				float trackSize = (size * Radius * 0.5f) + 0.0001f;
+				var trackRadius = radius * Radius;
+				var trackSize = (size * Radius * 0.5f) + 0.0001f;
 
 				KnobImpl.DrawArc(
 						Center,
@@ -442,7 +446,7 @@ public static partial class ImGuiWidgets
 				var lines = new List<string>();
 				string line;
 				var textSpan = text.AsSpan();
-				float textWidth = ImGui.CalcTextSize(text).X;
+				var textWidth = ImGui.CalcTextSize(text).X;
 
 				if (textWidth <= width)
 				{
@@ -464,11 +468,11 @@ public static partial class ImGuiWidgets
 
 					var lineSpan = textSpan;
 
-					float lineSize = ImGui.CalcTextSize(lineSpan).X;
+					var lineSize = ImGui.CalcTextSize(lineSpan).X;
 
 					while (lineSize > width)
 					{
-						int lastSpace = lineSpan.LastIndexOf(' ');
+						var lastSpace = lineSpan.LastIndexOf(' ');
 						if (lastSpace == -1)
 						{
 							break;
@@ -500,8 +504,8 @@ public static partial class ImGuiWidgets
 			{
 				speed = speed == 0 ? float.CreateSaturating(vMax - vMin) / 250.0f : speed;
 				ImGui.PushID(label);
-				float lineBasedHeight = ImGui.GetTextLineHeight() * 4.0f;
-				float width = size ?? lineBasedHeight;
+				var lineBasedHeight = ImGui.GetTextLineHeight() * 4.0f;
+				var width = size ?? lineBasedHeight;
 				if (width == 0)
 				{
 					width = lineBasedHeight;
@@ -509,7 +513,7 @@ public static partial class ImGuiWidgets
 
 				var titleLines = WrapStringToWidth(label, width);
 
-				float maxTitleLineWidth = 0.0f;
+				var maxTitleLineWidth = 0.0f;
 
 				if (!flags.HasFlag(ImGuiKnobOptions.NoTitle))
 				{
@@ -517,7 +521,7 @@ public static partial class ImGuiWidgets
 				}
 
 				maxTitleLineWidth = Math.Max(maxTitleLineWidth, width);
-				float knobPadding = (maxTitleLineWidth - width) * 0.5f;
+				var knobPadding = (maxTitleLineWidth - width) * 0.5f;
 
 				ImGui.PushItemWidth(width);
 
@@ -574,7 +578,7 @@ public static partial class ImGuiWidgets
 				{
 					if (!flags.HasFlag(ImGuiKnobOptions.NoTitle))
 					{
-						foreach (string line in titleLines)
+						foreach (var line in titleLines)
 						{
 							var lineWidth = ImGui.CalcTextSize(line, false, width);
 							ImGui.SetCursorPosX(ImGui.GetCursorPosX() + ((width - lineWidth[0]) * 0.5f));
@@ -636,10 +640,10 @@ public static partial class ImGuiWidgets
 					}
 					case ImGuiKnobVariant.Stepped:
 					{
-						for (float n = 0.0f; n < steps; n++)
+						for (var n = 0.0f; n < steps; n++)
 						{
-							float a = n / (steps - 1);
-							float angle = knob.AngleMin + ((knob.AngleMax - knob.AngleMin) * a);
+							var a = n / (steps - 1);
+							var angle = knob.AngleMin + ((knob.AngleMax - knob.AngleMin) * a);
 							knob.DrawTick(0.7f, 0.9f, 0.04f, angle, GetPrimaryColorSet());
 						}
 

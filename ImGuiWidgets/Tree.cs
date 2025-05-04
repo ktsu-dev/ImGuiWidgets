@@ -1,3 +1,7 @@
+// Copyright (c) ktsu.dev
+// All rights reserved.
+// Licensed under the MIT license.
+
 namespace ktsu.ImGuiWidgets;
 
 using System.Numerics;
@@ -46,7 +50,7 @@ public static partial class ImGuiWidgets
 			OnClose = () =>
 			{
 				ImGui.SameLine();
-				float bottom = CursorEnd.Y + HalfFrameHeight + HalfLineThickness;
+				var bottom = CursorEnd.Y + HalfFrameHeight + HalfLineThickness;
 				var a = new Vector2(Left, Top);
 				var b = new Vector2(Left, bottom);
 				ImGui.GetWindowDrawList().AddLine(a, b, ImGui.GetColorU32(Color.Gray.Value), LineThickness);
@@ -69,8 +73,8 @@ public static partial class ImGuiWidgets
 				{
 					var cursor = ImGui.GetCursorScreenPos();
 					parent.CursorEnd = cursor;
-					float right = cursor.X;
-					float y = cursor.Y + parent.HalfFrameHeight;
+					var right = cursor.X;
+					var y = cursor.Y + parent.HalfFrameHeight;
 
 					var a = new Vector2(parent.Left, y);
 					var b = new Vector2(right, y);
