@@ -1,6 +1,9 @@
-## v1.6.5-pre.9 (prerelease)
+## v1.6.5-pre.10 (prerelease)
 
 Incremental prerelease update.
+## v1.6.5-pre.9 (prerelease)
+
+Changes since v1.6.5-pre.8:
 ## v1.6.5-pre.8 (prerelease)
 
 Changes since v1.6.5-pre.7:
