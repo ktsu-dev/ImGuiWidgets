@@ -1,3 +1,50 @@
+## v1.6.5-pre.14 (prerelease)
+
+Incremental prerelease update.
+## v1.6.5-pre.13 (prerelease)
+
+Changes since v1.6.5-pre.12:
+## v1.6.5-pre.12 (prerelease)
+
+Changes since v1.6.5-pre.11:
+## v1.6.5-pre.11 (prerelease)
+
+Changes since v1.6.5-pre.10:
+## v1.6.5-pre.10 (prerelease)
+
+Changes since v1.6.5-pre.9:
+## v1.6.5-pre.9 (prerelease)
+
+Changes since v1.6.5-pre.8:
+## v1.6.5-pre.8 (prerelease)
+
+Changes since v1.6.5-pre.7:
+## v1.6.5-pre.7 (prerelease)
+
+Changes since v1.6.5-pre.6:
+## v1.6.5-pre.6 (prerelease)
+
+Changes since v1.6.5-pre.5:
+## v1.6.5-pre.5 (prerelease)
+
+Changes since v1.6.5-pre.4:
+## v1.6.5-pre.4 (prerelease)
+
+Changes since v1.6.5-pre.3:
+## v1.6.5-pre.3 (prerelease)
+
+Changes since v1.6.5-pre.2:
+## v1.6.5-pre.2 (prerelease)
+
+Changes since v1.6.5-pre.1:
+## v1.6.5-pre.1 (prerelease)
+
+Changes since v1.6.4:
+## v1.6.4 (patch)
+
+Changes since v1.6.3:
+
+- Add SearchBox widget with support for various filter types and matching options. Update README with usage examples and integrate SearchBox into demo application. ([@matt-edmondson](https://github.com/matt-edmondson))
 ## v1.6.3 (patch)
 
 Changes since v1.6.2:
@@ -5,9 +52,7 @@ Changes since v1.6.2:
 - Add TabPanel widget with support for closable, reorderable tabs and dirty state indication. Update README with usage examples and integrate TabPanel into demo application. ([@matt-edmondson](https://github.com/matt-edmondson))
 ## v1.6.3-pre.1 (prerelease)
 
-Changes since v1.6.2:
-
-- Sync scripts\PSBuild.psm1 ([@ktsu[bot]](https://github.com/ktsu[bot]))
+Incremental prerelease update.
 ## v1.6.2 (patch)
 
 Changes since v1.6.1:
