@@ -1,0 +1,58 @@
+---
+description: AI rules derived by SpecStory from the project AI interaction history
+globs: *
+---
+
+## Headers
+*   When creating a new class that inherits from a `StrongType`, ensure that the inherited methods are implemented explicitly.
+*   When creating new ImGui widgets, follow established patterns, including properties, multiple constructors for different use cases, and methods for functionality.
+
+## TECH STACK
+*   ImGui.NET
+*   ktsu.TextFilter (version 1.5.2 or later)
+*   ktsu.ImGuiStyler
+
+## PROJECT DOCUMENTATION & CONTEXT SYSTEM
+*   Document all new widgets in the README.md file, including code examples.
+*   Keep the README.md file updated with the latest widget features and usage instructions.
+
+## CODING STANDARDS
+*   Follow C# coding conventions.
+*   Use explicit types instead of `var` when declaring static fields.
+*   Use `ImGui.TextUnformatted` instead of `ImGui.Text` for better performance when the text is a simple string.
+*   Avoid multiple enumeration of `IEnumerable` collections by materializing them with `ToList()` when needed.
+*   When creating ImGui widgets:
+    *   Ensure that ImGui widgets maintain state between renders by using static variables where appropriate.
+    *   Use ImGui's built-in features and flags whenever possible.
+
+## UI DESIGN RULES
+*   Use ImGui's native dirty indicator style (typically a circle) for tabs with unsaved changes, matching the theme.
+*   Ensure UI elements are clearly labeled and organized.
+
+## WORKFLOW & RELEASE RULES
+*   Test all new widgets thoroughly in the demo project.
+*   Ensure that tabs maintain their identity regardless of position.
+*   Before marking a task as complete, verify that all warnings and errors are resolved.
+
+## DEBUGGING
+*   Pay close attention to linter warnings and errors.
+*   When debugging UI issues, consider whether ImGui's internal state is being modified unexpectedly.
+
+## ImGuiWidgets.TabPanel
+*   TabPanel creates a tabbed interface with support for closable tabs, reordering, and dirty state indication.
+*   When implementing reorderable tabs with dirty indicators:
+    *   Use `ImGuiTabItemFlags.UnsavedDocument` to indicate tabs with unsaved changes.
+    *   Pass the original label directly to ImGui's tab system.
+    *   Do not modify the tab label text directly, as this disrupts ImGui's internal ordering.
+*   Use ID-based addressing for tabs instead of index-based addressing.
+*   When creating a TabPanel, add tabs with explicit IDs for tab stability when tabs are reordered.
+
+## ImGuiWidgets.SearchBox
+*   The SearchBox widget provides a powerful search interface with multiple filter type options (Glob, Regex, Fuzzy) and matching options.
+*   When implementing a SearchBox, use static fields to persist filter state between renders.
+*   When using the SearchBox:
+    *   Leverage the built-in filtering capabilities of the SearchBox widget without manual filtering.
+    *   Use the SearchBox method that takes items and selector parameters for filtering collections directly.
+    *   Use the new `TextFilter.Filter` method instead of the old `FilterItems` method.
+    *   Change enum types from `MatchOptions`/`FilterType` to `TextFilterMatchOptions`/`TextFilterType`.
+    *   Use the pass-by-reference (`ref`) parameters for filter types and match options.
