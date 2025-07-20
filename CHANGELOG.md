@@ -1,3 +1,6 @@
+## v1.6.5
+
+No significant changes detected since v1.6.5.
 ## v1.6.5 (patch)
 
 Changes since v1.6.4:
@@ -69,7 +72,7 @@ Changes since v1.6.5-pre.2:
 Changes since v1.6.5-pre.1:
 ## v1.6.5-pre.1 (prerelease)
 
-Changes since v1.6.4:
+Incremental prerelease update.
 ## v1.6.4 (patch)
 
 Changes since v1.6.3:
