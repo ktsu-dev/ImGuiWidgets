@@ -6,7 +6,7 @@ namespace ktsu.ImGuiWidgets;
 
 using System.Numerics;
 
-using ImGuiNET;
+using Hexa.NET.ImGui;
 
 using ktsu.ImGuiStyler;
 using ktsu.ScopedAction;
@@ -50,9 +50,9 @@ public static partial class ImGuiWidgets
 			OnClose = () =>
 			{
 				ImGui.SameLine();
-				var bottom = CursorEnd.Y + HalfFrameHeight + HalfLineThickness;
-				var a = new Vector2(Left, Top);
-				var b = new Vector2(Left, bottom);
+				float bottom = CursorEnd.Y + HalfFrameHeight + HalfLineThickness;
+				Vector2 a = new(Left, Top);
+				Vector2 b = new(Left, bottom);
 				ImGui.GetWindowDrawList().AddLine(a, b, ImGui.GetColorU32(Color.Gray.Value), LineThickness);
 				ImGui.NewLine();
 				ImGui.Unindent();
@@ -71,13 +71,13 @@ public static partial class ImGuiWidgets
 		public class TreeChild(Tree parent) : ScopedAction(
 			onOpen: () =>
 				{
-					var cursor = ImGui.GetCursorScreenPos();
+					Vector2 cursor = ImGui.GetCursorScreenPos();
 					parent.CursorEnd = cursor;
-					var right = cursor.X;
-					var y = cursor.Y + parent.HalfFrameHeight;
+					float right = cursor.X;
+					float y = cursor.Y + parent.HalfFrameHeight;
 
-					var a = new Vector2(parent.Left, y);
-					var b = new Vector2(right, y);
+					Vector2 a = new(parent.Left, y);
+					Vector2 b = new(right, y);
 
 					ImGui.GetWindowDrawList().AddLine(a, b, ImGui.GetColorU32(Color.Gray.Value), LineThickness);
 				},

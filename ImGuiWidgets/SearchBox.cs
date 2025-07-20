@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using ImGuiNET;
+using Hexa.NET.ImGui;
 
 using ktsu.TextFilter;
 
@@ -29,11 +29,11 @@ public static partial class ImGuiWidgets
 		ref TextFilterMatchOptions matchOptions
 	)
 	{
-		var hint = TextFilter.GetHint(filterType) + "\nRight-click for options";
+		string hint = TextFilter.GetHint(filterType) + "\nRight-click for options";
 
-		var changed = ImGui.InputTextWithHint(label, hint, ref filterText, 256);
-		var isHovered = ImGui.IsItemHovered();
-		var isRightMouseClicked = ImGui.IsMouseClicked(ImGuiMouseButton.Right);
+		bool changed = ImGui.InputTextWithHint(label, hint, ref filterText, 256);
+		bool isHovered = ImGui.IsItemHovered();
+		bool isRightMouseClicked = ImGui.IsMouseClicked(ImGuiMouseButton.Right);
 
 		if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))
 		{
@@ -47,13 +47,13 @@ public static partial class ImGuiWidgets
 
 		if (ImGui.BeginPopup(label + "##context"))
 		{
-			var isGlob = filterType == TextFilterType.Glob;
-			var isRegex = filterType == TextFilterType.Regex;
-			var isFuzzy = filterType == TextFilterType.Fuzzy;
+			bool isGlob = filterType == TextFilterType.Glob;
+			bool isRegex = filterType == TextFilterType.Regex;
+			bool isFuzzy = filterType == TextFilterType.Fuzzy;
 
-			var isWholeString = matchOptions == TextFilterMatchOptions.ByWholeString;
-			var isAllWord = matchOptions == TextFilterMatchOptions.ByWordAll;
-			var isAnyWord = matchOptions == TextFilterMatchOptions.ByWordAny;
+			bool isWholeString = matchOptions == TextFilterMatchOptions.ByWholeString;
+			bool isAllWord = matchOptions == TextFilterMatchOptions.ByWordAll;
+			bool isAnyWord = matchOptions == TextFilterMatchOptions.ByWordAny;
 
 			if (ImGui.MenuItem("Glob", "", ref isGlob))
 			{
@@ -123,7 +123,7 @@ public static partial class ImGuiWidgets
 			return [];
 		}
 
-		var keyedItems = items.ToDictionary(selector, item => item);
+		Dictionary<string, T> keyedItems = items.ToDictionary(selector, item => item);
 
 		return TextFilter.Filter(keyedItems.Keys, filterText, filterType, matchOptions)
 				.Select(x => keyedItems[x]);
@@ -148,8 +148,8 @@ public static partial class ImGuiWidgets
 		ArgumentNullException.ThrowIfNull(items);
 		ArgumentNullException.ThrowIfNull(selector);
 
-		var filterType = TextFilterType.Fuzzy;
-		var matchOptions = TextFilterMatchOptions.ByWholeString;
+		TextFilterType filterType = TextFilterType.Fuzzy;
+		TextFilterMatchOptions matchOptions = TextFilterMatchOptions.ByWholeString;
 		SearchBox(label, ref filterText, ref filterType, ref matchOptions);
 
 		if (string.IsNullOrWhiteSpace(filterText))
@@ -157,7 +157,7 @@ public static partial class ImGuiWidgets
 			return items;
 		}
 
-		var keyedItems = items.ToDictionary(selector, item => item);
+		Dictionary<string, T> keyedItems = items.ToDictionary(selector, item => item);
 		return TextFilter.Rank(keyedItems.Keys, filterText)
 				.Select(x => keyedItems[x]);
 	}

@@ -10,7 +10,7 @@ using System.Numerics;
 
 using Extensions;
 
-using ImGuiNET;
+using Hexa.NET.ImGui;
 
 /// <summary>
 /// Provides custom ImGui widgets.
@@ -100,34 +100,34 @@ public static partial class ImGuiWidgets
 		/// <exception cref="NotImplementedException">Thrown if the layout direction is not supported.</exception>
 		public void Tick(float dt)
 		{
-			var style = ImGui.GetStyle();
-			var windowPadding = style.WindowPadding;
-			var drawList = ImGui.GetWindowDrawList();
-			var containerSize = ImGui.GetWindowSize() - (windowPadding * 2.0f);
+			ImGuiStylePtr style = ImGui.GetStyle();
+			Vector2 windowPadding = style.WindowPadding;
+			ImDrawListPtr drawList = ImGui.GetWindowDrawList();
+			Vector2 containerSize = ImGui.GetWindowSize() - (windowPadding * 2.0f);
 
-			var layoutMask = layout switch
+			Vector2 layoutMask = layout switch
 			{
 				DividerLayout.Columns => new Vector2(1, 0),
 				DividerLayout.Rows => new Vector2(0, 1),
 				_ => throw new NotImplementedException(),
 			};
 
-			var layoutMaskInverse = layout switch
+			Vector2 layoutMaskInverse = layout switch
 			{
 				DividerLayout.Columns => new Vector2(0, 1),
 				DividerLayout.Rows => new Vector2(1, 0),
 				_ => throw new NotImplementedException(),
 			};
 
-			var windowPos = ImGui.GetWindowPos();
-			var advance = windowPos + windowPadding;
+			Vector2 windowPos = ImGui.GetWindowPos();
+			Vector2 advance = windowPos + windowPadding;
 
 			ImGui.SetNextWindowPos(advance);
 			ImGui.BeginChild(Id, containerSize, ImGuiChildFlags.None, ImGuiWindowFlags.NoSavedSettings);
 
-			foreach (var z in Zones)
+			foreach (DividerZone z in Zones)
 			{
-				var zoneSize = CalculateZoneSize(z, windowPadding, containerSize, layoutMask, layoutMaskInverse);
+				Vector2 zoneSize = CalculateZoneSize(z, windowPadding, containerSize, layoutMask, layoutMaskInverse);
 				ImGui.SetNextWindowPos(advance);
 				ImGui.BeginChild(z.Id, zoneSize, ImGuiChildFlags.Borders, ImGuiWindowFlags.NoSavedSettings);
 				z.Tick(dt);
@@ -143,27 +143,27 @@ public static partial class ImGuiWidgets
 			//reset the advance to the top left of the container
 			advance = windowPos + windowPadding;
 			float resize = 0;
-			var mousePos = ImGui.GetMousePos();
-			var resetSize = false;
-			foreach (var (z, i) in Zones.WithIndex())
+			Vector2 mousePos = ImGui.GetMousePos();
+			bool resetSize = false;
+			foreach ((DividerZone z, int i) in Zones.WithIndex())
 			{
 				//draw the grab handle if we're not the last zone
 				if (z != Zones.Last())
 				{
-					var zoneSize = CalculateZoneSize(z, windowPadding, containerSize, layoutMask, layoutMaskInverse);
-					var lineA = advance + (zoneSize * layoutMask) + (windowPadding * 0.5f * layoutMask);
-					var lineB = lineA + (zoneSize * layoutMaskInverse);
-					var lineWidth = style.WindowPadding.X * 0.5f;
-					var grabWidth = style.WindowPadding.X * 2;
-					var grabBox = new Vector2(grabWidth, grabWidth) * 0.5f;
-					var grabMin = lineA - (grabBox * layoutMask);
-					var grabMax = lineB + (grabBox * layoutMask);
-					var grabSize = grabMax - grabMin;
+					Vector2 zoneSize = CalculateZoneSize(z, windowPadding, containerSize, layoutMask, layoutMaskInverse);
+					Vector2 lineA = advance + (zoneSize * layoutMask) + (windowPadding * 0.5f * layoutMask);
+					Vector2 lineB = lineA + (zoneSize * layoutMaskInverse);
+					float lineWidth = style.WindowPadding.X * 0.5f;
+					float grabWidth = style.WindowPadding.X * 2;
+					Vector2 grabBox = new Vector2(grabWidth, grabWidth) * 0.5f;
+					Vector2 grabMin = lineA - (grabBox * layoutMask);
+					Vector2 grabMax = lineB + (grabBox * layoutMask);
+					Vector2 grabSize = grabMax - grabMin;
 					RectangleF handleRect = new(grabMin.X, grabMin.Y, grabSize.X, grabSize.Y);
-					var handleHovered = handleRect.Contains(mousePos.X, mousePos.Y);
-					var mouseClickedThisFrame = ImGui.IsMouseClicked(ImGuiMouseButton.Left);
-					var handleClicked = handleHovered && mouseClickedThisFrame;
-					var handleDoubleClicked = handleHovered && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left);
+					bool handleHovered = handleRect.Contains(mousePos.X, mousePos.Y);
+					bool mouseClickedThisFrame = ImGui.IsMouseClicked(ImGuiMouseButton.Left);
+					bool handleClicked = handleHovered && mouseClickedThisFrame;
+					bool handleDoubleClicked = handleHovered && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left);
 
 					if (handleClicked)
 					{
@@ -178,16 +178,16 @@ public static partial class ImGuiWidgets
 					{
 						if (ImGui.IsMouseDown(ImGuiMouseButton.Left))
 						{
-							var mousePosLocal = mousePos - advance;
+							Vector2 mousePosLocal = mousePos - advance;
 
-							var first = Zones.First();
-							var last = Zones.Last();
+							DividerZone first = Zones.First();
+							DividerZone last = Zones.Last();
 							if (first != last && z != first)
 							{
 								mousePosLocal += windowPadding * 0.5f * layoutMask;
 							}
 
-							var requestedSize = layout switch
+							float requestedSize = layout switch
 							{
 								DividerLayout.Columns => mousePosLocal.X / containerSize.X,
 								DividerLayout.Rows => mousePosLocal.Y / containerSize.Y,
@@ -201,7 +201,7 @@ public static partial class ImGuiWidgets
 						}
 					}
 
-					var lineColor = DragIndex == i ? new Vector4(1, 1, 1, 0.7f) : handleHovered ? new Vector4(1, 1, 1, 0.5f) : new Vector4(1, 1, 1, 0.3f);
+					Vector4 lineColor = DragIndex == i ? new Vector4(1, 1, 1, 0.7f) : handleHovered ? new Vector4(1, 1, 1, 0.5f) : new Vector4(1, 1, 1, 0.3f);
 					//drawList.AddRectFilled(grabMin, grabMax, ImGui.ColorConvertFloat4ToU32(new Vector4(1, 1, 1, 0.3f)));
 					drawList.AddLine(lineA, lineB, ImGui.ColorConvertFloat4ToU32(lineColor), lineWidth);
 
@@ -209,8 +209,8 @@ public static partial class ImGuiWidgets
 					{
 						ImGui.SetMouseCursor(layout switch
 						{
-							DividerLayout.Columns => ImGuiMouseCursor.ResizeEW,
-							DividerLayout.Rows => ImGuiMouseCursor.ResizeNS,
+							DividerLayout.Columns => ImGuiMouseCursor.ResizeEw,
+							DividerLayout.Rows => ImGuiMouseCursor.ResizeNs,
 							_ => throw new NotImplementedException(),
 						});
 					}
@@ -227,12 +227,12 @@ public static partial class ImGuiWidgets
 					resize = Zones[DragIndex].InitialSize;
 				}
 
-				var resizedZone = Zones[DragIndex];
-				var neighbourZone = Zones[DragIndex + 1];
-				var combinedSize = resizedZone.Size + neighbourZone.Size;
-				var maxSize = combinedSize - 0.1f;
+				DividerZone resizedZone = Zones[DragIndex];
+				DividerZone neighbourZone = Zones[DragIndex + 1];
+				float combinedSize = resizedZone.Size + neighbourZone.Size;
+				float maxSize = combinedSize - 0.1f;
 				resize = Math.Clamp(resize, 0.1f, maxSize);
-				var sizeDidChange = resizedZone.Size != resize;
+				bool sizeDidChange = resizedZone.Size != resize;
 				resizedZone.Size = resize;
 				neighbourZone.Size = combinedSize - resize;
 				if (sizeDidChange)
@@ -249,10 +249,10 @@ public static partial class ImGuiWidgets
 
 		private Vector2 CalculateZoneSize(DividerZone z, Vector2 windowPadding, Vector2 containerSize, Vector2 layoutMask, Vector2 layoutMaskInverse)
 		{
-			var zoneSize = (containerSize * z.Size * layoutMask) + (containerSize * layoutMaskInverse);
+			Vector2 zoneSize = (containerSize * z.Size * layoutMask) + (containerSize * layoutMaskInverse);
 
-			var first = Zones.First();
-			var last = Zones.Last();
+			DividerZone first = Zones.First();
+			DividerZone last = Zones.Last();
 			if (first != last)
 			{
 				if (z == first || z == last)
@@ -270,10 +270,10 @@ public static partial class ImGuiWidgets
 
 		private Vector2 CalculateAdvance(DividerZone z, Vector2 windowPadding, Vector2 containerSize, Vector2 layoutMask)
 		{
-			var advance = containerSize * z.Size * layoutMask;
+			Vector2 advance = containerSize * z.Size * layoutMask;
 
-			var first = Zones.First();
-			var last = Zones.Last();
+			DividerZone first = Zones.First();
+			DividerZone last = Zones.Last();
 			if (first != last && z == first)
 			{
 				advance += windowPadding * 0.5f * layoutMask;
@@ -306,7 +306,7 @@ public static partial class ImGuiWidgets
 		/// <param name="tickDelegate">The delegate to call when the zone is ticked.</param>
 		public void Add(string id, Action<float> tickDelegate)
 		{
-			var size = 1.0f / (Zones.Count + 1);
+			float size = 1.0f / (Zones.Count + 1);
 			Zones.Add(new(id, size, tickDelegate));
 		}
 
@@ -322,7 +322,7 @@ public static partial class ImGuiWidgets
 		/// <param name="id">The ID of the zone to remove.</param>
 		public void Remove(string id)
 		{
-			var zone = Zones.FirstOrDefault(z => z.Id == id);
+			DividerZone? zone = Zones.FirstOrDefault(z => z.Id == id);
 			if (zone != null)
 			{
 				Zones.Remove(zone);
@@ -341,7 +341,7 @@ public static partial class ImGuiWidgets
 		/// <param name="size">The size to set.</param>
 		public void SetSize(string id, float size)
 		{
-			var zone = Zones.FirstOrDefault(z => z.Id == id);
+			DividerZone? zone = Zones.FirstOrDefault(z => z.Id == id);
 			if (zone != null)
 			{
 				zone.Size = size;
@@ -375,7 +375,7 @@ public static partial class ImGuiWidgets
 				throw new ArgumentException("List of sizes must be the same length as the zones list");
 			}
 
-			foreach (var (s, i) in sizes.WithIndex())
+			foreach ((float s, int i) in sizes.WithIndex())
 			{
 				Zones[i].Size = s;
 			}

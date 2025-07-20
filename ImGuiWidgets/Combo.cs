@@ -6,7 +6,7 @@ namespace ktsu.ImGuiWidgets;
 
 using System.Collections.ObjectModel;
 
-using ImGuiNET;
+using Hexa.NET.ImGui;
 
 using ktsu.StrongStrings;
 
@@ -21,9 +21,9 @@ public static partial class ImGuiWidgets
 	/// <returns>If a combo value was selected.</returns>
 	public static bool Combo<TEnum>(string label, ref TEnum selectedValue) where TEnum : Enum
 	{
-		var possibleValues = Enum.GetValues(typeof(TEnum));
-		var currentIndex = Array.IndexOf(possibleValues, selectedValue);
-		var possibleValuesNames = Enum.GetNames(typeof(TEnum));
+		Array possibleValues = Enum.GetValues(typeof(TEnum));
+		int currentIndex = Array.IndexOf(possibleValues, selectedValue);
+		string[] possibleValuesNames = Enum.GetNames(typeof(TEnum));
 		if (ImGui.Combo(label, ref currentIndex, possibleValuesNames, possibleValuesNames.Length))
 		{
 			selectedValue = (TEnum)possibleValues.GetValue(currentIndex)!;
@@ -45,7 +45,7 @@ public static partial class ImGuiWidgets
 	{
 		ArgumentNullException.ThrowIfNull(possibleValues);
 
-		var currentIndex = possibleValues.IndexOf(selectedValue);
+		int currentIndex = possibleValues.IndexOf(selectedValue);
 		string[] possibleValuesNames = [.. possibleValues.Select(e => e.ToString())];
 		if (ImGui.Combo(label, ref currentIndex, possibleValuesNames, possibleValuesNames.Length))
 		{
@@ -67,7 +67,7 @@ public static partial class ImGuiWidgets
 	{
 		ArgumentNullException.ThrowIfNull(possibleValues);
 
-		var currentIndex = possibleValues.IndexOf(selectedValue);
+		int currentIndex = possibleValues.IndexOf(selectedValue);
 		string[] possibleValuesNames = [.. possibleValues];
 		if (ImGui.Combo(label, ref currentIndex, possibleValuesNames, possibleValuesNames.Length))
 		{

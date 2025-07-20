@@ -12,7 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ImGui.NET" />
     <PackageReference Include="ktsu.Extensions" />
     <PackageReference Include="ktsu.CaseConverter" />
     <PackageReference Include="ktsu.FuzzySearch" />

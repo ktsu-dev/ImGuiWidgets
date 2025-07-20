@@ -6,7 +6,7 @@ namespace ktsu.ImGuiWidgets;
 
 using System.Numerics;
 
-using ImGuiNET;
+using Hexa.NET.ImGui;
 
 using ktsu.ImGuiStyler;
 
@@ -144,19 +144,19 @@ public static partial class ImGuiWidgets
 	/// <returns>The calculated size of the widget.</returns>
 	public static Vector2 CalcIconSize(string label, Vector2 imageSize, IconAlignment iconAlignment)
 	{
-		var style = ImGui.GetStyle();
-		var framePadding = style.FramePadding;
-		var itemSpacing = style.ItemSpacing;
-		var labelSize = ImGui.CalcTextSize(label);
+		ImGuiStylePtr style = ImGui.GetStyle();
+		Vector2 framePadding = style.FramePadding;
+		Vector2 itemSpacing = style.ItemSpacing;
+		Vector2 labelSize = ImGui.CalcTextSize(label);
 		if (iconAlignment == IconAlignment.Horizontal)
 		{
-			var boundingBoxSize = imageSize + new Vector2(labelSize.X + itemSpacing.X, 0);
+			Vector2 boundingBoxSize = imageSize + new Vector2(labelSize.X + itemSpacing.X, 0);
 			boundingBoxSize.Y = Math.Max(boundingBoxSize.Y, labelSize.Y);
 			return boundingBoxSize + (framePadding * 2);
 		}
 		else if (iconAlignment == IconAlignment.Vertical)
 		{
-			var boundingBoxSize = imageSize + new Vector2(0, labelSize.Y + itemSpacing.Y);
+			Vector2 boundingBoxSize = imageSize + new Vector2(0, labelSize.Y + itemSpacing.Y);
 			boundingBoxSize.X = Math.Max(boundingBoxSize.X, labelSize.X);
 			return boundingBoxSize + (framePadding * 2);
 		}
@@ -174,17 +174,17 @@ public static partial class ImGuiWidgets
 			ArgumentNullException.ThrowIfNull(label);
 			ArgumentNullException.ThrowIfNull(options);
 
-			var wasClicked = false;
+			bool wasClicked = false;
 
-			var style = ImGui.GetStyle();
-			var framePadding = style.FramePadding;
-			var itemSpacing = style.ItemSpacing;
+			ImGuiStylePtr style = ImGui.GetStyle();
+			Vector2 framePadding = style.FramePadding;
+			Vector2 itemSpacing = style.ItemSpacing;
 
 			ImGui.PushID(label);
 
-			var cursorStartPos = ImGui.GetCursorScreenPos();
-			var labelSize = ImGui.CalcTextSize(label);// TODO, maybe pass this to an internal overload of CalcIconSize to save recalculating
-			var boundingBoxSize = CalcIconSize(label, imageSize, iconAlignment);
+			Vector2 cursorStartPos = ImGui.GetCursorScreenPos();
+			Vector2 labelSize = ImGui.CalcTextSize(label);// TODO, maybe pass this to an internal overload of CalcIconSize to save recalculating
+			Vector2 boundingBoxSize = CalcIconSize(label, imageSize, iconAlignment);
 
 			ImGui.SetCursorScreenPos(cursorStartPos + framePadding);
 
@@ -202,11 +202,11 @@ public static partial class ImGuiWidgets
 
 			ImGui.SetCursorScreenPos(cursorStartPos);
 			ImGui.Dummy(boundingBoxSize);
-			var isHovered = ImGui.IsItemHovered();
-			var isMouseClicked = ImGui.IsMouseClicked(ImGuiMouseButton.Left);
-			var isMouseDoubleClicked = ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left);
-			var isRightMouseClicked = ImGui.IsMouseClicked(ImGuiMouseButton.Right);
-			var isRightMouseReleased = ImGui.IsMouseReleased(ImGuiMouseButton.Right);
+			bool isHovered = ImGui.IsItemHovered();
+			bool isMouseClicked = ImGui.IsMouseClicked(ImGuiMouseButton.Left);
+			bool isMouseDoubleClicked = ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left);
+			bool isRightMouseClicked = ImGui.IsMouseClicked(ImGuiMouseButton.Right);
+			bool isRightMouseReleased = ImGui.IsMouseReleased(ImGuiMouseButton.Right);
 
 			if (!string.IsNullOrEmpty(options.Tooltip))
 			{
@@ -215,8 +215,8 @@ public static partial class ImGuiWidgets
 
 			if (isHovered || EnableIconDebugDraw)
 			{
-				var borderColor = ImGui.GetColorU32(ImGui.GetStyle().Colors[(int)ImGuiCol.Border]);
-				var drawList = ImGui.GetWindowDrawList();
+				uint borderColor = ImGui.GetColorU32(ImGui.GetStyle().Colors[(int)ImGuiCol.Border]);
+				ImDrawListPtr drawList = ImGui.GetWindowDrawList();
 				drawList.AddRect(cursorStartPos, cursorStartPos + boundingBoxSize, ImGui.GetColorU32(borderColor));
 			}
 
@@ -255,21 +255,43 @@ public static partial class ImGuiWidgets
 			return wasClicked;
 		}
 
-		private static void VerticalLayout(string label, uint textureId, Vector2 imageSize, Vector2 labelSize, Vector2 boundingBoxSize, Vector2 itemSpacing, Vector4 color, Vector2 cursorStartPos)
+		private static void VerticalLayout(string label, uint textureId, Vector2 imageSize, Vector2 labelSize, Vector2 boundingBoxSize, Vector2 itemSpacing, Vector4 color = default, Vector2 cursorStartPos = default)
 		{
-			var imageTopLeft = cursorStartPos + new Vector2((boundingBoxSize.X - imageSize.X) / 2, 0);
+			Vector2 imageTopLeft = cursorStartPos + new Vector2((boundingBoxSize.X - imageSize.X) / 2, 0);
 			ImGui.SetCursorScreenPos(imageTopLeft);
-			ImGui.Image((nint)textureId, imageSize, Vector2.Zero, Vector2.One, color);
+			unsafe
+			{
+				if (color != default)
+				{
+					// Use transparent background with color as tint to preserve alpha
+					ImGui.ImageWithBg(new ImTextureRef(texId: textureId), imageSize, Vector4.Zero, color);
+				}
+				else
+				{
+					ImGui.Image(new ImTextureRef(texId: textureId), imageSize);
+				}
+			}
 
-			var labelTopLeft = cursorStartPos + new Vector2((boundingBoxSize.X - labelSize.X) / 2, imageSize.Y + itemSpacing.Y);
+			Vector2 labelTopLeft = cursorStartPos + new Vector2((boundingBoxSize.X - labelSize.X) / 2, imageSize.Y + itemSpacing.Y);
 			ImGui.SetCursorScreenPos(labelTopLeft);
 			ImGui.TextUnformatted(label);
 		}
 
-		private static void HorizontalLayout(string label, uint textureId, Vector2 imageSize, Vector2 labelSize, Vector2 boundingBoxSize, Vector2 itemSpacing, Vector4 color, Vector2 cursorStartPos)
+		private static void HorizontalLayout(string label, uint textureId, Vector2 imageSize, Vector2 labelSize, Vector2 boundingBoxSize, Vector2 itemSpacing, Vector4 color = default, Vector2 cursorStartPos = default)
 		{
-			ImGui.Image((nint)textureId, imageSize, Vector2.Zero, Vector2.One, color);
-			var leftAlign = new Vector2(labelSize.X, boundingBoxSize.Y);
+			unsafe
+			{
+				if (color != default)
+				{
+					// Use transparent background with color as tint to preserve alpha
+					ImGui.ImageWithBg(new ImTextureRef(texId: textureId), imageSize, Vector4.Zero, color);
+				}
+				else
+				{
+					ImGui.Image(new ImTextureRef(texId: textureId), imageSize);
+				}
+			}
+			Vector2 leftAlign = new(labelSize.X, boundingBoxSize.Y);
 			ImGui.SetCursorScreenPos(cursorStartPos + new Vector2(imageSize.X + itemSpacing.X, 0));
 			using (new Alignment.CenterWithin(labelSize, leftAlign))
 			{

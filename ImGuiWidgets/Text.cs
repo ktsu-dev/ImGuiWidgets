@@ -6,7 +6,7 @@ namespace ktsu.ImGuiWidgets;
 
 using System.Numerics;
 
-using ImGuiNET;
+using Hexa.NET.ImGui;
 
 using ktsu.ImGuiStyler;
 
@@ -48,7 +48,7 @@ public static partial class ImGuiWidgets
 		/// <param name="text">The text to display.</param>
 		public static void Centered(string text)
 		{
-			var textSize = ImGui.CalcTextSize(text);
+			Vector2 textSize = ImGui.CalcTextSize(text);
 			using (new Alignment.Center(textSize))
 			{
 				ImGui.TextUnformatted(text);
@@ -75,7 +75,7 @@ public static partial class ImGuiWidgets
 				text = Clip(text, containerSize);
 			}
 
-			var textSize = ImGui.CalcTextSize(text);
+			Vector2 textSize = ImGui.CalcTextSize(text);
 			using (new Alignment.CenterWithin(textSize, containerSize))
 			{
 				ImGui.TextUnformatted(text);
@@ -90,14 +90,14 @@ public static partial class ImGuiWidgets
 		/// <returns>The clipped text with an ellipsis if it exceeds the container size.</returns>
 		public static string Clip(string text, Vector2 containerSize)
 		{
-			var textWidth = ImGui.CalcTextSize(text).X;
+			float textWidth = ImGui.CalcTextSize(text).X;
 			if (textWidth <= containerSize.X)
 			{
 				return text;
 			}
 
-			var ellipsis = "...";
-			var ellipsisWidth = ImGui.CalcTextSize(ellipsis).X;
+			string ellipsis = "...";
+			float ellipsisWidth = ImGui.CalcTextSize(ellipsis).X;
 
 			while (textWidth + ellipsisWidth > containerSize.X && text.Length > 0)
 			{

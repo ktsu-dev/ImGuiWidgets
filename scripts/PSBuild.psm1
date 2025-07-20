@@ -48,7 +48,7 @@ function Get-BuildConfiguration {
     .PARAMETER GithubToken
         The GitHub token for API operations.
     .PARAMETER NuGetApiKey
-        The NuGet API key for package publishing.
+        The NuGet API key for package publishing. Optional - if not provided or empty, NuGet publishing will be skipped.
     .PARAMETER WorkspacePath
         The path to the workspace/repository root.
     .PARAMETER ExpectedOwner
@@ -77,8 +77,9 @@ function Get-BuildConfiguration {
         [string]$GitHubRepo,
         [Parameter(Mandatory=$true)]
         [string]$GithubToken,
-        [Parameter(Mandatory=$true)]
-        [string]$NuGetApiKey,
+        [Parameter(Mandatory=$false)]
+        [AllowEmptyString()]
+        [string]$NuGetApiKey = "",
         [Parameter(Mandatory=$true)]
         [string]$WorkspacePath,
         [Parameter(Mandatory=$true)]
@@ -131,7 +132,10 @@ function Get-BuildConfiguration {
     $APPLICATION_PATTERN = Join-Path $STAGING_PATH "*.zip"
 
     # Set build arguments
-    $BUILD_ARGS = $USE_DOTNET_SCRIPT ? "-maxCpuCount:1" : ""
+    $BUILD_ARGS = ""
+    if ($USE_DOTNET_SCRIPT) {
+        $BUILD_ARGS = "-maxCpuCount:1"
+    }
 
     # Create configuration object with standard format
     $config = [PSCustomObject]@{
@@ -1167,6 +1171,25 @@ function New-Changelog {
     # Write latest version's changelog to separate file for GitHub releases
     $latestPath = if ($OutputPath) { Join-Path $OutputPath $LatestChangelogFile } else { $LatestChangelogFile }
     $latestVersionNotes = $latestVersionNotes.ReplaceLineEndings($script:lineEnding)
+    
+    # Truncate release notes if they exceed NuGet's 35,000 character limit
+    $maxLength = 35000
+    if ($latestVersionNotes.Length -gt $maxLength) {
+        Write-Information "Release notes exceed $maxLength characters ($($latestVersionNotes.Length)). Truncating to fit NuGet limit." -Tags "New-Changelog"
+        $truncationMessage = "$script:lineEnding$script:lineEnding... (truncated due to NuGet length limits)"
+        $targetLength = $maxLength - $truncationMessage.Length - 10  # Extra buffer for safety
+        $truncatedNotes = $latestVersionNotes.Substring(0, $targetLength)
+        $truncatedNotes += $truncationMessage
+        $latestVersionNotes = $truncatedNotes
+        Write-Information "Truncated release notes to $($latestVersionNotes.Length) characters" -Tags "New-Changelog"
+        
+        # Final safety check - ensure we never exceed the limit
+        if ($latestVersionNotes.Length -gt $maxLength) {
+            Write-Warning "Truncated release notes still exceed limit ($($latestVersionNotes.Length) > $maxLength). Further truncating..." -Tags "New-Changelog"
+            $latestVersionNotes = $latestVersionNotes.Substring(0, $maxLength - 50) + "... (truncated)"
+        }
+    }
+    
     [System.IO.File]::WriteAllText($latestPath, $latestVersionNotes, [System.Text.UTF8Encoding]::new($false)) | Write-InformationStream -Tags "New-Changelog"
     Write-Information "Latest version changelog saved to: $latestPath" -Tags "New-Changelog"
 
@@ -1267,12 +1290,19 @@ function Update-ProjectMetadata {
             "PROJECT_URL.url",
             "AUTHORS.url"
         )
+        
+        # Add latest changelog if it exists
+        if (Test-Path $BuildConfiguration.LatestChangelogFile) {
+            $filesToAdd += $BuildConfiguration.LatestChangelogFile
+        }
         Write-Information "Files to add: $($filesToAdd -join ", ")" -Tags "Update-ProjectMetadata"
         "git add $filesToAdd" | Invoke-ExpressionWithLogging | Write-InformationStream -Tags "Update-ProjectMetadata"
 
         Write-Information "Checking for changes to commit..." -Tags "Update-ProjectMetadata"
-        $postStatus = "git status --porcelain" | Invoke-ExpressionWithLogging
-        Write-Information "Git status: $($postStatus ? 'Changes detected' : 'No changes')" -Tags "Update-ProjectMetadata"
+        $postStatus = "git status --porcelain" | Invoke-ExpressionWithLogging -Tags "Update-ProjectMetadata" | Out-String
+        $hasChanges = -not [string]::IsNullOrWhiteSpace($postStatus)
+        $statusMessage = if ($hasChanges) { 'Changes detected' } else { 'No changes' }
+        Write-Information "Git status: $statusMessage" -Tags "Update-ProjectMetadata"
 
         # Get the current commit hash regardless of whether we make changes
         $currentHash = "git rev-parse HEAD" | Invoke-ExpressionWithLogging
@@ -1413,11 +1443,11 @@ function Invoke-DotNetBuild {
 function Invoke-DotNetTest {
     <#
     .SYNOPSIS
-        Runs unit tests.
+        Runs dotnet test with code coverage collection.
     .DESCRIPTION
         Runs dotnet test with code coverage collection.
     .PARAMETER Configuration
-        The build configuration (Debug/Release).
+        The build configuration to use.
     .PARAMETER CoverageOutputPath
         The path to output code coverage results.
     #>
@@ -1427,11 +1457,26 @@ function Invoke-DotNetTest {
         [string]$CoverageOutputPath = "coverage"
     )
 
-    Write-StepHeader "Running Tests" -Tags "Invoke-DotNetTest"
+    Write-StepHeader "Running Tests with Coverage" -Tags "Invoke-DotNetTest"
 
-    # Execute command and stream output directly to console
-    "dotnet test -m:1 --configuration $Configuration -logger:`"Microsoft.Build.Logging.ConsoleLogger,Microsoft.Build;Summary;ForceNoAlign;ShowTimestamp;ShowCommandLine;Verbosity=quiet`" --no-build --collect:`"XPlat Code Coverage`" --results-directory $CoverageOutputPath" | Invoke-ExpressionWithLogging | Write-InformationStream -Tags "Invoke-DotNetTest"
+    # Ensure the TestResults directory exists
+    $testResultsPath = Join-Path $CoverageOutputPath "TestResults"
+    New-Item -Path $testResultsPath -ItemType Directory -Force | Out-Null
+
+    # Run tests with both coverage collection and TRX logging for SonarQube
+    "dotnet test --configuration $Configuration /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=`"coverage.opencover.xml`" --results-directory `"$testResultsPath`" --logger `"trx;LogFileName=TestResults.trx`"" | Invoke-ExpressionWithLogging | Write-InformationStream -Tags "Invoke-DotNetTest"
     Assert-LastExitCode "Tests failed"
+
+    # Find and copy coverage file to expected location for SonarQube
+    $coverageFiles = @(Get-ChildItem -Path . -Recurse -Filter "coverage.opencover.xml" -ErrorAction SilentlyContinue)
+    if ($coverageFiles.Count -gt 0) {
+        $latestCoverageFile = $coverageFiles | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+        $targetCoverageFile = Join-Path $CoverageOutputPath "coverage.opencover.xml"
+        Copy-Item -Path $latestCoverageFile.FullName -Destination $targetCoverageFile -Force
+        Write-Information "Coverage file copied to: $targetCoverageFile" -Tags "Invoke-DotNetTest"
+    } else {
+        Write-Information "Warning: No coverage file found" -Tags "Invoke-DotNetTest"
+    }
 }
 
 function Invoke-DotNetPack {
@@ -1446,13 +1491,16 @@ function Invoke-DotNetPack {
         The path to output packages to.
     .PARAMETER Project
         Optional specific project to package. If not provided, all projects are packaged.
+    .PARAMETER LatestChangelogFile
+        Optional path to the latest changelog file to use for PackageReleaseNotes. Defaults to "LATEST_CHANGELOG.md".
     #>
     [CmdletBinding()]
     param (
         [string]$Configuration = "Release",
         [Parameter(Mandatory=$true)]
         [string]$OutputPath,
-        [string]$Project = ""
+        [string]$Project = "",
+        [string]$LatestChangelogFile = "LATEST_CHANGELOG.md"
     )
 
     Write-StepHeader "Packaging Libraries" -Tags "Invoke-DotNetPack"
@@ -1468,19 +1516,37 @@ function Invoke-DotNetPack {
     }
 
     try {
+        # Override PackageReleaseNotes to use LATEST_CHANGELOG.md instead of full CHANGELOG.md
+        # The updated SDK will automatically handle truncation if the content is too long
+        $releaseNotesProperty = ""
+        
+        if (Test-Path $LatestChangelogFile) {
+            # Read the latest changelog content
+            $fileContent = [System.IO.File]::ReadAllText($LatestChangelogFile)
+            Write-Information "Using release notes from $LatestChangelogFile ($($fileContent.Length) characters)" -Tags "Invoke-DotNetPack"
+            
+            # Escape quotes for MSBuild property
+            $escapedContent = $fileContent.Replace('"', '\"')
+            $releaseNotesProperty = "-p:PackageReleaseNotes=`"$escapedContent`""
+            Write-Information "Overriding PackageReleaseNotes with latest changelog content" -Tags "Invoke-DotNetPack"
+        } else {
+            Write-Information "No latest changelog found, SDK will use full CHANGELOG.md (automatically truncated if needed)" -Tags "Invoke-DotNetPack"
+        }
+
         # Build either a specific project or all projects
         if ([string]::IsNullOrWhiteSpace($Project)) {
             Write-Information "Packaging all projects in solution..." -Tags "Invoke-DotNetPack"
-            "dotnet pack --configuration $Configuration -logger:`"Microsoft.Build.Logging.ConsoleLogger,Microsoft.Build;Summary;ForceNoAlign;ShowTimestamp;ShowCommandLine;Verbosity=quiet`" --no-build --output $OutputPath" | Invoke-ExpressionWithLogging | Write-InformationStream -Tags "Invoke-DotNetPack"
+            "dotnet pack --configuration $Configuration -logger:`"Microsoft.Build.Logging.ConsoleLogger,Microsoft.Build;Summary;ForceNoAlign;ShowTimestamp;ShowCommandLine;Verbosity=quiet`" --no-build --output $OutputPath $releaseNotesProperty" | Invoke-ExpressionWithLogging | Write-InformationStream -Tags "Invoke-DotNetPack"
         } else {
             Write-Information "Packaging project: $Project" -Tags "Invoke-DotNetPack"
-            "dotnet pack $Project --configuration $Configuration -logger:`"Microsoft.Build.Logging.ConsoleLogger,Microsoft.Build;Summary;ForceNoAlign;ShowTimestamp;ShowCommandLine;Verbosity=quiet`" --no-build --output $OutputPath" | Invoke-ExpressionWithLogging | Write-InformationStream -Tags "Invoke-DotNetPack"
+            "dotnet pack $Project --configuration $Configuration -logger:`"Microsoft.Build.Logging.ConsoleLogger,Microsoft.Build;Summary;ForceNoAlign;ShowTimestamp;ShowCommandLine;Verbosity=quiet`" --no-build --output $OutputPath $releaseNotesProperty" | Invoke-ExpressionWithLogging | Write-InformationStream -Tags "Invoke-DotNetPack"
         }
 
         if ($LASTEXITCODE -ne 0) {
             # Get more details about what might have failed
             Write-Information "Packaging failed with exit code $LASTEXITCODE, trying again with detailed verbosity..." -Tags "Invoke-DotNetPack"
-            "dotnet pack --configuration $Configuration -logger:`"Microsoft.Build.Logging.ConsoleLogger,Microsoft.Build;Summary;ForceNoAlign;ShowTimestamp;ShowCommandLine;Verbosity=detailed`" --no-build --output $OutputPath" | Invoke-ExpressionWithLogging | Write-InformationStream -Tags "Invoke-DotNetPack"
+            "dotnet pack --configuration $Configuration -logger:`"Microsoft.Build.Logging.ConsoleLogger,Microsoft.Build;Summary;ForceNoAlign;ShowTimestamp;ShowCommandLine;Verbosity=detailed`" --no-build --output $OutputPath $releaseNotesProperty" | Invoke-ExpressionWithLogging | Write-InformationStream -Tags "Invoke-DotNetPack"
+            
             throw "Library packaging failed with exit code $LASTEXITCODE"
         }
 
@@ -1608,33 +1674,6 @@ function Invoke-DotNetPublish {
     } else {
         Write-Information "No applications were published (projects may not be configured as executables)" -Tags "Invoke-DotNetPublish"
     }
-
-    # Publish packages if we have any and NuGet key is provided AND this is a release build
-    $packages = @(Get-Item -Path $BuildConfiguration.PackagePattern -ErrorAction SilentlyContinue)
-    if ($packages.Count -gt 0 -and -not [string]::IsNullOrWhiteSpace($BuildConfiguration.NuGetApiKey) -and $BuildConfiguration.ShouldRelease) {
-        Write-StepHeader "Publishing NuGet Packages" -Tags "Invoke-NuGetPublish"
-        try {
-            Invoke-NuGetPublish -BuildConfiguration $BuildConfiguration | Write-InformationStream -Tags "Invoke-NuGetPublish"
-        }
-        catch {
-            Write-Information "NuGet package publishing failed: $_" -Tags "Invoke-NuGetPublish"
-            Write-Information "Continuing with release process." -Tags "Invoke-NuGetPublish"
-        }
-    } elseif ($packages.Count -gt 0 -and -not $BuildConfiguration.ShouldRelease) {
-        Write-Information "Packages found but skipping publication (not a release build: ShouldRelease=$($BuildConfiguration.ShouldRelease))" -Tags "Invoke-DotNetPublish"
-    }
-
-    Write-StepHeader "Release Process Completed" -Tags "Invoke-ReleaseWorkflow"
-    Write-Information "Release process completed successfully!" -Tags "Invoke-ReleaseWorkflow"
-    return [PSCustomObject]@{
-        Success = $true
-        Error = ""
-        Data = [PSCustomObject]@{
-            Version = $BuildConfiguration.Version
-            ReleaseHash = $BuildConfiguration.ReleaseHash
-            PackagePaths = @()
-        }
-    }
 }
 
 #endregion
@@ -1675,11 +1714,16 @@ function Invoke-NuGetPublish {
     "dotnet nuget push `"$($BuildConfiguration.PackagePattern)`" --api-key `"$($BuildConfiguration.GithubToken)`" --source `"https://nuget.pkg.github.com/$($BuildConfiguration.GithubOwner)/index.json`" --skip-duplicate" | Invoke-ExpressionWithLogging | Write-InformationStream -Tags "Invoke-NuGetPublish"
     Assert-LastExitCode "GitHub package publish failed"
 
-    Write-StepHeader "Publishing to NuGet.org" -Tags "Invoke-NuGetPublish"
+    # Only publish to NuGet.org if API key is provided
+    if (-not [string]::IsNullOrWhiteSpace($BuildConfiguration.NuGetApiKey)) {
+        Write-StepHeader "Publishing to NuGet.org" -Tags "Invoke-NuGetPublish"
 
-    # Execute the command and stream output
-    "dotnet nuget push `"$($BuildConfiguration.PackagePattern)`" --api-key `"$($BuildConfiguration.NuGetApiKey)`" --source `"https://api.nuget.org/v3/index.json`" --skip-duplicate" | Invoke-ExpressionWithLogging | Write-InformationStream -Tags "Invoke-NuGetPublish"
-    Assert-LastExitCode "NuGet.org package publish failed"
+        # Execute the command and stream output
+        "dotnet nuget push `"$($BuildConfiguration.PackagePattern)`" --api-key `"$($BuildConfiguration.NuGetApiKey)`" --source `"https://api.nuget.org/v3/index.json`" --skip-duplicate" | Invoke-ExpressionWithLogging | Write-InformationStream -Tags "Invoke-NuGetPublish"
+        Assert-LastExitCode "NuGet.org package publish failed"
+    } else {
+        Write-Information "Skipping NuGet.org publishing - no API key provided" -Tags "Invoke-NuGetPublish"
+    }
 }
 
 function New-GitHubRelease {
@@ -2150,8 +2194,8 @@ function Invoke-ReleaseWorkflow {
 
         # Create NuGet packages
         try {
-            Write-StepHeader "Packaging Libraries" -Tags "Invoke-DotNetPack"
-            Invoke-DotNetPack -Configuration $Configuration -OutputPath $BuildConfiguration.StagingPath | Write-InformationStream -Tags "Invoke-DotNetPack"
+                    Write-StepHeader "Packaging Libraries" -Tags "Invoke-DotNetPack"
+        Invoke-DotNetPack -Configuration $Configuration -OutputPath $BuildConfiguration.StagingPath -LatestChangelogFile $BuildConfiguration.LatestChangelogFile | Write-InformationStream -Tags "Invoke-DotNetPack"
 
             # Add package paths if they exist
             if (Test-Path $BuildConfiguration.PackagePattern) {

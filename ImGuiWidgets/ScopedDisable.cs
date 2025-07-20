@@ -4,7 +4,7 @@
 
 namespace ktsu.ImGuiWidgets;
 
-using ImGuiNET;
+using Hexa.NET.ImGui;
 
 using ScopedAction;
 

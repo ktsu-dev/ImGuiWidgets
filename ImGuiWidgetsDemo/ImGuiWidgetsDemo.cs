@@ -6,7 +6,7 @@ namespace ktsu.ImGuiWidgetsDemo;
 
 using System.Collections.ObjectModel;
 using System.Numerics;
-using ImGuiNET;
+using Hexa.NET.ImGui;
 using ktsu.Extensions;
 using ktsu.ImGuiApp;
 using ktsu.ImGuiPopups;
@@ -37,37 +37,43 @@ public enum EnumValues
 	ValueIII,
 }
 
-internal class ImGuiWidgetsDemo
+internal static class ImGuiWidgetsDemo
 {
 	private static void Main()
 	{
-		ImGuiWidgetsDemo imGuiWidgetsDemo = new();
-		ImGuiApp.Start(nameof(ImGuiWidgetsDemo), new ImGuiAppWindowState(), imGuiWidgetsDemo.OnStart, imGuiWidgetsDemo.OnTick, imGuiWidgetsDemo.OnMenu, imGuiWidgetsDemo.OnWindowResized);
+		ImGuiApp.Start(new()
+		{
+			Title = "ImGuiWIdgets Demo",
+			OnStart = OnStart,
+			OnAppMenu = OnAppMenu,
+			OnMoveOrResize = OnMoveOrResize,
+			OnRender = OnRender,
+		});
 	}
 
 	private static float value = 0.5f;
-	private float tab2Value = 0.5f;
+	private static float tab2Value = 0.5f;
 
-	private ImGuiWidgets.DividerContainer DividerContainer { get; } = new("DemoDividerContainer");
-	private ImGuiPopups.MessageOK MessageOK { get; } = new();
-	private ImGuiWidgets.TabPanel DemoTabPanel { get; } = new("DemoTabPanel", true, true);
-	private Dictionary<string, string> TabIds { get; } = [];
-	private int NextDynamicTabId { get; set; } = 1;
+	private static ImGuiWidgets.DividerContainer DividerContainer { get; } = new("DemoDividerContainer");
+	private static ImGuiPopups.MessageOK MessageOK { get; } = new();
+	private static ImGuiWidgets.TabPanel DemoTabPanel { get; } = new("DemoTabPanel", true, true);
+	private static Dictionary<string, string> TabIds { get; } = [];
+	private static int NextDynamicTabId { get; set; } = 1;
 
-	private List<string> GridStrings { get; } = [];
+	private static List<string> GridStrings { get; } = [];
 	private static int InitialGridItemCount { get; } = 32;
-	private int GridItemsToShow { get; set; } = InitialGridItemCount;
-	private float GridHeight { get; set; } = 500f;
-	private ImGuiWidgets.GridOrder GridOrder { get; set; } = ImGuiWidgets.GridOrder.RowMajor;
-	private ImGuiWidgets.IconAlignment GridIconAlignment { get; set; } = ImGuiWidgets.IconAlignment.Vertical;
-	private bool GridIconSizeBig { get; set; } = true;
-	private bool GridIconCenterWithinCell { get; set; } = true;
-	private bool GridFitToContents { get; set; }
-	private EnumValues selectedEnumValue = EnumValues.Value1;
-	private string selectedStringValue = "Hello";
-	private readonly Collection<string> possibleStringValues = ["Hello", "World", "Goodbye"];
-	private StrongStringExample selectedStrongString = "Strong Hello".As<StrongStringExample>();
-	private readonly Collection<StrongStringExample> possibleStrongStringValues = ["Strong Hello".As<StrongStringExample>(),
+	private static int GridItemsToShow { get; set; } = InitialGridItemCount;
+	private static float GridHeight { get; set; } = 500f;
+	private static ImGuiWidgets.GridOrder GridOrder { get; set; } = ImGuiWidgets.GridOrder.RowMajor;
+	private static ImGuiWidgets.IconAlignment GridIconAlignment { get; set; } = ImGuiWidgets.IconAlignment.Vertical;
+	private static bool GridIconSizeBig { get; set; } = true;
+	private static bool GridIconCenterWithinCell { get; set; } = true;
+	private static bool GridFitToContents { get; set; }
+	private static EnumValues selectedEnumValue = EnumValues.Value1;
+	private static string selectedStringValue = "Hello";
+	private static readonly Collection<string> possibleStringValues = ["Hello", "World", "Goodbye"];
+	private static StrongStringExample selectedStrongString = "Strong Hello".As<StrongStringExample>();
+	private static readonly Collection<StrongStringExample> possibleStrongStringValues = ["Strong Hello".As<StrongStringExample>(),
 		 "Strong World".As<StrongStringExample>(), "Strong Goodbye".As<StrongStringExample>()];
 
 	// Static fields for SearchBox filter persistence
@@ -90,7 +96,7 @@ internal class ImGuiWidgetsDemo
 	private static TextFilterMatchOptions RegexMatchOptions = TextFilterMatchOptions.ByWholeString;
 
 #pragma warning disable CA5394 //Do not use insecure randomness
-	private void OnStart()
+	private static void OnStart()
 	{
 		DividerContainer.Add(new("Left", 0.25f, ShowLeftPanel));
 		DividerContainer.Add(new("Right", 0.75f, ShowRightPanel));
@@ -100,11 +106,11 @@ internal class ImGuiWidgetsDemo
 		TabIds["tab2"] = DemoTabPanel.AddTab("tab2", "Tab 2", ShowTab2Content);
 		TabIds["tab3"] = DemoTabPanel.AddTab("tab3", "Tab 3", ShowTab3Content);
 
-		for (var i = 0; i < InitialGridItemCount; i++)
+		for (int i = 0; i < InitialGridItemCount; i++)
 		{
-			var randomString = $"{i}:";
-			var randomAmount = new Random().Next(2, 32);
-			for (var j = 0; j < randomAmount; j++)
+			string randomString = $"{i}:";
+			int randomAmount = new Random().Next(2, 32);
+			for (int j = 0; j < randomAmount; j++)
 			{
 				randomString += (char)new Random().Next(32, 127);
 			}
@@ -114,20 +120,20 @@ internal class ImGuiWidgetsDemo
 	}
 #pragma warning restore CA5394 //Do not use insecure randomness
 
-	private void OnTick(float dt) => DividerContainer.Tick(dt);
+	private static void OnRender(float dt) => DividerContainer.Tick(dt);
 
-	private void OnMenu()
+	private static void OnAppMenu()
 	{
 		// Method intentionally left empty.
 	}
 
-	private void OnWindowResized()
+	private static void OnMoveOrResize()
 	{
 		// Method intentionally left empty.
 	}
 
 	[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0063:Use simple 'using' statement", Justification = "<Pending>")]
-	private void ShowLeftPanel(float size)
+	private static void ShowLeftPanel(float size)
 	{
 		ImGui.TextUnformatted("Left Divider Zone");
 
@@ -158,8 +164,8 @@ internal class ImGuiWidgetsDemo
 		{
 			ImGui.SeparatorText("Disabled");
 
-			var value = true;
-			var currentItem = 0;
+			bool value = true;
+			int currentItem = 0;
 			string[] items = ["Item 1", "Item 2", "Item 3"];
 
 			ImGui.Checkbox("Disabled Checkbox", ref value);
@@ -167,14 +173,14 @@ internal class ImGuiWidgetsDemo
 		}
 
 		ImGui.SeparatorText("Tree");
-		using (var tree = new ImGuiWidgets.Tree())
+		using (ImGuiWidgets.Tree tree = new())
 		{
-			for (var i = 0; i < 5; i++)
+			for (int i = 0; i < 5; i++)
 			{
 				using (tree.Child)
 				{
 					ImGui.Button($"Hello, Child {i}!");
-					using (var subtree = new ImGuiWidgets.Tree())
+					using (ImGuiWidgets.Tree subtree = new())
 					{
 						using (subtree.Child)
 						{
@@ -186,10 +192,10 @@ internal class ImGuiWidgetsDemo
 		}
 	}
 
-	private void ShowRightPanel(float size)
+	private static void ShowRightPanel(float size)
 	{
-		var ktsuIconPath = (AbsoluteDirectoryPath)Environment.CurrentDirectory / (FileName)"ktsu.png";
-		var ktsuTexture = ImGuiApp.GetOrLoadTexture(ktsuIconPath);
+		AbsoluteFilePath ktsuIconPath = (AbsoluteDirectoryPath)Environment.CurrentDirectory / (FileName)"ktsu.png";
+		ImGuiAppTextureInfo ktsuTexture = ImGuiApp.GetOrLoadTexture(ktsuIconPath);
 
 		ImGui.TextUnformatted("Right Divider Zone");
 
@@ -202,7 +208,7 @@ internal class ImGuiWidgetsDemo
 		MessageOK.ShowIfOpen();
 	}
 
-	private void ShowTabPanelDemo()
+	private static void ShowTabPanelDemo()
 	{
 		ImGui.SeparatorText("TabPanel Demo");
 
@@ -223,9 +229,9 @@ internal class ImGuiWidgetsDemo
 
 		if (ImGui.Button("Add New Tab"))
 		{
-			var tabIndex = NextDynamicTabId++;
-			var tabKey = $"dynamic{tabIndex}";
-			var tabId = $"dyntab_{tabIndex}";
+			int tabIndex = NextDynamicTabId++;
+			string tabKey = $"dynamic{tabIndex}";
+			string tabId = $"dyntab_{tabIndex}";
 			TabIds[tabKey] = DemoTabPanel.AddTab(tabId, $"Extra Tab {tabIndex}", () => ShowDynamicTabContent(tabIndex));
 		}
 
@@ -235,19 +241,19 @@ internal class ImGuiWidgetsDemo
 		ImGui.Separator();
 	}
 
-	private void ShowImageDemo(ImGuiAppTextureInfo ktsuTexture)
+	private static void ShowImageDemo(ImGuiAppTextureInfo ktsuTexture)
 	{
 		if (ImGuiWidgets.Image(ktsuTexture.TextureId, new Vector2(128, 128)))
 		{
 			MessageOK.Open("Click", "You chose the image");
 		}
 
-		var iconWidthEms = 7.5f;
-		var tilePaddingEms = 0.5f;
+		float iconWidthEms = 7.5f;
+		float tilePaddingEms = 0.5f;
 		float iconWidthPx = ImGuiApp.EmsToPx(iconWidthEms);
 		float tilePaddingPx = ImGuiApp.EmsToPx(tilePaddingEms);
 
-		var iconSize = new Vector2(iconWidthPx, iconWidthPx);
+		Vector2 iconSize = new(iconWidthPx, iconWidthPx);
 
 		ImGuiWidgets.Icon("Click Me", ktsuTexture.TextureId, iconWidthPx, ImGuiWidgets.IconAlignment.Vertical,
 			new ImGuiWidgets.IconOptions()
@@ -282,30 +288,30 @@ internal class ImGuiWidgetsDemo
 		ImGui.NewLine();
 	}
 
-	private void ShowGridSettings()
+	private static void ShowGridSettings()
 	{
 		if (ImGui.CollapsingHeader("Grid Settings"))
 		{
-			var showGridDebug = ImGuiWidgets.EnableGridDebugDraw;
+			bool showGridDebug = ImGuiWidgets.EnableGridDebugDraw;
 			if (ImGui.Checkbox("Show Grid Debug", ref showGridDebug))
 			{
 				ImGuiWidgets.EnableGridDebugDraw = showGridDebug;
 			}
 
-			var showIconDebug = ImGuiWidgets.EnableIconDebugDraw;
+			bool showIconDebug = ImGuiWidgets.EnableIconDebugDraw;
 			if (ImGui.Checkbox("Show Icon Debug", ref showIconDebug))
 			{
 				ImGuiWidgets.EnableIconDebugDraw = showIconDebug;
 			}
 
 			{
-				var gridIconCenterWithinCell = GridIconCenterWithinCell;
-				var gridIconSizeBig = GridIconSizeBig;
-				var gridFitToContents = GridFitToContents;
-				var gridItemsToShow = GridItemsToShow;
-				var gridOrder = GridOrder;
-				var gridIconAlignment = GridIconAlignment;
-				var gridHeight = GridHeight;
+				bool gridIconCenterWithinCell = GridIconCenterWithinCell;
+				bool gridIconSizeBig = GridIconSizeBig;
+				bool gridFitToContents = GridFitToContents;
+				int gridItemsToShow = GridItemsToShow;
+				ImGuiWidgets.GridOrder gridOrder = GridOrder;
+				ImGuiWidgets.IconAlignment gridIconAlignment = GridIconAlignment;
+				float gridHeight = GridHeight;
 
 				if (ImGui.Checkbox("Use Big Grid Icons", ref gridIconSizeBig))
 				{
@@ -345,7 +351,7 @@ internal class ImGuiWidgetsDemo
 		}
 	}
 
-	private void ShowSearchBoxDemo()
+	private static void ShowSearchBoxDemo()
 	{
 		if (ImGui.CollapsingHeader("SearchBox Demo"))
 		{
@@ -361,24 +367,24 @@ internal class ImGuiWidgetsDemo
 			ImGui.TextUnformatted("Filtered SearchBox with Items");
 
 			// Using the SearchBox that returns filtered results
-			var filteredResults = ImGuiWidgets.SearchBox(
+			List<string> filteredResults = [.. ImGuiWidgets.SearchBox(
 				"##FilteredSearch",
 				ref FilteredSearchTerm,
 				GridStrings,
 				s => s,
 				ref FilteredFilterType,
-				ref FilteredMatchOptions).ToList(); // Materialize the collection
+				ref FilteredMatchOptions)]; // Materialize the collection
 
 			if (!string.IsNullOrEmpty(FilteredSearchTerm))
 			{
 				ImGui.TextUnformatted($"Search results for: {FilteredSearchTerm} (Type: {FilteredFilterType}, Match: {FilteredMatchOptions})");
-				foreach (var item in filteredResults.Take(10))
+				foreach (string? item in filteredResults.Take(10))
 				{
 					ImGui.TextUnformatted(item);
 				}
 
 				// Show count if there are more
-				var totalCount = filteredResults.Count;
+				int totalCount = filteredResults.Count;
 				if (totalCount > 10)
 				{
 					ImGui.TextUnformatted($"... and {totalCount - 10} more items");
@@ -389,22 +395,21 @@ internal class ImGuiWidgetsDemo
 			ImGui.TextUnformatted("Ranked SearchBox");
 
 			// Using a ranked search box
-			var rankedResults = ImGuiWidgets.SearchBoxRanked("##RankedSearch",
+			List<string> rankedResults = [.. ImGuiWidgets.SearchBoxRanked("##RankedSearch",
 				ref RankedSearchTerm,
 				GridStrings,
-				s => s)
-				.ToList(); // Materialize the collection to avoid multiple enumerations
+				s => s)]; // Materialize the collection to avoid multiple enumerations
 
 			if (!string.IsNullOrEmpty(RankedSearchTerm))
 			{
 				ImGui.TextUnformatted($"Ranked results for: {RankedSearchTerm} (using fuzzy matching)");
-				foreach (var item in rankedResults.Take(10))
+				foreach (string? item in rankedResults.Take(10))
 				{
 					ImGui.TextUnformatted(item);
 				}
 
 				// Show count if there are more
-				var totalCount = rankedResults.Count;
+				int totalCount = rankedResults.Count;
 				if (totalCount > 10)
 				{
 					ImGui.TextUnformatted($"... and {totalCount - 10} more items");
@@ -419,23 +424,22 @@ internal class ImGuiWidgetsDemo
 
 			ImGui.TextUnformatted("Glob Filter:");
 			// Glob filter - pass GridStrings to use search box with filtering
-			var globResults = ImGuiWidgets.SearchBox("##GlobSearch",
+			List<string> globResults = [.. ImGuiWidgets.SearchBox("##GlobSearch",
 				ref GlobSearchTerm,
 				GridStrings,
 				s => s,
 				ref GlobFilterType,
-				ref GlobMatchOptions)
-				.ToList(); // Materialize the collection
+				ref GlobMatchOptions)]; // Materialize the collection
 
 			if (!string.IsNullOrEmpty(GlobSearchTerm))
 			{
 				ImGui.TextUnformatted($"Results for: {GlobSearchTerm}");
-				foreach (var item in globResults.Take(10))
+				foreach (string? item in globResults.Take(10))
 				{
 					ImGui.TextUnformatted(item);
 				}
 
-				var globCount = globResults.Count;
+				int globCount = globResults.Count;
 				if (globCount > 10)
 				{
 					ImGui.TextUnformatted($"... and {globCount - 10} more items");
@@ -446,23 +450,22 @@ internal class ImGuiWidgetsDemo
 
 			ImGui.TextUnformatted("Regex Filter:");
 			// Regex filter - pass GridStrings to use search box with filtering
-			var regexResults = ImGuiWidgets.SearchBox("##RegexSearch",
+			List<string> regexResults = [.. ImGuiWidgets.SearchBox("##RegexSearch",
 				ref RegexSearchTerm,
 				GridStrings,
 				s => s,
 				ref RegexFilterType,
-				ref RegexMatchOptions)
-				.ToList(); // Materialize the collection
+				ref RegexMatchOptions)]; // Materialize the collection
 
 			if (!string.IsNullOrEmpty(RegexSearchTerm))
 			{
 				ImGui.TextUnformatted($"Results for: {RegexSearchTerm}");
-				foreach (var item in regexResults.Take(10))
+				foreach (string? item in regexResults.Take(10))
 				{
 					ImGui.TextUnformatted(item);
 				}
 
-				var regexCount = regexResults.Count;
+				int regexCount = regexResults.Count;
 				if (regexCount > 10)
 				{
 					ImGui.TextUnformatted($"... and {regexCount - 10} more items");
@@ -473,12 +476,12 @@ internal class ImGuiWidgetsDemo
 		}
 	}
 
-	private void ShowGridDemo(ImGuiAppTextureInfo ktsuTexture)
+	private static void ShowGridDemo(ImGuiAppTextureInfo ktsuTexture)
 	{
 		float iconSizePx = ImGuiApp.EmsToPx(2.5f);
-		var bigIconSizePx = iconSizePx * 2;
-		var gridIconSize = GridIconSizeBig ? bigIconSizePx : iconSizePx;
-		var gridSize = new Vector2(ImGui.GetContentRegionAvail().X, GridHeight);
+		float bigIconSizePx = iconSizePx * 2;
+		float gridIconSize = GridIconSizeBig ? bigIconSizePx : iconSizePx;
+		Vector2 gridSize = new(ImGui.GetContentRegionAvail().X, GridHeight);
 
 		ImGui.Separator();
 
@@ -521,7 +524,7 @@ internal class ImGuiWidgetsDemo
 	}
 
 	// Tab content methods
-	private void ShowTab1Content()
+	private static void ShowTab1Content()
 	{
 		ImGui.TextUnformatted("This is the content of Tab 1");
 
@@ -538,7 +541,7 @@ internal class ImGuiWidgetsDemo
 		ImGui.TextUnformatted("Dirty State: " + (DemoTabPanel.IsTabDirty(TabIds["tab1"]) ? "Modified" : "Unchanged"));
 	}
 
-	private void ShowTab2Content()
+	private static void ShowTab2Content()
 	{
 		ImGui.TextUnformatted("This is the content of Tab 2");
 
@@ -555,7 +558,7 @@ internal class ImGuiWidgetsDemo
 		}
 	}
 
-	private void ShowTab3Content()
+	private static void ShowTab3Content()
 	{
 		ImGui.TextUnformatted("This is the content of Tab 3");
 		ImGui.TextUnformatted("Try clicking 'Mark Active Tab Dirty' button above");
@@ -574,9 +577,9 @@ internal class ImGuiWidgetsDemo
 		}
 	}
 
-	private void ShowDynamicTabContent(int tabIndex)
+	private static void ShowDynamicTabContent(int tabIndex)
 	{
-		var tabKey = $"dynamic{tabIndex}";
+		string tabKey = $"dynamic{tabIndex}";
 		ImGui.TextUnformatted($"This is a dynamically added tab ({tabIndex})");
 		ImGui.TextUnformatted("The (*) indicator shows when content has been modified.");
 

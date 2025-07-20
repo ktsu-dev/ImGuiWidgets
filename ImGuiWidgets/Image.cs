@@ -5,7 +5,7 @@
 namespace ktsu.ImGuiWidgets;
 using System.Numerics;
 
-using ImGuiNET;
+using Hexa.NET.ImGui;
 
 using ktsu.ImGuiStyler;
 
@@ -84,9 +84,20 @@ public static partial class ImGuiWidgets
 		/// <param name="size">The size of the image.</param>
 		/// <param name="color">The color to apply to the image.</param>
 		/// <returns>True if the image is clicked; otherwise, false.</returns>
-		internal static bool Show(uint textureId, Vector2 size, Vector4 color)
+		internal static bool Show(uint textureId, Vector2 size, Vector4 color = default)
 		{
-			ImGui.Image((nint)textureId, size, Vector2.Zero, Vector2.One, color);
+			unsafe
+			{
+				if (color != default)
+				{
+					// Use transparent background with color as tint to preserve alpha
+					ImGui.ImageWithBg(new ImTextureRef(texId: textureId), size, Vector4.Zero, color);
+				}
+				else
+				{
+					ImGui.Image(new ImTextureRef(texId: textureId), size);
+				}
+			}
 			return ImGui.IsItemClicked();
 		}
 
@@ -107,7 +118,7 @@ public static partial class ImGuiWidgets
 		/// <returns>True if the image is clicked; otherwise, false.</returns>
 		internal static bool Centered(uint textureId, Vector2 size, Vector4 color)
 		{
-			var clicked = false;
+			bool clicked = false;
 			using (new Alignment.Center(size))
 			{
 				clicked = Show(textureId, size, color);
@@ -135,7 +146,7 @@ public static partial class ImGuiWidgets
 		/// <returns>True if the image is clicked; otherwise, false.</returns>
 		internal static bool CenteredWithin(uint textureId, Vector2 imageSize, Vector2 containerSize, Vector4 color)
 		{
-			var clicked = false;
+			bool clicked = false;
 			using (new Alignment.CenterWithin(imageSize, containerSize))
 			{
 				clicked = Show(textureId, imageSize, color);

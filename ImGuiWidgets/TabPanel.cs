@@ -6,7 +6,7 @@ namespace ktsu.ImGuiWidgets;
 
 using System;
 using System.Collections.ObjectModel;
-using ImGuiNET;
+using Hexa.NET.ImGui;
 
 /// <summary>
 /// Provides custom ImGui widgets.
@@ -138,7 +138,7 @@ public static partial class ImGuiWidgets
 		/// <returns>The tab if found, null otherwise.</returns>
 		public Tab? GetTabById(string tabId)
 		{
-			foreach (var tab in Tabs)
+			foreach (Tab tab in Tabs)
 			{
 				if (tab.Id == tabId)
 				{
@@ -156,7 +156,7 @@ public static partial class ImGuiWidgets
 		/// <returns>The index of the tab if found, -1 otherwise.</returns>
 		public int GetTabIndex(string tabId)
 		{
-			for (var i = 0; i < Tabs.Count; i++)
+			for (int i = 0; i < Tabs.Count; i++)
 			{
 				if (Tabs[i].Id == tabId)
 				{
@@ -175,7 +175,7 @@ public static partial class ImGuiWidgets
 		/// <returns>The ID of the newly added tab.</returns>
 		public string AddTab(string label, Action content)
 		{
-			var tab = new Tab(label, content);
+			Tab tab = new(label, content);
 			Tabs.Add(tab);
 			return tab.Id;
 		}
@@ -189,7 +189,7 @@ public static partial class ImGuiWidgets
 		/// <returns>The ID of the newly added tab.</returns>
 		public string AddTab(string id, string label, Action content)
 		{
-			var tab = new Tab(id, label, content);
+			Tab tab = new(id, label, content);
 			Tabs.Add(tab);
 			return tab.Id;
 		}
@@ -203,7 +203,7 @@ public static partial class ImGuiWidgets
 		/// <returns>The ID of the newly added tab.</returns>
 		public string AddTab(string label, Action content, bool isDirty)
 		{
-			var tab = new Tab(label, content, isDirty);
+			Tab tab = new(label, content, isDirty);
 			Tabs.Add(tab);
 			return tab.Id;
 		}
@@ -218,7 +218,7 @@ public static partial class ImGuiWidgets
 		/// <returns>The ID of the newly added tab.</returns>
 		public string AddTab(string id, string label, Action content, bool isDirty)
 		{
-			var tab = new Tab(id, label, content, isDirty);
+			Tab tab = new(id, label, content, isDirty);
 			Tabs.Add(tab);
 			return tab.Id;
 		}
@@ -246,7 +246,7 @@ public static partial class ImGuiWidgets
 		/// <returns>True if successful, false if the tab was not found.</returns>
 		public bool MarkTabDirty(string tabId)
 		{
-			var tab = GetTabById(tabId);
+			Tab? tab = GetTabById(tabId);
 			if (tab != null)
 			{
 				tab.MarkDirty();
@@ -279,7 +279,7 @@ public static partial class ImGuiWidgets
 		/// <returns>True if successful, false if the tab was not found.</returns>
 		public bool MarkTabClean(string tabId)
 		{
-			var tab = GetTabById(tabId);
+			Tab? tab = GetTabById(tabId);
 			if (tab != null)
 			{
 				tab.MarkClean();
@@ -333,7 +333,7 @@ public static partial class ImGuiWidgets
 		/// <returns>True if the tab is dirty, false otherwise or if the tab was not found.</returns>
 		public bool IsTabDirty(string tabId)
 		{
-			var tab = GetTabById(tabId);
+			Tab? tab = GetTabById(tabId);
 			return tab?.IsDirty ?? false;
 		}
 
@@ -373,7 +373,7 @@ public static partial class ImGuiWidgets
 		/// <returns>True if the tab was removed, false otherwise.</returns>
 		public bool RemoveTab(string tabId)
 		{
-			var index = GetTabIndex(tabId);
+			int index = GetTabIndex(tabId);
 			return index >= 0 && RemoveTab(index);
 		}
 
@@ -387,7 +387,7 @@ public static partial class ImGuiWidgets
 				return;
 			}
 
-			var flags = ImGuiTabBarFlags.None;
+			ImGuiTabBarFlags flags = ImGuiTabBarFlags.None;
 			if (Reorderable)
 			{
 				flags |= ImGuiTabBarFlags.Reorderable;
@@ -395,10 +395,10 @@ public static partial class ImGuiWidgets
 
 			if (ImGui.BeginTabBar(Id, flags))
 			{
-				for (var i = 0; i < Tabs.Count; i++)
+				for (int i = 0; i < Tabs.Count; i++)
 				{
-					var tab = Tabs[i];
-					var tabFlags = ImGuiTabItemFlags.None;
+					Tab tab = Tabs[i];
+					ImGuiTabItemFlags tabFlags = ImGuiTabItemFlags.None;
 
 					// Use the UnsavedDocument flag for dirty indicator
 					if (tab.IsDirty)
@@ -406,7 +406,7 @@ public static partial class ImGuiWidgets
 						tabFlags |= ImGuiTabItemFlags.UnsavedDocument;
 					}
 
-					var tabOpen = true;
+					bool tabOpen = true;
 
 					if (ImGui.BeginTabItem($"{tab.Label}##{tab.Id}", ref tabOpen, tabFlags))
 					{

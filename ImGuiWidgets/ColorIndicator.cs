@@ -6,7 +6,7 @@ namespace ktsu.ImGuiWidgets;
 
 using System.Numerics;
 
-using ImGuiNET;
+using Hexa.NET.ImGui;
 
 /// <summary>
 /// Provides custom ImGui widgets.
@@ -24,12 +24,12 @@ public static partial class ImGuiWidgets
 	{
 		public static void Show(ImColor color, bool enabled)
 		{
-			var frameHeight = ImGui.GetFrameHeight();
+			float frameHeight = ImGui.GetFrameHeight();
 			ImGui.Dummy(new Vector2(frameHeight, frameHeight));
-			var dummyRectMin = ImGui.GetItemRectMin();
-			var dummyRectMax = ImGui.GetItemRectMax();
-			var drawList = ImGui.GetWindowDrawList();
-			var colorToShow = enabled ? ImGui.GetColorU32(color.Value) : ImGui.GetColorU32(ImGuiCol.FrameBg);
+			Vector2 dummyRectMin = ImGui.GetItemRectMin();
+			Vector2 dummyRectMax = ImGui.GetItemRectMax();
+			ImDrawListPtr drawList = ImGui.GetWindowDrawList();
+			uint colorToShow = enabled ? ImGui.GetColorU32(color.Value) : ImGui.GetColorU32(ImGuiCol.FrameBg);
 			drawList.AddRectFilled(dummyRectMin, dummyRectMax, colorToShow);
 		}
 	}
