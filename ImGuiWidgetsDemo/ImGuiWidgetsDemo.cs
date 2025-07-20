@@ -43,7 +43,7 @@ internal static class ImGuiWidgetsDemo
 	{
 		ImGuiApp.Start(new()
 		{
-			Title = "ImGuiWIdgets Demo",
+			Title = "ImGuiWidgets - Complete Library Demo",
 			OnStart = OnStart,
 			OnAppMenu = OnAppMenu,
 			OnMoveOrResize = OnMoveOrResize,
@@ -98,14 +98,16 @@ internal static class ImGuiWidgetsDemo
 #pragma warning disable CA5394 //Do not use insecure randomness
 	private static void OnStart()
 	{
-		DividerContainer.Add(new("Left", 0.25f, ShowLeftPanel));
-		DividerContainer.Add(new("Right", 0.75f, ShowRightPanel));
+		// Create main layout with dedicated demo sections
+		DividerContainer.Add(new("Widget Demos", 0.6f, ShowWidgetDemos));
+		DividerContainer.Add(new("Advanced Demos", 0.4f, ShowAdvancedDemos));
 
 		// Initialize TabPanel demo
 		TabIds["tab1"] = DemoTabPanel.AddTab("tab1", "Tab 1", ShowTab1Content);
 		TabIds["tab2"] = DemoTabPanel.AddTab("tab2", "Tab 2", ShowTab2Content);
 		TabIds["tab3"] = DemoTabPanel.AddTab("tab3", "Tab 3", ShowTab3Content);
 
+		// Generate test data for grid demos
 		for (int i = 0; i < InitialGridItemCount; i++)
 		{
 			string randomString = $"{i}:";
@@ -133,238 +135,90 @@ internal static class ImGuiWidgetsDemo
 	}
 
 	[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0063:Use simple 'using' statement", Justification = "<Pending>")]
-	private static void ShowLeftPanel(float size)
+	private static void ShowWidgetDemos(float size)
 	{
-		ImGui.TextUnformatted("Left Divider Zone");
+		ImGui.TextUnformatted("ImGuiWidgets Library - Comprehensive Demo");
+		ImGui.Separator();
 
-		ImGui.SeparatorText("Knobs");
-		ImGuiWidgets.Knob(nameof(ImGuiKnobVariant.Wiper) + "Test Pascal Case", ref value, 0, 1, 0, null, ImGuiKnobVariant.Wiper);
-		ImGuiWidgets.Knob(nameof(ImGuiKnobVariant.WiperOnly), ref value, 0, 1, 0, null, ImGuiKnobVariant.WiperOnly);
-		ImGuiWidgets.Knob(nameof(ImGuiKnobVariant.WiperDot), ref value, 0, 1, 0, null, ImGuiKnobVariant.WiperDot);
-		ImGuiWidgets.Knob(nameof(ImGuiKnobVariant.Tick), ref value, 0, 1, 0, null, ImGuiKnobVariant.Tick);
-		ImGuiWidgets.Knob(nameof(ImGuiKnobVariant.Stepped), ref value, 0, 1, 0, null, ImGuiKnobVariant.Stepped);
-		ImGuiWidgets.Knob(nameof(ImGuiKnobVariant.Space), ref value, 0, 1, 0, null, ImGuiKnobVariant.Space);
-		ImGuiWidgets.Knob("Throttle Position", ref value, 0, 1, 0, null, ImGuiKnobVariant.Space);
-
-		ImGui.SeparatorText("Color Indicators");
-		ImGuiWidgets.ColorIndicator(Color.Red, true);
-		ImGui.SameLine();
-		ImGuiWidgets.ColorIndicator(Color.Red, false);
-		ImGui.SameLine();
-		ImGuiWidgets.ColorIndicator(Color.Green, true);
-		ImGui.SameLine();
-		ImGuiWidgets.ColorIndicator(Color.Green, false);
-
-		ImGui.SeparatorText("Combos");
-		ImGuiWidgets.Combo("Enum Combo", ref selectedEnumValue);
-		ImGuiWidgets.Combo("String Combo", ref selectedStringValue, possibleStringValues);
-		ImGuiWidgets.Combo("Strong String Combo", ref selectedStrongString, possibleStrongStringValues);
-
-		using (new ScopedDisable(true))
-		{
-			ImGui.SeparatorText("Disabled");
-
-			bool value = true;
-			int currentItem = 0;
-			string[] items = ["Item 1", "Item 2", "Item 3"];
-
-			ImGui.Checkbox("Disabled Checkbox", ref value);
-			ImGui.Combo("Disabled Combo", ref currentItem, items, items.Length);
-		}
-
-		ImGui.SeparatorText("Tree");
-		using (ImGuiWidgets.Tree tree = new())
-		{
-			for (int i = 0; i < 5; i++)
-			{
-				using (tree.Child)
-				{
-					ImGui.Button($"Hello, Child {i}!");
-					using (ImGuiWidgets.Tree subtree = new())
-					{
-						using (subtree.Child)
-						{
-							ImGui.Button($"Hello, Grandchild!");
-						}
-					}
-				}
-			}
-		}
+		ShowKnobDemo();
+		ShowColorIndicatorDemo();
+		ShowComboDemo();
+		ShowTextDemo();
+		ShowScopedWidgetsDemo();
+		ShowTreeDemo();
 	}
 
-	private static void ShowRightPanel(float size)
+	private static void ShowAdvancedDemos(float size)
 	{
 		AbsoluteFilePath ktsuIconPath = (AbsoluteDirectoryPath)Environment.CurrentDirectory / (FileName)"ktsu.png";
 		ImGuiAppTextureInfo ktsuTexture = ImGuiApp.GetOrLoadTexture(ktsuIconPath);
 
-		ImGui.TextUnformatted("Right Divider Zone");
+		ImGui.TextUnformatted("Advanced Widget Demos");
+		ImGui.Separator();
 
+		ShowImageAndIconDemo(ktsuTexture);
 		ShowTabPanelDemo();
-		ShowImageDemo(ktsuTexture);
-		ShowGridSettings();
 		ShowSearchBoxDemo();
 		ShowGridDemo(ktsuTexture);
+		ShowDividerDemo();
 
 		MessageOK.ShowIfOpen();
 	}
 
 	private static void ShowTabPanelDemo()
 	{
-		ImGui.SeparatorText("TabPanel Demo");
-
-		// Tab Panel controls
-		if (ImGui.Button("Mark Active Tab Dirty"))
+		if (ImGui.CollapsingHeader("TabPanel"))
 		{
-			DemoTabPanel.MarkActiveTabDirty();
-		}
+			ImGui.TextUnformatted("Tabbed interface with dirty state tracking:");
+			ImGui.Separator();
 
-		ImGui.SameLine();
-
-		if (ImGui.Button("Mark Active Tab Clean"))
-		{
-			DemoTabPanel.MarkActiveTabClean();
-		}
-
-		ImGui.SameLine();
-
-		if (ImGui.Button("Add New Tab"))
-		{
-			int tabIndex = NextDynamicTabId++;
-			string tabKey = $"dynamic{tabIndex}";
-			string tabId = $"dyntab_{tabIndex}";
-			TabIds[tabKey] = DemoTabPanel.AddTab(tabId, $"Extra Tab {tabIndex}", () => ShowDynamicTabContent(tabIndex));
-		}
-
-		// Display tab panel
-		DemoTabPanel.Draw();
-
-		ImGui.Separator();
-	}
-
-	private static void ShowImageDemo(ImGuiAppTextureInfo ktsuTexture)
-	{
-		if (ImGuiWidgets.Image(ktsuTexture.TextureId, new Vector2(128, 128)))
-		{
-			MessageOK.Open("Click", "You chose the image");
-		}
-
-		float iconWidthEms = 7.5f;
-		float tilePaddingEms = 0.5f;
-		float iconWidthPx = ImGuiApp.EmsToPx(iconWidthEms);
-		float tilePaddingPx = ImGuiApp.EmsToPx(tilePaddingEms);
-
-		Vector2 iconSize = new(iconWidthPx, iconWidthPx);
-
-		ImGuiWidgets.Icon("Click Me", ktsuTexture.TextureId, iconWidthPx, ImGuiWidgets.IconAlignment.Vertical,
-			new ImGuiWidgets.IconOptions()
+			// Tab Panel controls
+			ImGui.TextUnformatted("Tab Management:");
+			if (ImGui.Button("Mark Active Tab Dirty"))
 			{
-				OnClick = () => MessageOK.Open("Click", "You chose Tile1")
-			});
-
-		ImGui.SameLine();
-		ImGuiWidgets.Icon("Double Click Me", ktsuTexture.TextureId, iconWidthPx, ImGuiWidgets.IconAlignment.Vertical,
-			new ImGuiWidgets.IconOptions()
+				DemoTabPanel.MarkActiveTabDirty();
+			}
+			ImGui.SameLine();
+			if (ImGui.Button("Mark Active Tab Clean"))
 			{
-				OnDoubleClick = () => MessageOK.Open("Double Click", "Yippee!!!!!!!!")
-			});
-		ImGui.SameLine();
-		ImGuiWidgets.Icon("Right Click Me", ktsuTexture.TextureId, iconWidthPx, ImGuiWidgets.IconAlignment.Vertical,
-			new ImGuiWidgets.IconOptions()
+				DemoTabPanel.MarkActiveTabClean();
+			}
+			ImGui.SameLine();
+			if (ImGui.Button("Add New Tab"))
 			{
-				OnContextMenu = () =>
-				{
-					ImGui.MenuItem("Context Menu Item 1");
-					ImGui.MenuItem("Context Menu Item 2");
-					ImGui.MenuItem("Context Menu Item 3");
-				},
-			});
-		ImGui.SameLine();
-		ImGuiWidgets.Icon("Hover Me", ktsuTexture.TextureId, iconWidthPx, ImGuiWidgets.IconAlignment.Vertical,
-			new ImGuiWidgets.IconOptions()
-			{
-				Tooltip = "You hovered over me"
-			});
-
-		ImGui.NewLine();
-	}
-
-	private static void ShowGridSettings()
-	{
-		if (ImGui.CollapsingHeader("Grid Settings"))
-		{
-			bool showGridDebug = ImGuiWidgets.EnableGridDebugDraw;
-			if (ImGui.Checkbox("Show Grid Debug", ref showGridDebug))
-			{
-				ImGuiWidgets.EnableGridDebugDraw = showGridDebug;
+				int tabIndex = NextDynamicTabId++;
+				string tabKey = $"dynamic{tabIndex}";
+				string tabId = $"dyntab_{tabIndex}";
+				TabIds[tabKey] = DemoTabPanel.AddTab(tabId, $"Extra Tab {tabIndex}", () => ShowDynamicTabContent(tabIndex));
 			}
 
-			bool showIconDebug = ImGuiWidgets.EnableIconDebugDraw;
-			if (ImGui.Checkbox("Show Icon Debug", ref showIconDebug))
-			{
-				ImGuiWidgets.EnableIconDebugDraw = showIconDebug;
-			}
+			ImGui.Separator();
+			ImGui.TextUnformatted("Features demonstrated:");
+			ImGui.BulletText("Closeable tabs (X button)");
+			ImGui.BulletText("Dirty state indicators (*)");
+			ImGui.BulletText("Dynamic tab addition");
+			ImGui.BulletText("Per-tab state management");
 
-			{
-				bool gridIconCenterWithinCell = GridIconCenterWithinCell;
-				bool gridIconSizeBig = GridIconSizeBig;
-				bool gridFitToContents = GridFitToContents;
-				int gridItemsToShow = GridItemsToShow;
-				ImGuiWidgets.GridOrder gridOrder = GridOrder;
-				ImGuiWidgets.IconAlignment gridIconAlignment = GridIconAlignment;
-				float gridHeight = GridHeight;
+			ImGui.Separator();
 
-				if (ImGui.Checkbox("Use Big Grid Icons", ref gridIconSizeBig))
-				{
-					GridIconSizeBig = gridIconSizeBig;
-				}
-
-				if (ImGui.Checkbox("Center within cell", ref gridIconCenterWithinCell))
-				{
-					GridIconCenterWithinCell = gridIconCenterWithinCell;
-				}
-
-				if (ImGui.Checkbox("Fit to contents", ref gridFitToContents))
-				{
-					GridFitToContents = gridFitToContents;
-				}
-
-				if (ImGui.SliderInt("Items to show", ref gridItemsToShow, 0, GridStrings.Count))
-				{
-					GridItemsToShow = gridItemsToShow;
-				}
-
-				if (ImGuiWidgets.Combo("Order", ref gridOrder))
-				{
-					GridOrder = gridOrder;
-				}
-
-				if (ImGuiWidgets.Combo("Icon Alignment", ref gridIconAlignment))
-				{
-					GridIconAlignment = gridIconAlignment;
-				}
-
-				if (ImGui.SliderFloat("Grid Height", ref gridHeight, 1f, 1000f))
-				{
-					GridHeight = gridHeight;
-				}
-			}
+			// Display tab panel
+			DemoTabPanel.Draw();
 		}
 	}
 
 	private static void ShowSearchBoxDemo()
 	{
-		if (ImGui.CollapsingHeader("SearchBox Demo"))
+		if (ImGui.CollapsingHeader("SearchBox"))
 		{
-			ImGui.TextUnformatted("Search the grid items:");
-
+			ImGui.TextUnformatted("Powerful search functionality with multiple filter types:");
 			ImGui.Separator();
-			ImGui.TextUnformatted("Basic SearchBox");
 
-			// Basic search demo - just show the search box control
+			ImGui.TextUnformatted("Basic SearchBox (UI only):");
 			ImGuiWidgets.SearchBox("##BasicSearch", ref BasicSearchTerm, ref BasicFilterType, ref BasicMatchOptions);
+			ImGui.TextUnformatted($"Search term: '{BasicSearchTerm}' | Type: {BasicFilterType} | Match: {BasicMatchOptions}");
 
 			ImGui.Separator();
-			ImGui.TextUnformatted("Filtered SearchBox with Items");
+			ImGui.TextUnformatted("SearchBox with Filtering:");
 
 			// Using the SearchBox that returns filtered results
 			List<string> filteredResults = [.. ImGuiWidgets.SearchBox(
@@ -373,103 +227,97 @@ internal static class ImGuiWidgetsDemo
 				GridStrings,
 				s => s,
 				ref FilteredFilterType,
-				ref FilteredMatchOptions)]; // Materialize the collection
+				ref FilteredMatchOptions)];
 
 			if (!string.IsNullOrEmpty(FilteredSearchTerm))
 			{
-				ImGui.TextUnformatted($"Search results for: {FilteredSearchTerm} (Type: {FilteredFilterType}, Match: {FilteredMatchOptions})");
-				foreach (string? item in filteredResults.Take(10))
+				ImGui.TextUnformatted($"Results: {filteredResults.Count} matches for '{FilteredSearchTerm}'");
+				ImGui.BeginChild("FilteredResults", new Vector2(0, 100), ImGuiChildFlags.Borders);
+				foreach (string item in filteredResults.Take(20))
 				{
-					ImGui.TextUnformatted(item);
+					ImGui.TextUnformatted($"• {item}");
 				}
-
-				// Show count if there are more
-				int totalCount = filteredResults.Count;
-				if (totalCount > 10)
+				if (filteredResults.Count > 20)
 				{
-					ImGui.TextUnformatted($"... and {totalCount - 10} more items");
+					ImGui.TextUnformatted($"... and {filteredResults.Count - 20} more");
 				}
+				ImGui.EndChild();
 			}
 
 			ImGui.Separator();
-			ImGui.TextUnformatted("Ranked SearchBox");
+			ImGui.TextUnformatted("Ranked SearchBox (Fuzzy Matching):");
 
-			// Using a ranked search box
 			List<string> rankedResults = [.. ImGuiWidgets.SearchBoxRanked("##RankedSearch",
 				ref RankedSearchTerm,
 				GridStrings,
-				s => s)]; // Materialize the collection to avoid multiple enumerations
+				s => s)];
 
 			if (!string.IsNullOrEmpty(RankedSearchTerm))
 			{
-				ImGui.TextUnformatted($"Ranked results for: {RankedSearchTerm} (using fuzzy matching)");
-				foreach (string? item in rankedResults.Take(10))
+				ImGui.TextUnformatted($"Fuzzy Results: {rankedResults.Count} matches for '{RankedSearchTerm}'");
+				ImGui.BeginChild("RankedResults", new Vector2(0, 100), ImGuiChildFlags.Borders);
+				foreach (string item in rankedResults.Take(20))
 				{
-					ImGui.TextUnformatted(item);
+					ImGui.TextUnformatted($"• {item}");
 				}
-
-				// Show count if there are more
-				int totalCount = rankedResults.Count;
-				if (totalCount > 10)
+				if (rankedResults.Count > 20)
 				{
-					ImGui.TextUnformatted($"... and {totalCount - 10} more items");
+					ImGui.TextUnformatted($"... and {rankedResults.Count - 20} more");
 				}
+				ImGui.EndChild();
 			}
 
 			ImGui.Separator();
-			ImGui.TextUnformatted("Filter Type Comparison");
+			ImGui.TextUnformatted("Filter Type Comparison:");
 
-			// Side-by-side comparison of different filter types
-			ImGui.Columns(2);
+			ImGui.Columns(2, "SearchComparison");
 
-			ImGui.TextUnformatted("Glob Filter:");
-			// Glob filter - pass GridStrings to use search box with filtering
+			ImGui.TextUnformatted("Glob Pattern (*,?):");
 			List<string> globResults = [.. ImGuiWidgets.SearchBox("##GlobSearch",
 				ref GlobSearchTerm,
 				GridStrings,
 				s => s,
 				ref GlobFilterType,
-				ref GlobMatchOptions)]; // Materialize the collection
+				ref GlobMatchOptions)];
 
 			if (!string.IsNullOrEmpty(GlobSearchTerm))
 			{
-				ImGui.TextUnformatted($"Results for: {GlobSearchTerm}");
-				foreach (string? item in globResults.Take(10))
+				ImGui.TextUnformatted($"{globResults.Count} matches");
+				ImGui.BeginChild("GlobResults", new Vector2(0, 80), ImGuiChildFlags.Borders);
+				foreach (string item in globResults.Take(10))
 				{
-					ImGui.TextUnformatted(item);
+					ImGui.TextUnformatted($"• {item}");
 				}
-
-				int globCount = globResults.Count;
-				if (globCount > 10)
-				{
-					ImGui.TextUnformatted($"... and {globCount - 10} more items");
-				}
+				ImGui.EndChild();
+			}
+			else
+			{
+				ImGui.TextUnformatted("Try: *1*, ?:*, [0-9]*");
 			}
 
 			ImGui.NextColumn();
 
-			ImGui.TextUnformatted("Regex Filter:");
-			// Regex filter - pass GridStrings to use search box with filtering
+			ImGui.TextUnformatted("Regex Pattern:");
 			List<string> regexResults = [.. ImGuiWidgets.SearchBox("##RegexSearch",
 				ref RegexSearchTerm,
 				GridStrings,
 				s => s,
 				ref RegexFilterType,
-				ref RegexMatchOptions)]; // Materialize the collection
+				ref RegexMatchOptions)];
 
 			if (!string.IsNullOrEmpty(RegexSearchTerm))
 			{
-				ImGui.TextUnformatted($"Results for: {RegexSearchTerm}");
-				foreach (string? item in regexResults.Take(10))
+				ImGui.TextUnformatted($"{regexResults.Count} matches");
+				ImGui.BeginChild("RegexResults", new Vector2(0, 80), ImGuiChildFlags.Borders);
+				foreach (string item in regexResults.Take(10))
 				{
-					ImGui.TextUnformatted(item);
+					ImGui.TextUnformatted($"• {item}");
 				}
-
-				int regexCount = regexResults.Count;
-				if (regexCount > 10)
-				{
-					ImGui.TextUnformatted($"... and {regexCount - 10} more items");
-				}
+				ImGui.EndChild();
+			}
+			else
+			{
+				ImGui.TextUnformatted("Try: ^\\d+, [A-Z]+, .*[aeiou].*");
 			}
 
 			ImGui.Columns(1);
@@ -478,49 +326,435 @@ internal static class ImGuiWidgetsDemo
 
 	private static void ShowGridDemo(ImGuiAppTextureInfo ktsuTexture)
 	{
-		float iconSizePx = ImGuiApp.EmsToPx(2.5f);
-		float bigIconSizePx = iconSizePx * 2;
-		float gridIconSize = GridIconSizeBig ? bigIconSizePx : iconSizePx;
-		Vector2 gridSize = new(ImGui.GetContentRegionAvail().X, GridHeight);
-
-		ImGui.Separator();
-
-		Vector2 MeasureGridSize(string item) => ImGuiWidgets.CalcIconSize(item, gridIconSize, GridIconAlignment);
-		void DrawGridCell(string item, Vector2 cellSize, Vector2 itemSize)
+		if (ImGui.CollapsingHeader("Grid Layout"))
 		{
-			if (GridIconCenterWithinCell)
+			ImGui.TextUnformatted("Flexible grid layouts with automatic sizing:");
+			ImGui.Separator();
+
+			// Grid settings - inline controls
+			ImGui.TextUnformatted("Grid Configuration:");
+
+			bool showGridDebug = ImGuiWidgets.EnableGridDebugDraw;
+			if (ImGui.Checkbox("Show Grid Debug Draw", ref showGridDebug))
 			{
-				using (new Alignment.CenterWithin(itemSize, cellSize))
+				ImGuiWidgets.EnableGridDebugDraw = showGridDebug;
+			}
+			ImGui.SameLine();
+
+			bool showIconDebug = ImGuiWidgets.EnableIconDebugDraw;
+			if (ImGui.Checkbox("Show Icon Debug Draw", ref showIconDebug))
+			{
+				ImGuiWidgets.EnableIconDebugDraw = showIconDebug;
+			}
+
+			ImGui.Columns(3, "GridSettings");
+
+			bool gridIconSizeBig = GridIconSizeBig;
+			if (ImGui.Checkbox("Big Icons", ref gridIconSizeBig))
+			{
+				GridIconSizeBig = gridIconSizeBig;
+			}
+
+			bool gridIconCenterWithinCell = GridIconCenterWithinCell;
+			if (ImGui.Checkbox("Center in Cell", ref gridIconCenterWithinCell))
+			{
+				GridIconCenterWithinCell = gridIconCenterWithinCell;
+			}
+
+			bool gridFitToContents = GridFitToContents;
+			if (ImGui.Checkbox("Fit to Contents", ref gridFitToContents))
+			{
+				GridFitToContents = gridFitToContents;
+			}
+
+			ImGui.NextColumn();
+
+			int gridItemsToShow = GridItemsToShow;
+			if (ImGui.SliderInt("Items", ref gridItemsToShow, 0, GridStrings.Count))
+			{
+				GridItemsToShow = gridItemsToShow;
+			}
+
+			ImGuiWidgets.GridOrder gridOrder = GridOrder;
+			if (ImGuiWidgets.Combo("Order", ref gridOrder))
+			{
+				GridOrder = gridOrder;
+			}
+
+			ImGui.NextColumn();
+
+			ImGuiWidgets.IconAlignment gridIconAlignment = GridIconAlignment;
+			if (ImGuiWidgets.Combo("Icon Layout", ref gridIconAlignment))
+			{
+				GridIconAlignment = gridIconAlignment;
+			}
+
+			float gridHeight = GridHeight;
+			if (ImGui.SliderFloat("Height", ref gridHeight, 100f, 800f))
+			{
+				GridHeight = gridHeight;
+			}
+
+			ImGui.Columns(1);
+			ImGui.Separator();
+
+			// Grid display
+			float iconSizePx = ImGuiApp.EmsToPx(2.5f);
+			float bigIconSizePx = iconSizePx * 2;
+			float gridIconSize = GridIconSizeBig ? bigIconSizePx : iconSizePx;
+
+			Vector2 MeasureGridSize(string item) => ImGuiWidgets.CalcIconSize(item, gridIconSize, GridIconAlignment);
+			void DrawGridCell(string item, Vector2 cellSize, Vector2 itemSize)
+			{
+				if (GridIconCenterWithinCell)
+				{
+					using (new Alignment.CenterWithin(itemSize, cellSize))
+					{
+						ImGuiWidgets.Icon(item, ktsuTexture.TextureId, gridIconSize, GridIconAlignment);
+					}
+				}
+				else
 				{
 					ImGuiWidgets.Icon(item, ktsuTexture.TextureId, gridIconSize, GridIconAlignment);
 				}
 			}
-			else
+
+			ImGuiWidgets.GridOptions gridOptions = new()
 			{
-				ImGuiWidgets.Icon(item, ktsuTexture.TextureId, gridIconSize, GridIconAlignment);
+				GridSize = new Vector2(ImGui.GetContentRegionAvail().X, GridHeight),
+				FitToContents = GridFitToContents,
+			};
+
+			ImGui.TextUnformatted($"Showing {GridItemsToShow} items in {GridOrder} order:");
+
+			switch (GridOrder)
+			{
+				case ImGuiWidgets.GridOrder.RowMajor:
+					ImGuiWidgets.RowMajorGrid("demoRowMajorGrid", GridStrings.Take(GridItemsToShow), MeasureGridSize, DrawGridCell, gridOptions);
+					break;
+
+				case ImGuiWidgets.GridOrder.ColumnMajor:
+					ImGuiWidgets.ColumnMajorGrid("demoColumnMajorGrid", GridStrings.Take(GridItemsToShow), MeasureGridSize, DrawGridCell, gridOptions);
+					break;
+
+				default:
+					throw new NotImplementedException();
 			}
 		}
+	}
 
-		ImGuiWidgets.GridOptions gridOptions = new()
+	// Individual widget demo methods
+	private static void ShowKnobDemo()
+	{
+		if (ImGui.CollapsingHeader("Knobs"))
 		{
-			GridSize = new Vector2(ImGui.GetContentRegionAvail().X, GridHeight),
-			FitToContents = GridFitToContents,
-		};
-		switch (GridOrder)
-		{
-			case ImGuiWidgets.GridOrder.RowMajor:
-				ImGuiWidgets.RowMajorGrid("demoRowMajorGrid", GridStrings.Take(GridItemsToShow), MeasureGridSize, DrawGridCell, gridOptions);
-				break;
+			ImGui.TextUnformatted("All knob variants with interactive controls:");
+			ImGui.Separator();
 
-			case ImGuiWidgets.GridOrder.ColumnMajor:
-				ImGuiWidgets.ColumnMajorGrid("demoColumnMajorGrid", GridStrings.Take(GridItemsToShow), MeasureGridSize, DrawGridCell, gridOptions);
-				break;
+			// Show all knob variants
+			ImGui.Columns(3, "KnobColumns");
 
-			default:
-				throw new NotImplementedException();
+			ImGuiWidgets.Knob("Wiper", ref value, 0, 1, 0, null, ImGuiKnobVariant.Wiper);
+			ImGui.NextColumn();
+			ImGuiWidgets.Knob("Wiper Only", ref value, 0, 1, 0, null, ImGuiKnobVariant.WiperOnly);
+			ImGui.NextColumn();
+			ImGuiWidgets.Knob("Wiper Dot", ref value, 0, 1, 0, null, ImGuiKnobVariant.WiperDot);
+			ImGui.NextColumn();
+
+			ImGuiWidgets.Knob("Tick", ref value, 0, 1, 0, null, ImGuiKnobVariant.Tick);
+			ImGui.NextColumn();
+			ImGuiWidgets.Knob("Stepped", ref value, 0, 1, 0, null, ImGuiKnobVariant.Stepped);
+			ImGui.NextColumn();
+			ImGuiWidgets.Knob("Space", ref value, 0, 1, 0, null, ImGuiKnobVariant.Space);
+
+			ImGui.Columns(1);
+
+			ImGui.Separator();
+			ImGui.TextUnformatted($"Current Value: {value:F3}");
+
+			if (ImGui.Button("Reset to 0.5"))
+			{
+				value = 0.5f;
+			}
 		}
+	}
 
-		ImGui.Separator();
+	private static void ShowColorIndicatorDemo()
+	{
+		if (ImGui.CollapsingHeader("Color Indicators"))
+		{
+			ImGui.TextUnformatted("Color indicators show enabled/disabled states:");
+			ImGui.Separator();
+
+			ImGui.TextUnformatted("Status Lights:");
+			ImGuiWidgets.ColorIndicator(Color.Green, true);
+			ImGui.SameLine();
+			ImGui.TextUnformatted("System OK");
+			ImGuiWidgets.ColorIndicator(Color.Yellow, true);
+			ImGui.SameLine();
+			ImGui.TextUnformatted("Warning");
+			ImGuiWidgets.ColorIndicator(Color.Red, true);
+			ImGui.SameLine();
+			ImGui.TextUnformatted("Error");
+			ImGuiWidgets.ColorIndicator(Color.Blue, true);
+			ImGui.SameLine();
+			ImGui.TextUnformatted("Info");
+
+			ImGui.Separator();
+			ImGui.TextUnformatted("Enabled vs Disabled:");
+			ImGuiWidgets.ColorIndicator(Color.Red, true);
+			ImGui.SameLine();
+			ImGui.TextUnformatted("Enabled");
+			ImGuiWidgets.ColorIndicator(Color.Red, false);
+			ImGui.SameLine();
+			ImGui.TextUnformatted("Disabled");
+		}
+	}
+
+	private static void ShowComboDemo()
+	{
+		if (ImGui.CollapsingHeader("Combo Boxes"))
+		{
+			ImGui.TextUnformatted("Type-safe combo boxes for enums and collections:");
+			ImGui.Separator();
+
+			ImGuiWidgets.Combo("Enum Combo", ref selectedEnumValue);
+			ImGui.TextUnformatted($"Selected: {selectedEnumValue}");
+
+			ImGui.Separator();
+			ImGuiWidgets.Combo("String Combo", ref selectedStringValue, possibleStringValues);
+			ImGui.TextUnformatted($"Selected: {selectedStringValue}");
+
+			ImGui.Separator();
+			ImGuiWidgets.Combo("Strong String Combo", ref selectedStrongString, possibleStrongStringValues);
+			ImGui.TextUnformatted($"Selected: {selectedStrongString}");
+		}
+	}
+
+	private static void ShowTextDemo()
+	{
+		if (ImGui.CollapsingHeader("Text Utilities"))
+		{
+			ImGui.TextUnformatted("Enhanced text rendering with alignment and clipping:");
+			ImGui.Separator();
+
+			// Regular text
+			ImGuiWidgets.Text("Regular text");
+
+			ImGui.Separator();
+
+			// Centered text
+			ImGui.TextUnformatted("Centered text in available space:");
+			ImGuiWidgets.TextCentered("This text is centered!");
+
+			ImGui.Separator();
+
+			// Text centered within bounds
+			ImGui.TextUnformatted("Text centered within 200px container:");
+			Vector2 containerSize = new(200, 50);
+			ImGui.GetWindowDrawList().AddRect(
+				ImGui.GetCursorScreenPos(),
+				ImGui.GetCursorScreenPos() + containerSize,
+				ImGui.GetColorU32(ImGuiCol.Border)
+			);
+			ImGuiWidgets.TextCenteredWithin("Centered within bounds", containerSize);
+			ImGui.SetCursorPosY(ImGui.GetCursorPosY() + containerSize.Y);
+
+			ImGui.Separator();
+
+			// Clipped text
+			ImGui.TextUnformatted("Text clipping demo (150px width):");
+			Vector2 clipSize = new(150, 30);
+			ImGui.GetWindowDrawList().AddRect(
+				ImGui.GetCursorScreenPos(),
+				ImGui.GetCursorScreenPos() + clipSize,
+				ImGui.GetColorU32(ImGuiCol.Border)
+			);
+			// Demonstrate text clipping by manually truncating long text
+			string longText = "This is a very long text that will be clipped with ellipsis";
+			float textWidth = ImGui.CalcTextSize(longText).X;
+			string displayText = longText;
+			if (textWidth > clipSize.X)
+			{
+				// Manually clip the text for demo purposes
+				while (ImGui.CalcTextSize(displayText + "...").X > clipSize.X && displayText.Length > 0)
+				{
+					displayText = displayText[..^1];
+				}
+				displayText += "...";
+			}
+			ImGuiWidgets.TextCenteredWithin(displayText, clipSize);
+			ImGui.SetCursorPosY(ImGui.GetCursorPosY() + clipSize.Y);
+		}
+	}
+
+	private static void ShowScopedWidgetsDemo()
+	{
+		if (ImGui.CollapsingHeader("Scoped Utilities"))
+		{
+			ImGui.TextUnformatted("Scoped helpers for ImGui state management:");
+			ImGui.Separator();
+
+			// ScopedDisable demo
+			ImGui.TextUnformatted("ScopedDisable - disables widgets within scope:");
+			using (new ScopedDisable(true))
+			{
+				bool dummyBool = true;
+				int dummyInt = 0;
+				string[] items = ["Item 1", "Item 2", "Item 3"];
+
+				ImGui.Checkbox("Disabled Checkbox", ref dummyBool);
+				ImGui.Combo("Disabled Combo", ref dummyInt, items, items.Length);
+				ImGui.Button("Disabled Button");
+			}
+
+			ImGui.Separator();
+
+			// ScopedId demo
+			ImGui.TextUnformatted("ScopedId - manages ImGui ID stack automatically:");
+			for (int i = 0; i < 3; i++)
+			{
+				using (new ImGuiWidgets.ScopedId(i))
+				{
+					bool state = false;
+					ImGui.Checkbox("Same Label", ref state);
+				}
+			}
+			ImGui.TextUnformatted("↑ Three checkboxes with same label using ScopedId");
+		}
+	}
+
+	private static void ShowTreeDemo()
+	{
+		if (ImGui.CollapsingHeader("Tree View"))
+		{
+			ImGui.TextUnformatted("Hierarchical tree structure with automatic cleanup:");
+			ImGui.Separator();
+
+			using ImGuiWidgets.Tree tree = new();
+			for (int i = 0; i < 3; i++)
+			{
+				using (tree.Child)
+				{
+					ImGui.Button($"Parent Node {i + 1}");
+
+					using ImGuiWidgets.Tree subtree = new();
+					for (int j = 0; j < 2; j++)
+					{
+						using (subtree.Child)
+						{
+							ImGui.Button($"Child {j + 1}");
+
+							if (i == 0 && j == 0) // Show deeper nesting for first item
+							{
+								using ImGuiWidgets.Tree deepTree = new();
+								using (deepTree.Child)
+								{
+									ImGui.Button("Grandchild");
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private static void ShowImageAndIconDemo(ImGuiAppTextureInfo ktsuTexture)
+	{
+		if (ImGui.CollapsingHeader("Images & Icons"))
+		{
+			ImGui.TextUnformatted("Interactive images and icons with events:");
+			ImGui.Separator();
+
+			// Image demo with color tinting
+			ImGui.TextUnformatted("Clickable Image (with alpha-preserved tinting):");
+			Vector4 tintColor = new(1.0f, 0.8f, 0.8f, 1.0f); // Light red tint
+			if (ImGuiWidgets.Image(ktsuTexture.TextureId, new Vector2(64, 64), tintColor))
+			{
+				MessageOK.Open("Image Clicked", "You clicked the tinted image!");
+			}
+
+			ImGui.SameLine();
+			if (ImGuiWidgets.Image(ktsuTexture.TextureId, new Vector2(64, 64))) // No tint
+			{
+				MessageOK.Open("Image Clicked", "You clicked the normal image!");
+			}
+
+			ImGui.Separator();
+
+			// Icon demos
+			ImGui.TextUnformatted("Interactive Icons:");
+
+			float iconSize = ImGuiApp.EmsToPx(4.0f);
+
+			ImGuiWidgets.Icon("Click Me", ktsuTexture.TextureId, iconSize, ImGuiWidgets.IconAlignment.Vertical,
+				new ImGuiWidgets.IconOptions()
+				{
+					OnClick = () => MessageOK.Open("Click", "Single click detected!")
+				});
+
+			ImGui.SameLine();
+			ImGuiWidgets.Icon("Double Click", ktsuTexture.TextureId, iconSize, ImGuiWidgets.IconAlignment.Vertical,
+				new ImGuiWidgets.IconOptions()
+				{
+					OnDoubleClick = () => MessageOK.Open("Double Click", "Double click detected!")
+				});
+
+			ImGui.SameLine();
+			ImGuiWidgets.Icon("Right Click", ktsuTexture.TextureId, iconSize, ImGuiWidgets.IconAlignment.Vertical,
+				new ImGuiWidgets.IconOptions()
+				{
+					OnContextMenu = () =>
+					{
+						if (ImGui.MenuItem("Context Item 1"))
+						{
+							MessageOK.Open("Menu", "Context Item 1 selected");
+						}
+
+						if (ImGui.MenuItem("Context Item 2"))
+						{
+							MessageOK.Open("Menu", "Context Item 2 selected");
+						}
+
+						ImGui.Separator();
+						if (ImGui.MenuItem("Context Item 3"))
+						{
+							MessageOK.Open("Menu", "Context Item 3 selected");
+						}
+					},
+				});
+
+			ImGui.SameLine();
+			ImGuiWidgets.Icon("Hover Me", ktsuTexture.TextureId, iconSize, ImGuiWidgets.IconAlignment.Vertical,
+				new ImGuiWidgets.IconOptions()
+				{
+					Tooltip = "This is a tooltip that appears when you hover over the icon!"
+				});
+
+			ImGui.Separator();
+
+			ImGui.TextUnformatted("Horizontal Layout Icons:");
+			ImGuiWidgets.Icon("Horizontal 1", ktsuTexture.TextureId, iconSize, ImGuiWidgets.IconAlignment.Horizontal);
+			ImGuiWidgets.Icon("Horizontal 2", ktsuTexture.TextureId, iconSize, ImGuiWidgets.IconAlignment.Horizontal);
+		}
+	}
+
+	private static void ShowDividerDemo()
+	{
+		if (ImGui.CollapsingHeader("Divider Container"))
+		{
+			ImGui.TextUnformatted("This entire demo uses a DividerContainer!");
+			ImGui.TextUnformatted("The resizable divider between 'Widget Demos' and 'Advanced Demos'");
+			ImGui.TextUnformatted("is created using ImGuiWidgets.DividerContainer.");
+
+			ImGui.Separator();
+			ImGui.TextUnformatted("DividerContainer features:");
+			ImGui.BulletText("Resizable panes with drag handle");
+			ImGui.BulletText("Persistent sizing ratios");
+			ImGui.BulletText("Automatic content management");
+			ImGui.BulletText("Nested dividers support");
+		}
 	}
 
 	// Tab content methods
