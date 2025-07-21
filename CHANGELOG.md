@@ -1,6 +1,9 @@
-## v1.6.6-pre.1 (prerelease)
+## v1.6.6 (patch)
 
-Incremental prerelease update.
+Changes since v1.6.5:
+
+- [patch] Force patch ([@matt-edmondson](https://github.com/matt-edmondson))
+- Force build ([@matt-edmondson](https://github.com/matt-edmondson))
 ## v1.6.6-pre.1 (prerelease)
 
 Changes since v1.6.5:
