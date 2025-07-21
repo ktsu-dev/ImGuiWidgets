@@ -1,3 +1,5 @@
-## v1.6.5
+## v1.6.6-pre.1 (prerelease)
 
-No significant changes detected since v1.6.5.
+Changes since v1.6.5:
+
+- Force build ([@matt-edmondson](https://github.com/matt-edmondson))
