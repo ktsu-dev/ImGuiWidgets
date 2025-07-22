@@ -1,6 +1,6 @@
-## v1.6.7
+## v1.6.8-pre.1 (prerelease)
 
-No significant changes detected since v1.6.7.
+Changes since v1.6.7:
 ## v1.6.7 (patch)
 
 Changes since v1.6.6:
