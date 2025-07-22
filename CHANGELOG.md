@@ -1,3 +1,8 @@
+## v1.6.7-pre.1 (prerelease)
+
+Changes since v1.6.6:
+
+- Update package versions in Directory.Packages.props and clean up project files for ImGuiWidgets and ImGuiWidgetsDemo. ([@matt-edmondson](https://github.com/matt-edmondson))
 ## v1.6.6 (patch)
 
 Changes since v1.6.5:
@@ -6,9 +11,7 @@ Changes since v1.6.5:
 - Force build ([@matt-edmondson](https://github.com/matt-edmondson))
 ## v1.6.6-pre.1 (prerelease)
 
-Changes since v1.6.5:
-
-- Force build ([@matt-edmondson](https://github.com/matt-edmondson))
+Incremental prerelease update.
 ## v1.6.5 (patch)
 
 Changes since v1.6.4:

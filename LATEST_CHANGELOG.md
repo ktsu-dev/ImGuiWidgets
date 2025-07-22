@@ -1,6 +1,5 @@
-## v1.6.6 (patch)
+## v1.6.7-pre.1 (prerelease)
 
-Changes since v1.6.5:
+Changes since v1.6.6:
 
-- [patch] Force patch ([@matt-edmondson](https://github.com/matt-edmondson))
-- Force build ([@matt-edmondson](https://github.com/matt-edmondson))
+- Update package versions in Directory.Packages.props and clean up project files for ImGuiWidgets and ImGuiWidgetsDemo. ([@matt-edmondson](https://github.com/matt-edmondson))
