@@ -5,7 +5,6 @@
 namespace ktsu.ImGuiWidgets;
 
 using Hexa.NET.ImGui;
-
 using ktsu.ScopedAction;
 
 /// <summary>
